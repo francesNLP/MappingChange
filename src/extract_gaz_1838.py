@@ -11,7 +11,7 @@ g_df_1838_pages = g_df_1838_vol1[
     (g_df_1838_vol1['pageNum'] >= 27) & (g_df_1838_vol1['pageNum'] <= 532)
 ].copy()
 # Initialize OpenAI client
-client = OpenAI(api_key="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")
+client = OpenAI(api_key="XXX")
 
 
 

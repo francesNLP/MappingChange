@@ -11,7 +11,7 @@ g_df_1806 = g_df[g_df['edition'] == '1806'].copy()
 g_df_1806_pages = g_df_1806[
     (g_df_1806['pageNum'] >= 53) & (g_df_1806['pageNum'] <= 580)].copy()
 # Initialize OpenAI client
-client = OpenAI(api_key="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")
+client = OpenAI(api_key="XXX")
 
 
 def is_index_entry(name, prev_name=None, next_name=None):
