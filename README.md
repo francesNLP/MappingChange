@@ -21,7 +21,11 @@ This repository supports a research project to transform [The Gazetteers of Scot
 - 'topographical dictionary of Scotland 1846, Volume 2',
 - 'topographical, statistical, and historical gazetteer of Scotland 1848, Volume 2',
 - 'imperial gazetteer of Scotland; or, Dictionary of Scottish topography, compiled from the most recent authorities, and forming a complete body of Scottish geography, physical, statistical, and historical 1868, Volume 1',
-- 'imperial gazetteer of Scotland; or, Dictionary of Scottish topography, compiled from the most recent authorities, and forming a complete body of Scottish geography, physical, statistical, and historical 1868, Volume 2',
+- 'imperial gazetteer of Scotland; or, Dictionary of Scottish topography, compiled from the most recent authorities, and forming a complete body of Scottish geography, physical, statistical, and historical 1868, Volume 2
+  
+<img width="495" alt="NumVolGaz1803_1901" src="https://github.com/user-attachments/assets/3666012e-1503-4a35-baca-4277e036f4b1" />
+
+  
 
 The goal is to extract these entries from OCR-based page-level text and convert them into cleaned, deduplicated article records that can eventually populate a temporal and semantic knowledge graph (ScotGaz19-KG). This graph will be integrated into the [Frances platform](http://www.frances-ai.com), enabling rich visualizations and advanced NLP-driven analysis of Scotland’s historical landscape.
 
