@@ -1,6 +1,15 @@
 # MappingChange
 Repository to map the change of the gazetteers of Scotland (1803 to 1901)
 
+# Scripts
+
+
+# Dataframes with Extracted Articles
+
+* [dataframe_gaz_1803](https://drive.google.com/file/d/1a4BtLrwyfHb4I6cmAVbaaw-IafWf1dnR/view?usp=share_link)
+* [dataframe_gaz_1806](https://drive.google.com/file/d/1a4BtLrwyfHb4I6cmAVbaaw-IafWf1dnR/view?usp=share_link)
+* [dataframe_gaz_1825](https://drive.google.com/file/d/1Fsr61JqpV4JND0VKtezbNoVCrdw_Ahi4/view?usp=share_link)
+
 
 # Google Colabs
 
