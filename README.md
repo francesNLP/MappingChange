@@ -1,27 +1,6 @@
 # 🗺️ MappingChange
 ## Tracking the Evolution of Place Descriptions in the Gazetteers of Scotland (1803–1901)
 This repository supports a research project to transform [The Gazetteers of Scotland (1803–1901)](https://data.nls.uk/data/digitised-collections/gazetteers-of-scotland/), digitized by the National Library of Scotland, into structured article-level data. These gazetteers provide detailed historical accounts of Scottish places—towns, glens, castles, and parishes—captured across 21 volumes:
-- 'gazetteer of Scotland 1803
-- 'gazetteer of Scotland: containing a particular and concise description of the counties, parishes, islands, cities ... With ... map 1806',
-- 'Gazetteer of Scotland; arranged under the various descriptions of counties, parishes, islands 1825?',
-- 'gazetteer of Scotland. [With plates and maps.] 1838, Volume 1',
-- 'gazetteer of Scotland. [With plates and maps.] 1838, Volume 2',
-- Descriptive account of the principal towns in Scotland: to accompany Wood's town atlas 1828"
-- 'Gazetteer of Scotland 1882',
-- 'Ordnance gazetteer of Scotland 1884-1885, Volume 1',
-- 'Ordnance gazetteer of Scotland 1884-1885, Volume 2',
-- 'Ordnance gazetteer of Scotland 1884-1885, Volume 3',
-- 'Ordnance gazetteer of Scotland 1884-1885, Volume 4',
-- 'Ordnance gazetteer of Scotland 1884-1885, Volume 5',
-- 'Ordnance gazetteer of Scotland 1884-1885, Volume 6',
-- 'Ordnance gazetteer of Scotland 1901',
-- 'topographical, statistical, and historical gazetteer of Scotland 1842, Volume 1',
-- 'topographical, statistical, and historical gazetteer of Scotland 1842, Volume 2
-- 'topographical dictionary of Scotland 1846, Volume 1',
-- 'topographical dictionary of Scotland 1846, Volume 2',
-- 'topographical, statistical, and historical gazetteer of Scotland 1848, Volume 2',
-- 'imperial gazetteer of Scotland; or, Dictionary of Scottish topography, compiled from the most recent authorities, and forming a complete body of Scottish geography, physical, statistical, and historical 1868, Volume 1',
-- 'imperial gazetteer of Scotland; or, Dictionary of Scottish topography, compiled from the most recent authorities, and forming a complete body of Scottish geography, physical, statistical, and historical 1868, Volume 2
   
 ![NumVolGaz1803_1901](https://github.com/user-attachments/assets/b81dca6b-87c7-4468-b0f4-caeb1e76d3bb)
 
@@ -86,6 +65,12 @@ These cleaned, deduplicated DataFrames (as a result of running[dataframe_article
 
 * Explore extracted articles from [1825: Gazetteer of Scotland: arranged under the various descriptions of counties, parishes, islands -- 1 volume](https://digital.nls.uk/gazetteers-of-scotland-1803-1901/archive/97421702) --> [Google Colab Notebook](https://colab.research.google.com/drive/1CVd40bNGe-RAuPmv1M07tEjSWC5-wcgs?usp=sharing)
 * Explore extracted articles from [1838: Gazetteer of Scotland with plates and maps -- 2 volumes](https://digital.nls.uk/gazetteers-of-scotland-1803-1901/archive/97491771) --> Currently working on it
+
+As a result, we can already do experiment with some analyses. Those are from analysing the dataframe from the 1803: 
+![Unknown-30](https://github.com/user-attachments/assets/783466ca-be4d-4ed9-b8f3-7949b32eb88b)
+![Unknown-31](https://github.com/user-attachments/assets/2aab694c-c36a-4e83-a82e-2abbaa834c96)
+
+
 
 ## ✨ Research Context
 
