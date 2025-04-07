@@ -1,4 +1,5 @@
-# 🗺️ MappingChange: Tracking the Evolution of Place Descriptions in the Gazetteers of Scotland (1803–1901)
+# 🗺️ MappingChange
+## Tracking the Evolution of Place Descriptions in the Gazetteers of Scotland (1803–1901)
 This repository supports a research project to transform [The Gazetteers of Scotland (1803–1901)](https://data.nls.uk/data/digitised-collections/gazetteers-of-scotland/), digitized by the National Library of Scotland, into structured article-level data. These gazetteers provide detailed historical accounts of Scottish places—towns, glens, castles, and parishes—captured across 21 volumes.
 
 The goal is to extract these entries from OCR-based page-level text and convert them into cleaned, deduplicated article records that can eventually populate a temporal and semantic knowledge graph (ScotGaz19-KG). This graph will be integrated into the [Frances platform](http://www.frances-ai.com), enabling rich visualizations and advanced NLP-driven analysis of Scotland’s historical landscape.
