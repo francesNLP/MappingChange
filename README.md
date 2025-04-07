@@ -45,7 +45,7 @@ All these scripts used are in [src](./src).
 
 ## Dataframes with Extracted Articles
 
-These cleaned, deduplicated DataFrames (as a result of dataframe_articles.py) are ready for semantic enrichment and visual analysis:
+These cleaned, deduplicated DataFrames (as a result of running[dataframe_articles.py](./src/dataframe_articles.py) wich each dataset) are ready for semantic enrichment and visual analysis:
 
 * [dataframe_gaz_1803](https://drive.google.com/file/d/1a4BtLrwyfHb4I6cmAVbaaw-IafWf1dnR/view?usp=share_link)
 * [dataframe_gaz_1806](https://drive.google.com/file/d/1a4BtLrwyfHb4I6cmAVbaaw-IafWf1dnR/view?usp=share_link)
