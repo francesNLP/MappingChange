@@ -45,7 +45,7 @@ We are using the dataframe version of this [KnowledgeGraph](https://zenodo.org/r
 
  1. Extraction Scripts ([extract_gaz_1803.py](./src/extract_gaz_1803.py), [extract_gaz_1806.py](./src/extract_gaz_1806.py) ....): 	Main scripts for processing the respective editions. They extract articles from specific page ranges, send chunked prompts to OpenAI’s GPT-4 for article segmentation, and save both raw and cleaned JSON results. Different prompts are used across different scripts, since the format of the books (pages headers, articles names, descriptions) change over years. 
 
- 2. [Merging Cleaning Data](.src/merge_cleaned_articles.py): Merges all the cleaned JSON article files into a single output file, sorting and aligning metadata across the dataset.
+ 2. [Merging Cleaning Data](./src/merge_cleaned_articles.py): Merges all the cleaned JSON article files into a single output file, sorting and aligning metadata across the dataset.
 
  3. [Dataframe Generation](./src/dataframe_articles.py):A	Script that deduplicates and cleans already extracted articles. It includes advanced logic to detect fuzzy duplicates, substring containment, and prefix-based similarity across multiple pages. It also adds metadata from the original OCR dataset. These are then exported and analyzed in Jupyter/Colab notebooks.
 
