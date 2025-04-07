@@ -1,4 +1,4 @@
-## Extracting articles from 1803
+# Script for extracting the articles from the gazetteer published in 1803
 
 import pandas as pd
 import re
