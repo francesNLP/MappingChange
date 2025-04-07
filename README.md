@@ -1,6 +1,27 @@
 # 🗺️ MappingChange
 ## Tracking the Evolution of Place Descriptions in the Gazetteers of Scotland (1803–1901)
-This repository supports a research project to transform [The Gazetteers of Scotland (1803–1901)](https://data.nls.uk/data/digitised-collections/gazetteers-of-scotland/), digitized by the National Library of Scotland, into structured article-level data. These gazetteers provide detailed historical accounts of Scottish places—towns, glens, castles, and parishes—captured across 21 volumes.
+This repository supports a research project to transform [The Gazetteers of Scotland (1803–1901)](https://data.nls.uk/data/digitised-collections/gazetteers-of-scotland/), digitized by the National Library of Scotland, into structured article-level data. These gazetteers provide detailed historical accounts of Scottish places—towns, glens, castles, and parishes—captured across 21 volumes:
+- 'gazetteer of Scotland 1803
+- 'gazetteer of Scotland: containing a particular and concise description of the counties, parishes, islands, cities ... With ... map 1806',
+- 'gazetteer of Scotland. [With plates and maps.] 1838, Volume 1',
+- 'gazetteer of Scotland. [With plates and maps.] 1838, Volume 2',
+- Descriptive account of the principal towns in Scotland: to accompany Wood's town atlas 1828"
+- 'Gazetteer of Scotland 1882',
+- 'topographical dictionary of Scotland 1846, Volume 2',
+- 'Ordnance gazetteer of Scotland 1884-1885, Volume 1',
+- 'Ordnance gazetteer of Scotland 1884-1885, Volume 2',
+- 'Ordnance gazetteer of Scotland 1884-1885, Volume 3',
+- 'Ordnance gazetteer of Scotland 1884-1885, Volume 4',
+- 'Ordnance gazetteer of Scotland 1884-1885, Volume 5',
+- 'Ordnance gazetteer of Scotland 1884-1885, Volume 6',
+- 'Ordnance gazetteer of Scotland 1901',
+- 'Gazetteer of Scotland; arranged under the various descriptions of counties, parishes, islands 1825?',
+- 'topographical, statistical, and historical gazetteer of Scotland 1842, Volume 1',
+- 'topographical, statistical, and historical gazetteer of Scotland 1848, Volume 2',
+- 'imperial gazetteer of Scotland; or, Dictionary of Scottish topography, compiled from the most recent authorities, and forming a complete body of Scottish geography, physical, statistical, and historical 1868, Volume 1',
+- 'imperial gazetteer of Scotland; or, Dictionary of Scottish topography, compiled from the most recent authorities, and forming a complete body of Scottish geography, physical, statistical, and historical 1868, Volume 2',
+- 'topographical dictionary of Scotland 1846, Volume 1',
+- 'topographical, statistical, and historical gazetteer of Scotland 1842, Volume 2
 
 The goal is to extract these entries from OCR-based page-level text and convert them into cleaned, deduplicated article records that can eventually populate a temporal and semantic knowledge graph (ScotGaz19-KG). This graph will be integrated into the [Frances platform](http://www.frances-ai.com), enabling rich visualizations and advanced NLP-driven analysis of Scotland’s historical landscape.
 
