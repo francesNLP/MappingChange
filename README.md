@@ -1,8 +1,26 @@
 # MappingChange
 Repository to map the change of the gazetteers of Scotland (1803 to 1901)
 
+# Set Up the Environment
+## Step 1: Create the environment with Python 3.11
+
+```
+conda create -n gazetteer_env python=3.11 -y
+```
+## Step 2: Activate the environment
+```
+conda activate gazetteer_env
+```
+
+## Step 3: Install required libraries
+
+```
+pip install -r requirements.txt
+```
+
 # Scripts
 
+All the scripts used are in [src](!./src).
 
 # Dataframes with Extracted Articles
 
