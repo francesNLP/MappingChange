@@ -1,28 +1,38 @@
-# MappingChange
+# 🗺️ MappingChange: Tracking the Evolution of Place Descriptions in the Gazetteers of Scotland (1803–1901)
 Repository to map the change of the gazetteers of Scotland (1803 to 1901)
 
-# Set Up the Environment
-## Step 1: Create the environment with Python 3.11
+## Set Up the Environment
+### Step 1: Create the environment with Python 3.11
 
 ```
 conda create -n gazetteer_env python=3.11 -y
 ```
-## Step 2: Activate the environment
+### Step 2: Activate the environment
 ```
 conda activate gazetteer_env
 ```
 
-## Step 3: Install required libraries
+### Step 3: Install required libraries
 
 ```
 pip install -r requirements.txt
 ```
 
-# Scripts
+## 📚 Gazetteer Article Extraction and Cleaning Pipeline
 
-All the scripts used are in [src](!./src).
+This repository contains a set of scripts for extracting, processing, and cleaning historical article entries from multiple editions of the Gazetteers of Scotland. These Gazetteers are digitized historical documents structured as page-by-page OCR-extracted text. The aim is to extract individual location-based entries (articles), correct common OCR issues, and resolve duplicates across pages and editions.
 
-# Dataframes with Extracted Articles
+## 🗂️ Structure of the src/ Folder
+
+* extract_gaz_1803.py, extract_gaz_1806.py extract_gaz_1825.py, extract_gaz_1838.py: 	Main scripts for processing the respective editions. They extract articles from specific page ranges, send chunked prompts to OpenAI’s GPT-4 for article segmentation, and save both raw and cleaned JSON results.
+
+* merge_cleaned_articles.py: Merges all the cleaned JSON article files into a single output file, sorting and aligning metadata across the dataset.
+
+* dataframe_articles.py:A	Script that deduplicates and cleans already extracted articles. It includes advanced logic to detect fuzzy duplicates, substring containment, and prefix-based similarity across multiple pages. It also adds metadata from the original OCR dataset. The results of running this script are processed later in our Google Colab Notebooks. In the next section of this Readme you have the links to download those dataframes. 
+
+All these scripts used are in [src](!./src).
+
+## Dataframes with Extracted Articles
 
 * [dataframe_gaz_1803](https://drive.google.com/file/d/1a4BtLrwyfHb4I6cmAVbaaw-IafWf1dnR/view?usp=share_link)
 * [dataframe_gaz_1806](https://drive.google.com/file/d/1a4BtLrwyfHb4I6cmAVbaaw-IafWf1dnR/view?usp=share_link)
