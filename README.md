@@ -23,7 +23,8 @@ This repository supports a research project to transform [The Gazetteers of Scot
 - 'imperial gazetteer of Scotland; or, Dictionary of Scottish topography, compiled from the most recent authorities, and forming a complete body of Scottish geography, physical, statistical, and historical 1868, Volume 1',
 - 'imperial gazetteer of Scotland; or, Dictionary of Scottish topography, compiled from the most recent authorities, and forming a complete body of Scottish geography, physical, statistical, and historical 1868, Volume 2
   
-<img width="495" alt="NumVolGaz1803_1901" src="https://github.com/user-attachments/assets/3666012e-1503-4a35-baca-4277e036f4b1" />
+![NumVolGaz1803_1901](https://github.com/user-attachments/assets/b81dca6b-87c7-4468-b0f4-caeb1e76d3bb)
+
 
   
 
