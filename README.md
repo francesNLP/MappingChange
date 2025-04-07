@@ -39,7 +39,7 @@ The scripts used this repo support:
 
 * 2. [Merging Cleaning Data](.src/merge_cleaned_articles.py): Merges all the cleaned JSON article files into a single output file, sorting and aligning metadata across the dataset.
 
-* 3. [Dataframe Generation](./src/dataframe_articles.py): Dataframe dataframe_articles.py:A	Script that deduplicates and cleans already extracted articles. It includes advanced logic to detect fuzzy duplicates, substring containment, and prefix-based similarity across multiple pages. It also adds metadata from the original OCR dataset. These are then exported and analyzed in Jupyter/Colab notebooks.
+* 3. [Dataframe Generation](./src/dataframe_articles.py):A	Script that deduplicates and cleans already extracted articles. It includes advanced logic to detect fuzzy duplicates, substring containment, and prefix-based similarity across multiple pages. It also adds metadata from the original OCR dataset. These are then exported and analyzed in Jupyter/Colab notebooks.
 
 All these scripts used are in [src](./src).
 
