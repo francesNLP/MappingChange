@@ -16,7 +16,6 @@ g_df_1842_pages = g_df_1842_vol1[
     (g_df_1842_vol1['pageNum'] >= 79) & (g_df_1842_vol1['pageNum'] <= 914)
 ].copy()
 # Initialize OpenAI client
-client = OpenAI(api_key="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")
 import pandas as pd
 import json
 import re
