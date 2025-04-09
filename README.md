@@ -70,10 +70,12 @@ These cleaned, deduplicated DataFrames (as a result of running[dataframe_article
 * Explore extracted articles from [1825: Gazetteer of Scotland: arranged under the various descriptions of counties, parishes, islands -- 1 volume](https://digital.nls.uk/gazetteers-of-scotland-1803-1901/archive/97421702) --> [Google Colab Notebook](https://colab.research.google.com/drive/1CVd40bNGe-RAuPmv1M07tEjSWC5-wcgs?usp=sharing)
 * Explore extracted articles from [1838: Gazetteer of Scotland with plates and maps -- 2 volumes](https://digital.nls.uk/gazetteers-of-scotland-1803-1901/archive/97491771) --> [Google Colab Notebook](https://colab.research.google.com/drive/1_OJ2ZA-TksnVwW9QRPyU8iJUEkBBHAlY?usp=sharing)
 
-As a result, we can already do experiment with some analyses. Those are from analysing the dataframe from the 1803: 
-![Unknown-30](https://github.com/user-attachments/assets/783466ca-be4d-4ed9-b8f3-7949b32eb88b)
-![Unknown-31](https://github.com/user-attachments/assets/2aab694c-c36a-4e83-a82e-2abbaa834c96)
 
+### Comparative 
+As a result, we can already do experiment with some analyses in this [Google Colab](https://colab.research.google.com/drive/1mmspC8c1FcYOOY9-wqH4TU8qKVNtFQE1?usp=sharing)
+<img width="1192" alt="Screenshot 2025-04-09 at 18 59 03" src="https://github.com/user-attachments/assets/d7784a58-a3a9-464d-bc78-9d1edbfe6d8f" />
+
+<img width="1227" alt="Screenshot 2025-04-09 at 19 01 23" src="https://github.com/user-attachments/assets/437b5007-b824-4190-8617-512340658b3e" />
 
 
 ## ✨ Research Context
