@@ -3,6 +3,113 @@ import json
 import numpy as np
 import re
 from difflib import SequenceMatcher
+import re
+
+import regex
+def extract_names(head: str) -> tuple[str, list[str]]:
+    """
+    This function extracts primary name (first name appears) and alternative names from a head (first few words with article names in dictionary like text).
+    :param head: first few words with article names in dictionary like text.
+    :return: primary name and a list of alternative names.
+    """
+    pre_or, sep, post_or = head.partition(" OR ")
+    #print(f"pre_or: {pre_or}, sep: {sep}, post_or: {post_or}")
+    alternative_names = []
+    primary_name = head
+    words_pattern_str = "(([\p{L}\p{N}\-\'\.]+\s*)+)"
+    if sep:
+        # handle head with "OR"
+        # if "OR" is embedded within parentheses
+        paren_match = regex.search(r'' + words_pattern_str + '\(([^)]+)\sOR\s([^)]+)\)', head)
+        if paren_match:
+            #print(f"group 1: {paren_match.group(1)}, group 3: {paren_match.group(3)}, group4: {paren_match.group(4)}")
+            pre_name = paren_match.group(1).strip()
+            first_post_name = paren_match.group(3).strip()
+            # remove the last comma if exists
+            first_post_name = first_post_name.split(',', 1)[0]
+            second_post_name = paren_match.group(4).strip()
+            primary_name = f"{pre_name} {first_post_name}"
+            alter_name = f"{pre_name} {second_post_name}"
+            alternative_names.append(alter_name)
+            #print(head)
+            return primary_name, alternative_names
+
+        names = pre_or.split(",")
+        names = [name.strip() for name in names if len(name) > 0]
+        primary_name = names[0]
+        alternative_names = names[1:]
+        last_alter_match = regex.search(r'\s+(PROPERLY|CALLED)\s+', post_or)
+        if last_alter_match:
+            last_name_start_index = last_alter_match.end(1)
+            last_name = post_or[last_name_start_index:].strip()
+            alternative_names.append(last_name)
+        else:
+            alternative_names.append(post_or)
+
+        return primary_name, alternative_names
+
+    # other rules
+    indicator_match = regex.search(r'\s+(OTHERWISE\s+CALLED|CALLED|NAMED|PROPERLY|OTHERWISE)\s+' + words_pattern_str, head)
+    if indicator_match:
+        #print(head)
+        pre_indicator_end_index = indicator_match.start(0)
+        primary_name_end_index = head.rfind(",", 0, pre_indicator_end_index)
+        if primary_name_end_index < 0:
+            primary_name_end_index = head.rfind("(", 0, pre_indicator_end_index)
+            if primary_name_end_index < 0:
+                primary_name_end_index = pre_indicator_end_index
+        primary_name = head[:primary_name_end_index].strip()
+        last_name = indicator_match.group(2).strip()
+        alternative_names.append(last_name)
+        return primary_name, alternative_names
+    return primary_name, alternative_names
+
+
+def extra_see_references(text:str) -> list[str]:
+    """
+    This function extracts see references after the word "See" at the end of the text. If there are same reference name occurs multiple times, this function will only return one.
+    :param text: text to extract references from.
+    :return: a list of reference names
+    """
+    references = []
+    indicator_match = regex.search(r"(See|Vide)\s+((\(?\p{Lu}[\p{Lu\p{L}\-\'\.\)]+\s*)+(and\s+(\(?\p{Lu}[\p{Lu\p{L}\-\'\.\)]+\s*)+)?)$", text)
+
+    if indicator_match:
+        post_indicator_text = indicator_match.group(2).strip()
+        if post_indicator_text[-1] == '.':
+            post_indicator_text = post_indicator_text[:-1]
+        pre_and, sep, post_and = post_indicator_text.partition(" and ")
+        #print(post_indicator_text)
+        if sep:
+            references.append(pre_and.strip())
+            references.append(post_and.strip())
+        else:
+            references.append(post_indicator_text.strip())
+
+    return references
+
+
+def extract_reference_terms(text):
+    """Extracts reference names from patterns like 'See Lesmahago.' or 'See Lesmahago and Aby.'"""
+    # Regex to match patterns like:
+    # - See Name.
+    # - See Name and Name.
+    # - See Name, Name, and Name.
+    # Also allow optional semicolon before or after
+    pattern = re.compile(r"See ([A-Z][a-zA-Z'\- ]+(?: and [A-Z][a-zA-Z'\- ]+)*(?:,? [A-Z][a-zA-Z'\- ]+)*?)\s*(?:[.;])")
+
+    matches = pattern.findall(text)
+    referenced = []
+
+    for match in matches:
+        # Normalize and split by ' and ' or ','
+        subparts = re.split(r',| and ', match)
+        for ref in subparts:
+            ref_clean = ref.strip()
+            if ref_clean and ref_clean not in referenced:
+                referenced.append(ref_clean)
+    return referenced if referenced else None
+
 
 def similar(a, b):
     return SequenceMatcher(None, a, b).ratio()
@@ -233,18 +340,18 @@ def deduplicate_articles_by_token_prefix(df, token_limit=100, jaccard_threshold=
 
 # Load metadata dataframe (page-level info, but we only use first row for edition-level metadata)
 gdf = pd.read_json("gazatteers_dataframe", orient="index")
-gdf_1806 = gdf[gdf['edition'] == '1806'].copy()
+gdf_1838_vol1 = gdf[gdf['edition'] == '1838, Volume 1'].copy()
+#gdf_1838_vol1 = g_df[g_df['edition'] == '1838, Volume 2'].copy()
 
-if gdf_1806.empty:
-    raise ValueError("No entries found for edition '1806' in gazatteers_dataframe.")
+if gdf_1838_vol1.empty:
+    raise ValueError("No entries found for edition '1838_vol1' in gazatteers_dataframe.")
 
 # Take metadata from the first row (except 'text')
-meta_row = gdf_1806.iloc[0].drop(["text", "pageNum"], errors="ignore").to_dict()
+meta_row = gdf_1838_vol1.iloc[0].drop(["text", "pageNum"], errors="ignore").to_dict()
 print(meta_row)
 
 # Load combined article entries (article-level info)
-#json_path = "1806/gazetteer_articles_fixed_merged_1806.json"
-json_path = "1806/gazetteer_articles_merged_1806.json"
+json_path = "1838_vol1/gazetteer_articles_merged_1838_vol1.json"
 with open(json_path, "r", encoding="utf-8") as f:
     article_data = json.load(f)
 
@@ -276,7 +383,7 @@ df_articles = df_articles.rename(columns={
 
 
 # Create a mapping from pageNum to altoXML file path
-page_to_alto = gdf_1806.set_index("pageNum")["altoXML"].to_dict()
+page_to_alto = gdf_1838_vol1.set_index("pageNum")["altoXML"].to_dict()
 
 # Map starts_at_page to altoXML (this will be the file where the article starts)
 df_articles["altoXML"] = df_articles["starts_at_page"].map(page_to_alto)
@@ -296,12 +403,58 @@ g_df_clean = remove_nested_and_duplicate_texts_across_pages(g_df_deduped)
 
 g_df_cleaned = deduplicate_articles_by_token_prefix(g_df_clean)
 
+
+# Step 4: Apply to df_articles (or later on g_df_cleaned if you prefer)
+
+g_df_cleaned['reference_terms'] = g_df_cleaned['text'].apply(extra_see_references)
+
+g_df_cleaned['alter_names'] = g_df_cleaned['name'].apply(lambda x: extract_names(x)[1])
+
+
+
+num_with_references = g_df_cleaned['reference_terms'].notnull().sum()
+non_empty_references = g_df_cleaned['reference_terms'].apply(lambda x: isinstance(x, list) and len(x) > 0)
+num_with_references = non_empty_references.sum()
+print(f"✅ Number of articles with references: {num_with_references}")
+
+
+non_empty_alt_names = g_df_cleaned['alter_names'].apply(lambda x: isinstance(x, list) and len(x) > 0)
+num_with_alter_names = non_empty_alt_names.sum()
+print(f"✅ Number of articles with alter_names: {num_with_alter_names}")
+
+total_articles = len(g_df_cleaned)
+percentage = (num_with_references / total_articles) * 100
+print(f"✅ {num_with_references} out of {total_articles} articles ({percentage:.2f}%) have references.")
+
+
+non_empty_refs = g_df_cleaned['reference_terms'].apply(lambda x: isinstance(x, list) and len(x) > 0)
+example_row = g_df_cleaned[non_empty_refs].iloc[0]
+
+# Then print it nicely
+print("📌 Example Article with References:")
+print(f"Name: {example_row['name']}")
+print(f"Starts at Page: {example_row['starts_at_page']}")
+print(f"Reference Terms: {example_row['reference_terms']}")
+print(f"Text Snippet: {example_row['text'][:300]}...")
+
+
+non_empty_alts = g_df_cleaned['alter_names'].apply(lambda x: isinstance(x, list) and len(x) > 0)
+example_alt_row = g_df_cleaned[non_empty_alts].iloc[0]
+
+# Print it nicely
+print("📌 Example Article with Alternative Names:")
+print(f"Name: {example_alt_row['name']}")
+print(f"Starts at Page: {example_alt_row['starts_at_page']}")
+print(f"Alternative Names: {example_alt_row['alter_names']}")
+print(f"Text Snippet: {example_alt_row['text'][:300]}...")
+
+
 # Show summary
 print(f"✅ DataFrame created with {len(df_articles)} rows.")
 print(g_df_cleaned.head())
 
 # Save final dataframe to JSON
-g_df_cleaned.to_json(r'1806/gaz_dataframe_1806', orient="index")
+g_df_cleaned.to_json(r'1838_vol1/gaz_dataframe_1838_vol1', orient="index")
 print("✅ Created DataFrame with metadata attached. Saved as JSON.")
 
 
