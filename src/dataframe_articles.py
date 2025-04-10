@@ -4,8 +4,221 @@ import numpy as np
 import re
 from difflib import SequenceMatcher
 import re
-
 import regex
+import os
+import json
+from openai import OpenAI
+
+# Initialize OpenAI client
+client = OpenAI(api_key="xxxx")
+
+from difflib import SequenceMatcher
+
+def normalize_name_1(name):
+    """Normalize by removing spaces and uppercasing."""
+    return ''.join(name.upper().split())
+
+def fuzzy_match_1(a, b, threshold=0.99):
+    """Check if two normalized names are similar enough."""
+    return SequenceMatcher(None, a, b).ratio() >= threshold
+
+def fix_ocr_glitches_in_names(df, threshold=0.99):
+    """
+    Fix OCR-glitch names directly in 'name' column by checking similarity
+    between normalized versions of adjacent rows.
+
+    Parameters:
+        df (pd.DataFrame): Must contain a 'name' column.
+        threshold (float): Fuzzy similarity threshold.
+
+    Returns:
+        pd.DataFrame: A new DataFrame with corrected 'name' values.
+    """
+    df_fixed = df.copy()
+
+    for i in range(1, len(df_fixed) - 1):
+        prev_name = df_fixed.loc[i - 1, "name"]
+        curr_name = df_fixed.loc[i, "name"]
+        next_name = df_fixed.loc[i + 1, "name"]
+
+        prev_norm = normalize_name_1(prev_name)
+        curr_norm = normalize_name_1(curr_name)
+        next_norm = normalize_name_1(next_name)
+
+        if fuzzy_match_1(prev_norm, next_norm, threshold=threshold) and not fuzzy_match_1(prev_norm, curr_norm, threshold=threshold):
+            print(f"\n🔁 Fixing row {i}: '{curr_name}' → '{prev_name}'")
+            print("📌 Context:")
+            print(f"  Row {i - 1}: {prev_name} ({prev_norm})")
+            print(f"👉 Row {i}: {curr_name} ({curr_norm} -- New name: {prev_name})  ← FIXED")
+            print(f"  Row {i + 1}: {next_name} ({next_norm})")
+            df_fixed.loc[i, "name"] = prev_name  # apply fix directly
+            if (next_norm != next_name) & (next_norm == prev_norm):
+                print(f"👉 Row {i+1}: {next_name} ({next_norm} -- New name: {prev_name})  ← FIXED")
+                df_fixed.loc[i+1, "name"] = prev_name
+
+    print("\n✅ Done checking for OCR-glitchy names.")
+    return df_fixed
+
+def simple_norm(name):
+    name = name.upper()
+    name = name.replace("13", "B").replace("1", "I").replace("0", "O")
+    name = re.sub(r"[^A-Z\s]", "", name)  # Remove everything except letters and spaces
+    name = re.sub(r"\s+", " ", name)  # Normalize multiple spaces to single
+    return name.strip()
+
+def print_repeated_articles(df):
+    grouped = df.groupby(['edition', 'volumeId', 'name'])
+    repeated = grouped.filter(lambda g: len(g) > 1)
+
+    if repeated.empty:
+        print("✅ No repeated place names found.")
+        return
+
+    print(f"\n🔁 Repeated articles found: {repeated['name'].nunique()} unique repeated names\n")
+
+    for (edition, volumeId, name), group in repeated.groupby(['edition', 'volumeId', 'name']):
+        print(f"\n📍 Name: {name} | Edition: {edition} | Volume: {volumeId} | Entries: {len(group)}\n")
+
+        for idx, row in group.iterrows():
+            print(f"🔹 Index: {idx} | Pages: {row['starts_at_page']}–{row['ends_at_page']}")
+            print(f"Text (first 300 chars): {row['text'][:300]}...\n{'-'*60}")
+
+
+def normalize_name_2(name):
+    return re.sub(r"[^A-Z]", "", name.upper())
+
+def fuzzy_match_2(a, b, threshold=0.96):
+    return SequenceMatcher(None, a, b).ratio() >= threshold
+
+def collapse_fuzzy_name_variants(df, threshold=0.90):
+    df = df.copy()
+    names = df['normalized_name'].tolist()
+    fixed_names = names.copy()
+
+    for i in range(1, len(names) - 1):
+        curr, prev, next_ = normalize_name_2(names[i]), normalize_name_2(names[i - 1]), normalize_name_2(names[i + 1])
+        if fuzzy_match_2(prev, next_, threshold) and not fuzzy_match_2(prev, curr, threshold):
+            print(f"🔁 Fixing row {i}: '{names[i]}' → '{names[i - 1]}'")
+            fixed_names[i] = fixed_names[i - 1]
+
+    df['normalized_name'] = fixed_names
+    return df
+
+
+def ask_gpt_same_or_different(texts):
+    prompt = (
+        "You're analyzing historical Gazetteer entries that have the same name within a volume. "
+        "Determine if they refer to:\n\n"
+        "1. The **same place**, described across multiple entries (a continuation), or\n"
+        "2. **Different places** that happen to share the same name.\n\n"
+        "Here are the entries:\n\n"
+    )
+    for i, t in enumerate(texts, 1):
+        prompt += f"Entry {i}:\n{t.strip()[:1000]}\n\n"
+
+    prompt += (
+        "Please respond with:\n"
+        "- 'Same place (continuation)' OR\n"
+        "- 'Different places'\n\n"
+        "Then give a short justification."
+    )
+
+    response = client.chat.completions.create(
+        model="gpt-4",
+        messages=[
+            {"role": "system", "content": "You are a historical Gazetteer analyst."},
+            {"role": "user", "content": prompt}
+        ],
+        temperature=0
+    )
+    return response.choices[0].message.content.strip()
+
+
+def merge_continuation_group(df, group):
+    df = df.copy()
+    group = group.sort_values("starts_at_page").reset_index()
+    main_idx = group.loc[0, "index"]
+    continuation_indices = group.loc[1:, "index"]
+
+    print(f"\n🔧 Merging {len(continuation_indices)} continuation entries into:")
+    print(f"🟢 Main Index: {main_idx} | Pages: {df.at[main_idx, 'starts_at_page']}–{df.at[main_idx, 'ends_at_page']}")
+
+    combined_text = " ".join(df.loc[continuation_indices.tolist() + [main_idx], "text"].dropna())
+    df.loc[main_idx, "text"] = combined_text
+    new_end_page = df.loc[continuation_indices.tolist() + [main_idx], "ends_at_page"].max()
+    df.loc[main_idx, "ends_at_page"] = new_end_page
+    print(f"📝 New end page: {new_end_page}")
+
+    # Drop continuation rows
+    df.drop(index=continuation_indices, inplace=True)
+
+    # Adjust total_articles
+    if "total_articles" in df.columns:
+        df.loc[:, "total_articles"] -= len(continuation_indices)
+
+    # Adjust total_articles_page
+    if "total_articles_page" in df.columns:
+        start_page = df.at[main_idx, "starts_at_page"]
+        end_page = df.at[main_idx, "ends_at_page"]
+        for page in range(start_page, end_page + 1):
+            df.loc[df["starts_at_page"] == page, "total_articles_page"] = 1
+
+    print(f"🗑️ Dropped rows: {continuation_indices.tolist()}")
+    return df
+
+
+def normalize_name(name):
+    name = name.upper()
+    name = name.replace(" ", "")  # Remove spaces
+    name = re.sub(r"[^A-Z]", "", name)  # Remove digits/symbols
+    name = name.replace("13", "B").replace("1", "I").replace("0", "O")
+    return name.strip()
+
+
+def fix_repeated_articles_with_gpt4(df):
+    df = df.copy()
+    df["normalized_name"] = df["name"].apply(normalize_name_2)
+    #df = collapse_fuzzy_name_variants(df)  # 💡 Clean OCR name variants first
+    grouped = df.groupby(['edition', 'volumeId', 'normalized_name'])
+    repeated = grouped.filter(lambda g: len(g) > 1)
+
+    if repeated.empty:
+        print("✅ No repeated names.")
+        return df
+
+    print(f"🔁 Found {repeated['normalized_name'].nunique()} repeated names.\n")
+
+    for (edition, volumeId, normalized_name), group in repeated.groupby(['edition', 'volumeId', 'normalized_name']):
+        print(f"\n📍 Name: {normalized_name} | Edition: {edition} | Volume: {volumeId} | Entries: {len(group)}\n")
+
+        for idx, row in group.iterrows():
+            print(f"🔹 Index: {idx} | Pages: {row['starts_at_page']}–{row['ends_at_page']}")
+            print(f"Text Snippet: {row['text'][:300]}...\n{'-'*60}")
+
+        texts = group["text"].tolist()
+        max_batch_size = 5
+        batches = [texts[i:i+max_batch_size] for i in range(0, len(texts), max_batch_size)]
+        merged = False
+
+        for batch_num, batch in enumerate(batches, 1):
+            print(f"🧠 Asking GPT-4 to classify batch {batch_num}...\n")
+            verdict = ask_gpt_same_or_different(batch)
+            print(f"🤖 GPT-4 says:\n{verdict}\n{'='*80}")
+
+            verdict_line = verdict.strip().splitlines()[0].strip().lower()
+            if "same" in verdict_line and not merged:
+                print("🛠️ Merging entries as continuation...")
+                df = merge_continuation_group(df, group)
+                merged = True
+                break
+            else:
+                print("✅ Keeping as separate entries.")
+
+    df = df.reset_index(drop=True)
+    print("\n✅ Done processing repeated articles with GPT-4.")
+    return df
+
+
 def extract_names(head: str) -> tuple[str, list[str]]:
     """
     This function extracts primary name (first name appears) and alternative names from a head (first few words with article names in dictionary like text).
@@ -341,7 +554,7 @@ def deduplicate_articles_by_token_prefix(df, token_limit=100, jaccard_threshold=
 # Load metadata dataframe (page-level info, but we only use first row for edition-level metadata)
 gdf = pd.read_json("gazatteers_dataframe", orient="index")
 gdf_1838_vol1 = gdf[gdf['edition'] == '1838, Volume 1'].copy()
-#gdf_1838_vol1 = g_df[g_df['edition'] == '1838, Volume 2'].copy()
+#gdf_1838_vol1 = g_df[g_df['edition'] == '1838_vol1, Volume 2'].copy()
 
 if gdf_1838_vol1.empty:
     raise ValueError("No entries found for edition '1838_vol1' in gazatteers_dataframe.")
@@ -391,7 +604,15 @@ df_articles["altoXML"] = df_articles["starts_at_page"].map(page_to_alto)
 df_articles["total_articles"]=total_articles
 
 
+
+# Normalise Name
+
+df_articles["name"] = df_articles["name"].apply(simple_norm)
+df_articles = fix_ocr_glitches_in_names(df_articles)
+
+
 # Final Clean:
+
 # Step 1: Deduplicate using earlier smart logic
 g_df_deduped = deduplicate_articles_1(df_articles)
 
@@ -404,31 +625,39 @@ g_df_clean = remove_nested_and_duplicate_texts_across_pages(g_df_deduped)
 g_df_cleaned = deduplicate_articles_by_token_prefix(g_df_clean)
 
 
-# Step 4: Apply to df_articles (or later on g_df_cleaned if you prefer)
+# Step 4 - FINAL GPT-4 Clean: Merge articles across different rows about the same place
 
-g_df_cleaned['reference_terms'] = g_df_cleaned['text'].apply(extra_see_references)
+g_df_fix = fix_repeated_articles_with_gpt4(g_df_cleaned.copy())
 
-g_df_cleaned['alter_names'] = g_df_cleaned['name'].apply(lambda x: extract_names(x)[1])
+g_df_fix.drop(columns=["normalized_name"], inplace=True)
+
+
+# Step 5: Apply to df_articles (or later on g_df_cleaned if you prefer)
+
+g_df_fix['reference_terms'] = g_df_fix['text'].apply(extra_see_references)
+
+g_df_fix['alter_names'] = g_df_fix['name'].apply(lambda x: extract_names(x)[1])
 
 
 
-num_with_references = g_df_cleaned['reference_terms'].notnull().sum()
-non_empty_references = g_df_cleaned['reference_terms'].apply(lambda x: isinstance(x, list) and len(x) > 0)
+
+num_with_references = g_df_fix['reference_terms'].notnull().sum()
+non_empty_references = g_df_fix['reference_terms'].apply(lambda x: isinstance(x, list) and len(x) > 0)
 num_with_references = non_empty_references.sum()
 print(f"✅ Number of articles with references: {num_with_references}")
 
 
-non_empty_alt_names = g_df_cleaned['alter_names'].apply(lambda x: isinstance(x, list) and len(x) > 0)
+non_empty_alt_names = g_df_fix['alter_names'].apply(lambda x: isinstance(x, list) and len(x) > 0)
 num_with_alter_names = non_empty_alt_names.sum()
 print(f"✅ Number of articles with alter_names: {num_with_alter_names}")
 
-total_articles = len(g_df_cleaned)
+total_articles = len(g_df_fix)
 percentage = (num_with_references / total_articles) * 100
 print(f"✅ {num_with_references} out of {total_articles} articles ({percentage:.2f}%) have references.")
 
 
-non_empty_refs = g_df_cleaned['reference_terms'].apply(lambda x: isinstance(x, list) and len(x) > 0)
-example_row = g_df_cleaned[non_empty_refs].iloc[0]
+non_empty_refs = g_df_fix['reference_terms'].apply(lambda x: isinstance(x, list) and len(x) > 0)
+example_row = g_df_fix[non_empty_refs].iloc[0]
 
 # Then print it nicely
 print("📌 Example Article with References:")
@@ -438,8 +667,8 @@ print(f"Reference Terms: {example_row['reference_terms']}")
 print(f"Text Snippet: {example_row['text'][:300]}...")
 
 
-non_empty_alts = g_df_cleaned['alter_names'].apply(lambda x: isinstance(x, list) and len(x) > 0)
-example_alt_row = g_df_cleaned[non_empty_alts].iloc[0]
+non_empty_alts = g_df_fix['alter_names'].apply(lambda x: isinstance(x, list) and len(x) > 0)
+example_alt_row = g_df_fix[non_empty_alts].iloc[0]
 
 # Print it nicely
 print("📌 Example Article with Alternative Names:")
@@ -451,10 +680,10 @@ print(f"Text Snippet: {example_alt_row['text'][:300]}...")
 
 # Show summary
 print(f"✅ DataFrame created with {len(df_articles)} rows.")
-print(g_df_cleaned.head())
+print(g_df_fix.head())
 
 # Save final dataframe to JSON
-g_df_cleaned.to_json(r'1838_vol1/gaz_dataframe_1838_vol1', orient="index")
+g_df_fix.to_json(r'1838_vol1/gaz_dataframe_1838_vol1', orient="index")
 print("✅ Created DataFrame with metadata attached. Saved as JSON.")
 
 
