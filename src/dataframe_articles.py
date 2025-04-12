@@ -10,7 +10,7 @@ import json
 from openai import OpenAI
 
 # Initialize OpenAI client
-client = OpenAI(api_key="xxxx")
+client = OpenAI(api_key="xxx")
 
 from difflib import SequenceMatcher
 
@@ -173,6 +173,134 @@ def normalize_name(name):
     name = re.sub(r"[^A-Z]", "", name)  # Remove digits/symbols
     name = name.replace("13", "B").replace("1", "I").replace("0", "O")
     return name.strip()
+
+
+def fix_repeated_articles_with_gpt4_proximity(df, max_index_gap=30, max_batch_size=5):
+
+    def normalize_name_2(name):
+        return re.sub(r"[^A-Z]", "", name.upper())
+
+    def similar(a, b):
+        return SequenceMatcher(None, a, b).ratio()
+
+    df = df.copy()
+    df["normalized_name"] = df["name"].apply(normalize_name_2)
+
+    grouped = df.groupby(['edition', 'volumeId', 'normalized_name'])
+    repeated = grouped.filter(lambda g: len(g) > 1)
+
+    if repeated.empty:
+        print("✅ No repeated names.")
+        return df
+
+    print(f"🔁 Found {repeated['normalized_name'].nunique()} repeated names.\n")
+
+    for (edition, volumeId, normalized_name), group in repeated.groupby(['edition', 'volumeId', 'normalized_name']):
+        indices = group.index.tolist()
+        index_diffs = np.diff(indices)
+
+        # Group by proximity (indices within max_index_gap)
+        chunks = []
+        chunk = [indices[0]]
+        for i in range(1, len(indices)):
+            if indices[i] - indices[i-1] <= max_index_gap:
+                chunk.append(indices[i])
+            else:
+                if len(chunk) > 1:
+                    chunks.append(chunk)
+                chunk = [indices[i]]
+        if len(chunk) > 1:
+            chunks.append(chunk)
+
+        for chunk_indices in chunks:
+            sub_group = df.loc[chunk_indices]
+            print(f"\n📍 Name: {normalized_name} | Edition: {edition} | Volume: {volumeId} | Entries: {len(sub_group)}")
+
+            for idx, row in sub_group.iterrows():
+                print(f"🔹 Index: {idx} | Pages: {row['starts_at_page']}–{row['ends_at_page']}")
+                print(f"Text Snippet: {row['text'][:300]}...\n{'-'*60}")
+
+            texts = sub_group["text"].tolist()
+            batches = [texts[i:i+max_batch_size] for i in range(0, len(texts), max_batch_size)]
+
+            merged = False
+            for batch_num, batch in enumerate(batches, 1):
+                print(f"🧠 Asking GPT-4 to classify batch {batch_num}...\n")
+                verdict = ask_gpt_same_or_different(batch)
+                print(f"🤖 GPT-4 says:\n{verdict}\n{'='*80}")
+
+                verdict_line = verdict.strip().splitlines()[0].strip().lower()
+                if "same" in verdict_line and not merged:
+                    print("🛠️ Merging entries as continuation...")
+                    df = merge_continuation_group(df, sub_group)
+                    merged = True
+                    break
+                else:
+                    print("✅ Keeping as separate entries.")
+
+    df = df.reset_index(drop=True)
+    print("\n✅ Done processing repeated articles with GPT-4 (with proximity constraint).")
+    return df
+
+
+#def fix_repeated_articles_with_gpt4_proximity(df, max_index_gap=30):
+#    from difflib import SequenceMatcher
+#    import numpy as np
+#
+#    def normalize_name_2(name):
+#        return re.sub(r"[^A-Z]", "", name.upper())
+#
+#    def similar(a, b):
+#        return SequenceMatcher(None, a, b).ratio()
+#
+#    df = df.copy()
+#    df["normalized_name"] = df["name"].apply(normalize_name_2)
+#
+#    grouped = df.groupby(['edition', 'volumeId', 'normalized_name'])
+#    repeated = grouped.filter(lambda g: len(g) > 1)
+#
+#    if repeated.empty:
+#        print("✅ No repeated names.")
+#        return df
+#
+#    print(f"🔁 Found {repeated['normalized_name'].nunique()} repeated names.\n")
+#
+#    for (edition, volumeId, normalized_name), group in repeated.groupby(['edition', 'volumeId', 'normalized_name']):
+#        indices = group.index.tolist()
+#        index_diffs = np.diff(indices)
+#
+#        # Group by proximity (indices within max_index_gap)
+#        chunks = []
+#        chunk = [indices[0]]
+#        for i in range(1, len(indices)):
+#            if indices[i] - indices[i-1] <= max_index_gap:
+#                chunk.append(indices[i])
+#            else:
+#                if len(chunk) > 1:
+#                    chunks.append(chunk)
+#                chunk = [indices[i]]
+#        if len(chunk) > 1:
+#            chunks.append(chunk)
+#
+#        for chunk_indices in chunks:
+#            sub_group = df.loc[chunk_indices]
+#            print(f"\n📍 Name: {normalized_name} | Edition: {edition} | Volume: {volumeId} | Entries: {len(sub_group)}")
+#
+#            for idx, row in sub_group.iterrows():
+#                print(f"🔹 Index: {idx} | Pages: {row['starts_at_page']}–{row['ends_at_page']}")
+#                print(f"Text Snippet: {row['text'][:300]}...\n{'-'*60}")
+#
+#            texts = sub_group["text"].tolist()
+#            verdict = ask_gpt_same_or_different(texts)
+#            print(f"🤖 GPT-4 says:\n{verdict}\n{'='*80}")
+#
+#            if "same" in verdict.lower():
+#                print("🛠️ Merging entries as continuation...")
+#                df = merge_continuation_group(df, sub_group)
+#
+#    df = df.reset_index(drop=True)
+#    print("\n✅ Done processing repeated articles with GPT-4 (with proximity constraint).")
+#    return df
 
 
 def fix_repeated_articles_with_gpt4(df):
@@ -553,18 +681,18 @@ def deduplicate_articles_by_token_prefix(df, token_limit=100, jaccard_threshold=
 
 # Load metadata dataframe (page-level info, but we only use first row for edition-level metadata)
 gdf = pd.read_json("gazatteers_dataframe", orient="index")
-gdf_1838_vol1 = gdf[gdf['edition'] == '1838, Volume 1'].copy()
-#gdf_1838_vol1 = g_df[g_df['edition'] == '1838_vol1, Volume 2'].copy()
+#gdf_1838 = gdf[gdf['edition'] == '1838, Volume 2'].copy()
+gdf_1825 = gdf[gdf['edition'] == '1825?'].copy()
 
-if gdf_1838_vol1.empty:
-    raise ValueError("No entries found for edition '1838_vol1' in gazatteers_dataframe.")
+if gdf_1825.empty:
+    raise ValueError("No entries found for edition '1825' in gazatteers_dataframe.")
 
 # Take metadata from the first row (except 'text')
-meta_row = gdf_1838_vol1.iloc[0].drop(["text", "pageNum"], errors="ignore").to_dict()
+meta_row = gdf_1825.iloc[0].drop(["text", "pageNum"], errors="ignore").to_dict()
 print(meta_row)
 
 # Load combined article entries (article-level info)
-json_path = "1838_vol1/gazetteer_articles_merged_1838_vol1.json"
+json_path = "1825/gazetteer_articles_merged_1825.json"
 with open(json_path, "r", encoding="utf-8") as f:
     article_data = json.load(f)
 
@@ -596,7 +724,7 @@ df_articles = df_articles.rename(columns={
 
 
 # Create a mapping from pageNum to altoXML file path
-page_to_alto = gdf_1838_vol1.set_index("pageNum")["altoXML"].to_dict()
+page_to_alto = gdf_1825.set_index("pageNum")["altoXML"].to_dict()
 
 # Map starts_at_page to altoXML (this will be the file where the article starts)
 df_articles["altoXML"] = df_articles["starts_at_page"].map(page_to_alto)
@@ -627,7 +755,7 @@ g_df_cleaned = deduplicate_articles_by_token_prefix(g_df_clean)
 
 # Step 4 - FINAL GPT-4 Clean: Merge articles across different rows about the same place
 
-g_df_fix = fix_repeated_articles_with_gpt4(g_df_cleaned.copy())
+g_df_fix = fix_repeated_articles_with_gpt4_proximity(g_df_cleaned.copy())
 
 g_df_fix.drop(columns=["normalized_name"], inplace=True)
 
@@ -683,7 +811,7 @@ print(f"✅ DataFrame created with {len(df_articles)} rows.")
 print(g_df_fix.head())
 
 # Save final dataframe to JSON
-g_df_fix.to_json(r'1838_vol1/gaz_dataframe_1838_vol1', orient="index")
+g_df_fix.to_json(r'1825/gaz_dataframe_1825', orient="index")
 print("✅ Created DataFrame with metadata attached. Saved as JSON.")
 
 
