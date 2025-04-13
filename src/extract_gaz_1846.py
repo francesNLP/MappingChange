@@ -9,34 +9,43 @@ from openai import OpenAI
 client = OpenAI(api_key="")
 
 g_df= pd.read_json('files/gazatteers_dataframe', orient="index")
-g_df_1842_vol2 = g_df[g_df['edition'] == '1842, Volume 2'].copy()
-g_df_1842_pages = g_df_1842_vol2[
-    (g_df_1842_vol2['pageNum'] >= 9) & (g_df_1842_vol2['pageNum'] <= 844)
+g_df_1846_vol1 = g_df[g_df['edition'] == '1846, Volume 1'].copy()
+g_df_1846_pages = g_df_1846_vol1[
+    (g_df_1846_vol1['pageNum'] >= 15) & (g_df_1846_vol1['pageNum'] <= 606)
 ].copy()
 
 
 def is_index_entry(line: str) -> bool:
     text = line.strip()
+
     if not text:
         return False
 
-    # Detect purely numeric page markers or Roman numerals
-    if text.isdigit() or re.fullmatch(r'[IVXLCDM]+', text):
+    # Case 1: Fully uppercase 4-letter index entry (e.g., "EDIN", "ABER")
+    if re.fullmatch(r'[A-Z]{4}', text):
         return True
 
-    # Detect patterns like ABB ABE (3-letter uppercase blocks)
-    if re.fullmatch(r'([A-Z]{3}\s+){1,2}[A-Z]{3}', text):
+    # Case 2: Repeated 4-letter index entries (e.g., "EDIN EDIN")
+    if re.fullmatch(r'([A-Z]{4}) \1', text):
         return True
 
-    # Ignore full uppercase headers followed by periods like "ABERDEEN."
-    if re.fullmatch(r'[A-Z]{2,}\.', text):
+    # Case 3: Sequential index entries (e.g., "EDIN EDIR")
+    match = re.fullmatch(r'([A-Z]{4}) ([A-Z]{4})', text)
+    if match:
+        first, second = match.groups()
+        if first[:3] == second[:3] and ord(second[3]) == ord(first[3]) + 1:
+            return True
+
+    # Ignore uppercase header with period like "ABERDEEN."
+    if re.fullmatch(r'[A-Z]{5,}\.', text):
         return False
 
-    # Page number before/after headers like "6 ABERDEEN." or "ABERDEEN. 6"
-    if re.fullmatch(r'\d+\s+[A-Z]{2,}\.', text) or re.fullmatch(r'[A-Z]{2,}\.\s+\d+', text):
+    # Case: page + uppercase (e.g., "6 EDIN." or "EDIN. 6")
+    if re.fullmatch(r'\d+\s+[A-Z]{4,}\.', text) or re.fullmatch(r'[A-Z]{4,}\.\s+\d+', text):
         return False
 
     return False
+
 
 
 
@@ -82,7 +91,6 @@ def format_article_name(name):
     return name
 
 def validate_json_format(response_text):
-
     try:
         # Try to locate the beginning of the "articles" list
         start_match = re.search(r'\{\s*"articles"\s*:\s*\[', response_text)
@@ -105,8 +113,6 @@ start_index:], re.DOTALL)
             raise ValueError("No valid article blocks found.")
 
         cleaned_json_str = '{ "articles": [\n' + ",\n".join(valid_articles) + '\n] }'
-
-
 
         return json.loads(cleaned_json_str)
 
@@ -133,31 +139,32 @@ def split_marked_text_into_chunks_with_overlap(text, pages_per_chunk=3, overlap=
 
 def process_marked_chunk(chunk, chunk_index, total_chunks):
 
+    print("The chunk is %s --- out of %s" %(chunk, chunk_index))
     prompt = f"""
-    You are given a chunk of text from historical Gazetteers of Scotland.
+You are given a chunk of text from historical Gazetteers of Scotland.
 Each page is clearly marked using the following format:
 
 ### PAGE_START:<page_num> ###
 ... page text ...
 ### PAGE_END:<page_num> ###
 
-Your job is to extract the names of locations and their full descriptions.
-Articles might span multiple pages, so ensure that:
-- Ignore the sentence GAZETTEER OF SCOTLAND.
+Your job is to extract all the **names of places** and their **full descriptions** (articles) within this text. Please follow these detailed rules:
+
+- Ignore the sentence TOPOGRAPHICAL DICTIONARY OF SCOTLAND.
 - Ignore pages that are empty, or contain one or two lines, or contain mostly unreadable characters (e.g. '* e *» « tn 1% •ô # si p| '* -Sf S Ki).
-- An article usually begins with a line where the **place name is in UPPERCASE**, followed by a **comma** or **dot**, or optionally includes 'The' (e.g. `The ABBEY,`, `ABBEY,`, `ABBEY ST. BATHAN'S,`, `ABBEY PARISH.`).
-- For each article extracted we **absolutly need** their **name**, **text**, **page_start** and **page_finish**. Identify the **first and last page number** where the article appears using the markers.
-- Some articles may be **short references** (e.g., `ABBEY PARISH. See Paisley.`). Include these as well.
-- An article may **continue across pages**, sometimes starting with a page header (e.g., `ABBOTSFORD.`) followed by lowercase continuation text (e.g., "`ing once resided...`").
-- Multiple articles can appear on a single page—one after another. Do not stop after extracting the first one.
-- If several article names appear in UPPERCASE (e.g., "ABBOTSHALL, ... ABB’S HEAD (St), ... ABDIE, ..."), extract each of them as a **separate** article, even if they are not at the start of the page.
+- A proper article **usually** begins with a line that starts with an UPPERCASE place name, often followed by a comma, period, or parenthesis (e.g., `ABBOTSHALL,`, `ABBEY PARISH.`, `ABB'S HEAD (St),`, `ABBOTSFORD`).
+- **Avoid indexes**: Any line that is just a 4-letter uppercase word (like `EDIN`, `ABER`) and has **no comma** should be ignored. These are index entries and **not full articles**.
+- Articles might be short references (e.g., `ABBEY PARISH. See Paisley.`) or full paragraphs.
+- If a line starts with an UPPERCASE word or phrase that is not a continuation and is followed by punctuation (`,`, `.`, or `(`), treat it as the start of a new article.
+- Several articles may appear one after another on the same page. Detect each of them.
 - If a new page starts with lowercase text that clearly continues the prior sentence, label it as a `"name": "CONTINUATION_ARTICLE"` and extract it as part of the previous article (to be merged later).
-- Articles can begin in the middle of a page, even if the previous article was still continuing from earlier pages. For example, after the continuation of an article ends, a new one might start like: "ABBOTSHALL, a parish of...". There may also be more articles following it on the same page—make sure to extract all of them
+- If you see multiple place names in uppercase followed by commas on a single page, treat each as a **distinct article**.
+- Articles may appear consecutively on the same page (e.g.`ABBOTSHALL, a parish of Fifeshire...`, `ABB'S HEAD (St), a bold promontory...`, `ABDIE, a parish in the north of Fife...`). These should be split into separate articles, even if no page break occurs.
 - Preserve full original text (do not summarize or modify).
-- **Avoid indexes**: Any line that is just a 3-letter uppercase word (like `ABB`, `ABE`)  and has **no comma** should be ignored. These are index entries and **not full articles**.
-- Preserve original capitalization, punctuation, and formatting as much as possible.
-- **Maintain JSON format**.
-- it’s okay if an article is partial — just extract it.
+- For each Article detected, extract:
+  - `"name"`: original name (or `"CONTINUATION_ARTICLE"` if continuing),
+  - `"text"`: full unedited text of the article,
+  - `"page_start"` and `"page_finish"` using the `PAGE_START` and `PAGE_END` markers.
 
 Format:
 ```json
@@ -165,21 +172,20 @@ Format:
   "articles": [
     {{
       "name": "PLACE NAME",
-      "text": "Full article text here...",
-      "page_start": 80,
-      "page_finish": 80
+      "text": "Full article text...",
+      "page_start": 43,
+      "page_finish": 44
     }},
     {{
       "name": "CONTINUATION_ARTICLE",
-      "text": "Continued text here...",
-      "page_start": 81,
-      "page_finish": 81
+      "text": "continued text here...",
+      "page_start": 45,
+      "page_finish": 45
     }}
   ]
 }}
 
- DO NOT summarize or paraphrase. Just extract what you see. Do not make up articles.
-
+Avoid summaries. Do not invent pages. Just extract what you see.
 
 CHUNK {chunk_index + 1} of {total_chunks}
 {chunk}
@@ -197,49 +203,6 @@ CHUNK {chunk_index + 1} of {total_chunks}
     except Exception as e:
         print(f"Error processing chunk {chunk_index + 1}: {e}")
         return None
-
-
-
-def prepare_marked_text(df):
-
-    # Define the header patterns (compiled for efficiency)
-    header_patterns = [
-        r'GAZETTEER OF SCOTLAND\b',
-        r'([A-Z]{3}\s+){1,2}[A-Z]{3}\b',             # ABB ABB, ABE ABE
-        r'[A-Z]{3}\s+\d+\s+[A-Z]{2,3}\b',             # ETT 509 EU
-        r'\d+\s+[A-Z]+\.\b',                          # 6 ABERDEEN.
-        r'[A-Z]+\.\s*\d*\b',                          # ABERDEEN. or ABERDEEN. 6
-        r'[A-Z]{2,}\s+[A-Z]{2,}\b',                   # ABB ABBEY
-        r'[A-Z\s]{5,}'                                # ABE ABE ABE ABE
-    ]
-    header_regex = re.compile(r'^\s*(?:' + '|'.join(header_patterns) + r')\s*')
-
-    full_text = ""
-
-    for _, row in df.iterrows():
-        page_num = row['pageNum']
-        text = clean_ocr_text(row['text'])
-
-        # Split into lines
-        lines = text.strip().split('\n')
-
-        if lines:
-            # Clean header portion from the first line only
-            original_line = lines[0]
-            #print("Original line %s" %(original_line))
-            cleaned_line = header_regex.sub('', original_line).strip()
-            lines[0] = cleaned_line
-            #print("Cleaned line %s" %(cleaned_line))
-
-        # Rejoin the text
-        cleaned_text = "\n".join(lines).strip()
-
-        # Add to final text
-        full_text += f"\n### PAGE_START:{page_num} ###\n{cleaned_text}\n### PAGE_END:{page_num} ###\n"
-
-        #print("Full text %s ---- " %(full_text))
-
-    return full_text
 
 
 def merge_articles_with_pages(article_entries):
@@ -275,6 +238,53 @@ def merge_articles_with_pages(article_entries):
     return merged
 
 
+
+def prepare_marked_text(df):
+
+    # Define the header patterns (compiled for efficiency)
+    header_patterns = [
+        r'GAZETTEER OF SCOTLAND\b',
+        r'TOPOGRAPHICAL DICTIONARY OF SCOTLAND\b',
+        r'([A-Z]{3,4}\s+){1,2}[A-Z]{3,4}',            # ABB ABB, EDIN EDIN
+        r'[A-Z]{4}\s+\d+\s+[A-Z]{2,4}',               # EDIN 509 EU
+        r'\d+\s+[A-Z]{4,}\.\b',                       # 6 ABERDEEN.
+        r'[A-Z]{4,}\.\s*\d*\b',                       # ABERDEEN. or ABERDEEN. 6
+        r'[A-Z]{4,}\s+[A-Z]{4,}',                     # EDIN EDINBURGH
+        r'^[A-Z\s]{5,}$'                              # All uppercase line
+    ]
+
+    header_regex = re.compile(r'^\s*(?:' + '|'.join(header_patterns) + r')\s*')
+
+    full_text = ""
+
+    for _, row in df.iterrows():
+        page_num = row['pageNum']
+        text = clean_ocr_text(row['text'])
+
+        # Split into lines
+        lines = text.strip().split('\n')
+
+        if lines:
+            # Clean header portion from the first line only
+            original_line = lines[0]
+            #print("Original line %s" %(original_line))
+            cleaned_line = header_regex.sub('', original_line).strip()
+            lines[0] = cleaned_line
+            #print("Cleaned line %s" %(cleaned_line))
+
+        # Rejoin the text
+        cleaned_text = "\n".join(lines).strip()
+
+        # Add to final text
+        full_text += f"\n### PAGE_START:{page_num} ###\n{cleaned_text}\n### PAGE_END:{page_num} ###\n"
+
+        #print("Full text %s ---- " %(full_text))
+
+    return full_text
+
+
+
+
 def extract_articles_from_marked_text(marked_text, calculate_raw_entries=1, save_raw_entries_to=None, read_raw_entries_from=None):
     if calculate_raw_entries:
         chunks = split_marked_text_into_chunks_with_overlap(marked_text)
@@ -302,32 +312,33 @@ def extract_articles_from_marked_text(marked_text, calculate_raw_entries=1, save
         "articles": merged_articles
     }
 
+
 # Set the number of pages per chunk
 pages_per_chunk = 10
-num_pages = len(g_df_1842_pages)
+num_pages = len(g_df_1846_pages)
 print(f"Total pages in DataFrame: {num_pages}")
 
 for start in range(0, num_pages, pages_per_chunk):
     end = min(start + pages_per_chunk, num_pages)
     print(f"\nProcessing pages {start} to {end - 1}")
 
-    g_df_1842_subset = g_df_1842_pages.iloc[start:end]
-    marked_text = prepare_marked_text(g_df_1842_subset)
-    raw_json_path = f"files/1842_vol2/main/raw_article_entries_{start:04d}_{end-1:04d}.json"
+    g_df_1846_subset = g_df_1846_pages.iloc[start:end]
+    marked_text = prepare_marked_text(g_df_1846_subset)
+    raw_json_path = f"files/1846_vol1/main/raw_article_entries_{start:04d}_{end-1:04d}.json"
     result = extract_articles_from_marked_text(
         marked_text,
         calculate_raw_entries=1,
         save_raw_entries_to=raw_json_path
     )
 
-    raw_filename = f"files/1842_vol2/main/raw_extracted_articles_{start:04d}_{end-1:04d}.json"
+    raw_filename = f"files/1846_vol1/main/raw_extracted_articles_{start:04d}_{end-1:04d}.json"
     with open(raw_filename, "w", encoding="utf-8") as f:
         json.dump(result, f, indent=4, ensure_ascii=False)
     print(f"Saved RAW results to {raw_filename} with {result['total_articles']} articles.")
 
     cleaned_data = merge_index_entries(result)
 
-    clean_filename = f"files/1842_vol2/main/cleaned_articles_{start:04d}_{end-1:04d}.json"
+    clean_filename = f"files/1846_vol1/main/cleaned_articles_{start:04d}_{end-1:04d}.json"
     with open(clean_filename, "w", encoding="utf-8") as f:
         json.dump(cleaned_data, f, indent=4, ensure_ascii=False)
     print(f"Saved CLEANED results to {clean_filename} with {cleaned_data['total_articles']} articles.")
