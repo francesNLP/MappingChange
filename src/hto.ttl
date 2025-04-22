@@ -1,0 +1,1315 @@
+@prefix : <https://w3id.org/eb#> .
+@prefix dc: <http://purl.org/dc/elements/1.1/> .
+@prefix hto: <https://w3id.org/hto#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix vann: <http://purl.org/vocab/vann/> .
+@base <https://w3id.org/eb#> .
+
+<https://w3id.org/hto#> rdf:type owl:Ontology ;
+                         owl:versionIRI <https://w3id.org/hto/1.0.0> ;
+                         dc:contributor "Rosa Filgueira" ;
+                         dc:creator "Lilin Yu" ;
+                         dc:description "An ontology designed to represent heritage textual data"@en ;
+                         dc:license <https://opensource.org/licenses/MIT> ;
+                         dc:title "Heritage Text Ontology" ;
+                         vann:preferredNamespacePrefix "hto"@en ;
+                         vann:preferredNamespaceUri <https://w3id.org/hto> ;
+                         owl:backwardCompatibleWith <https://w3id.org/hto/0.0.2> ;
+                         owl:priorVersion <https://w3id.org/hto/0.0.2> ;
+                         owl:versionInfo "1.0.0" .
+
+#################################################################
+#    Annotation properties
+#################################################################
+
+###  http://purl.org/dc/elements/1.1/contributor
+dc:contributor rdf:type owl:AnnotationProperty .
+
+
+###  http://purl.org/dc/elements/1.1/creator
+dc:creator rdf:type owl:AnnotationProperty .
+
+
+###  http://purl.org/dc/elements/1.1/description
+dc:description rdf:type owl:AnnotationProperty .
+
+
+###  http://purl.org/dc/elements/1.1/license
+dc:license rdf:type owl:AnnotationProperty .
+
+
+###  http://purl.org/dc/elements/1.1/title
+dc:title rdf:type owl:AnnotationProperty .
+
+
+###  http://purl.org/vocab/vann/example
+vann:example rdf:type owl:AnnotationProperty .
+
+
+###  http://purl.org/vocab/vann/preferredNamespacePrefix
+vann:preferredNamespacePrefix rdf:type owl:AnnotationProperty .
+
+
+###  http://purl.org/vocab/vann/preferredNamespaceUri
+vann:preferredNamespaceUri rdf:type owl:AnnotationProperty .
+
+
+#################################################################
+#    Datatypes
+#################################################################
+
+###  http://www.opengis.net/ont/geosparql#geoJSONLiteral
+<http://www.opengis.net/ont/geosparql#geoJSONLiteral> rdf:type rdfs:Datatype ;
+                                                      vann:example """\"\"\"
+{\"type\": \"Point\", \"coordinates\": [-83.38,33.95]}
+\"\"\"^^<http://www.opengis.net/ont/geosparql#geoJSONLiteral>""" ;
+                                                      rdfs:comment "A GeoJSON serialization of a Geometry object."@en .
+
+
+###  http://www.w3.org/2001/XMLSchema#date
+xsd:date rdf:type rdfs:Datatype .
+
+
+#################################################################
+#    Object Properties
+#################################################################
+
+###  http://schema.org/editor
+<http://schema.org/editor> rdf:type owl:ObjectProperty ;
+                           rdfs:subPropertyOf owl:topObjectProperty .
+
+
+###  http://schema.org/publisher
+<http://schema.org/publisher> rdf:type owl:ObjectProperty .
+
+
+###  http://www.cidoc-crm.org/cidoc-crm/P2_has_type
+<http://www.cidoc-crm.org/cidoc-crm/P2_has_type> rdf:type owl:ObjectProperty ;
+                                                 rdfs:range hto:Type ;
+                                                 rdfs:comment """This property allows sub-typing of CIDOC CRM entities –a form of specialisation – through the use of a terminological hierarchy, or thesaurus.
+
+The CIDOC CRM is intended to focus on the high-level entities and relationships needed to describe data structures. Consequently, it does not specialise entities any further than is required for this immediate purpose. However, entities in the isA hierarchy of the CIDOC CRM may by specialised into any number of sub-entities, which can be defined in the E55 Type hierarchy. E41 Appellation, for example, may be specialised into “e-mail address”, “telephone number”, “post office box”, “URL”, etc., none of which figures explicitly in the CIDOC CRM class hierarchy. A comprehensive explanation about refining CIDOC CRM concepts by E55 Type is given in the section “About Types” in the section on “Specific Modelling Constructs” of this document.
+
+This property is a shortcut for the path from E1 CRM Entity through P41i was classified by, E17 Type Assignment, P42 assigned to E55 Type. (cidoc:P2_has_type)"""@en .
+
+
+###  http://www.cidoc-crm.org/cidoc-crm/P89_falls_within
+<http://www.cidoc-crm.org/cidoc-crm/P89_falls_within> rdf:type owl:ObjectProperty ;
+                                                      owl:inverseOf <http://www.cidoc-crm.org/cidoc-crm/P89i_contains> ;
+                                                      rdf:type owl:TransitiveProperty ;
+                                                      rdfs:domain <http://www.cidoc-crm.org/cidoc-crm/E53_Place> ;
+                                                      rdfs:range <http://www.cidoc-crm.org/cidoc-crm/E53_Place> ;
+                                                      rdfs:comment """This property identifies an instance of E53 Place that falls wholly within the extent of another instance of E53 Place.
+
+It addresses spatial containment only and does not imply any relationship between things or phenomena occupying these places.
+
+This property is transitive and reflexive. (cidoc:P89_falls_within)"""@en .
+
+
+###  http://www.cidoc-crm.org/cidoc-crm/P89i_contains
+<http://www.cidoc-crm.org/cidoc-crm/P89i_contains> rdf:type owl:ObjectProperty .
+
+
+###  http://www.opengis.net/ont/geosparql#hasCentroid
+<http://www.opengis.net/ont/geosparql#hasCentroid> rdf:type owl:ObjectProperty ;
+                                                   rdfs:subPropertyOf <http://www.opengis.net/ont/geosparql#hasGeometry> .
+
+
+###  http://www.opengis.net/ont/geosparql#hasGeometry
+<http://www.opengis.net/ont/geosparql#hasGeometry> rdf:type owl:ObjectProperty ;
+                                                   rdfs:domain <http://www.opengis.net/ont/geosparql#Feature> ;
+                                                   rdfs:range <http://www.opengis.net/ont/geosparql#Geometry> ;
+                                                   rdfs:comment "This property is used to link a Feature with a Geometry that represents its spatial extent. A given Feature may have many associated geometries. (geo:hasGeometry)"@en .
+
+
+###  http://www.w3.org/ns/oa#hasBody
+<http://www.w3.org/ns/oa#hasBody> rdf:type owl:ObjectProperty ;
+                                  rdfs:domain <http://www.w3.org/ns/oa#Annotation> ;
+                                  rdfs:comment "The object of the relationship is a resource that is a body of the Annotation."@en .
+
+
+###  http://www.w3.org/ns/oa#hasSelector
+<http://www.w3.org/ns/oa#hasSelector> rdf:type owl:ObjectProperty ;
+                                      rdfs:domain <http://www.w3.org/ns/oa#ResourceSelection> ;
+                                      rdfs:range <http://www.w3.org/ns/oa#Selector> ;
+                                      rdfs:comment "The object of the relationship is a Selector that describes the segment or region of interest within the source resource. (oa:hasSelector)"@en .
+
+
+###  http://www.w3.org/ns/oa#hasSource
+<http://www.w3.org/ns/oa#hasSource> rdf:type owl:ObjectProperty ;
+                                    rdfs:domain <http://www.w3.org/ns/oa#ResourceSelection> ;
+                                    rdfs:comment "The resource that the ResourceSelection, or its subclass SpecificResource, is refined from, or more specific than. (oa:hasSource)"@en .
+
+
+###  http://www.w3.org/ns/oa#hasTarget
+<http://www.w3.org/ns/oa#hasTarget> rdf:type owl:ObjectProperty ;
+                                    rdfs:domain <http://www.w3.org/ns/oa#Annotation> ;
+                                    rdfs:comment "The relationship between an Annotation and its Target."@en .
+
+
+###  http://www.w3.org/ns/prov#atLocation
+prov:atLocation rdf:type owl:ObjectProperty .
+
+
+###  http://www.w3.org/ns/prov#hadMember
+prov:hadMember rdf:type owl:ObjectProperty ;
+               rdfs:subPropertyOf prov:wasInfluencedBy .
+
+
+###  http://www.w3.org/ns/prov#wasAssociatedWith
+prov:wasAssociatedWith rdf:type owl:ObjectProperty ;
+                       rdfs:subPropertyOf prov:wasInfluencedBy .
+
+
+###  http://www.w3.org/ns/prov#wasAttributedTo
+prov:wasAttributedTo rdf:type owl:ObjectProperty ;
+                     rdfs:subPropertyOf prov:wasInfluencedBy ;
+                     rdfs:comment "Attribution is the ascribing of an entity to an agent." .
+
+
+###  http://www.w3.org/ns/prov#wasDerivedFrom
+prov:wasDerivedFrom rdf:type owl:ObjectProperty ;
+                    rdfs:subPropertyOf prov:wasInfluencedBy ;
+                    rdfs:comment "A derivation is a transformation of an entity into another, an update of an entity resulting in a new one, or the construction of a new entity based on a pre-existing entity." .
+
+
+###  http://www.w3.org/ns/prov#wasInfluencedBy
+prov:wasInfluencedBy rdf:type owl:ObjectProperty .
+
+
+###  http://www.w3.org/ns/prov#wasRevisionOf
+prov:wasRevisionOf rdf:type owl:ObjectProperty ;
+                   rdfs:subPropertyOf prov:wasDerivedFrom .
+
+
+###  https://schema.org/about
+<https://schema.org/about> rdf:type owl:ObjectProperty ;
+                           owl:inverseOf <https://schema.org/subjectOf> .
+
+
+###  https://schema.org/mentions
+<https://schema.org/mentions> rdf:type owl:ObjectProperty ;
+                              rdfs:domain <https://schema.org/CreativeWork> ;
+                              rdfs:comment "Indicates that the CreativeWork contains a reference to, but is not necessarily about a concept. (schema:mentions)"@en .
+
+
+###  https://schema.org/subjectOf
+<https://schema.org/subjectOf> rdf:type owl:ObjectProperty .
+
+
+###  https://w3id.org/hto#editor
+hto:editor rdf:type owl:ObjectProperty ;
+           rdfs:subPropertyOf <http://schema.org/editor> ;
+           rdfs:domain hto:Work ;
+           rdfs:range hto:Person ;
+           rdfs:comment "The editor of a work"@en ;
+           rdfs:label "editor"@en .
+
+
+###  https://w3id.org/hto#endsAtPage
+hto:endsAtPage rdf:type owl:ObjectProperty ;
+               rdfs:subPropertyOf hto:wasRecordedIn ;
+               rdf:type owl:FunctionalProperty ;
+               rdfs:domain hto:InternalRecord ;
+               rdfs:range hto:Page ;
+               rdfs:comment "is the page in which the description of a concept record finishes."@en ;
+               rdfs:label "ends at page"@en .
+
+
+###  https://w3id.org/hto#hadConceptRecord
+hto:hadConceptRecord rdf:type owl:ObjectProperty ;
+                     rdfs:subPropertyOf owl:topObjectProperty ;
+                     owl:inverseOf hto:wasConceptRecordOf ;
+                     rdfs:domain hto:Concept ;
+                     rdfs:range hto:ConceptRecord ;
+                     rdfs:label "had concept record"@en .
+
+
+###  https://w3id.org/hto#hadMember
+hto:hadMember rdf:type owl:ObjectProperty ;
+              rdfs:subPropertyOf prov:hadMember ;
+              owl:inverseOf hto:wasMemberOf ;
+              rdf:type owl:TransitiveProperty ;
+              rdfs:domain prov:Collection ;
+              rdfs:range hto:EntityWithProvenance .
+
+
+###  https://w3id.org/hto#hadRecord
+hto:hadRecord rdf:type owl:ObjectProperty ;
+              owl:inverseOf hto:wasRecordedIn .
+
+
+###  https://w3id.org/hto#hadSupplement
+hto:hadSupplement rdf:type owl:ObjectProperty ;
+                  rdfs:subPropertyOf owl:topObjectProperty ;
+                  owl:inverseOf hto:wasSupplementOf ;
+                  rdf:type owl:AsymmetricProperty ;
+                  rdfs:domain hto:Work ;
+                  rdfs:range hto:Work ;
+                  rdfs:comment "A work had a another work as supplement"@en ;
+                  rdfs:label "had supplement"@en .
+
+
+###  https://w3id.org/hto#hasAnnotation
+hto:hasAnnotation rdf:type owl:ObjectProperty ;
+                  rdfs:range <http://www.w3.org/ns/oa#Annotation> ;
+                  rdfs:comment "A resource can have annotations."@en .
+
+
+###  https://w3id.org/hto#hasBroaderSubject
+hto:hasBroaderSubject rdf:type owl:ObjectProperty ;
+                      owl:inverseOf hto:hasNarrowerSubject ;
+                      rdfs:label "has broader subject"@en .
+
+
+###  https://w3id.org/hto#hasDescription
+hto:hasDescription rdf:type owl:ObjectProperty ;
+                   owl:inverseOf hto:isDescriptionOf ;
+                   rdfs:domain hto:EntityWithProvenance ;
+                   rdfs:range hto:Description .
+
+
+###  https://w3id.org/hto#hasLocationType
+hto:hasLocationType rdf:type owl:ObjectProperty ;
+                    rdfs:subPropertyOf <http://www.cidoc-crm.org/cidoc-crm/P2_has_type> ;
+                    rdfs:domain hto:Location ;
+                    rdfs:range hto:LocationType .
+
+
+###  https://w3id.org/hto#hasNarrowerSubject
+hto:hasNarrowerSubject rdf:type owl:ObjectProperty ,
+                                owl:TransitiveProperty ;
+                       rdfs:domain hto:Subject ;
+                       rdfs:range hto:Subject ;
+                       rdfs:comment "A property linking a subject to its more specific sub-topics."@en ;
+                       rdfs:label "has narrower subject"@en .
+
+
+###  https://w3id.org/hto#hasOriginalDescription
+hto:hasOriginalDescription rdf:type owl:ObjectProperty ;
+                           rdfs:subPropertyOf hto:hasDescription ;
+                           owl:inverseOf hto:isOriginalDescriptionOf ;
+                           rdfs:domain [ rdf:type owl:Class ;
+                                         owl:unionOf ( hto:InternalRecord
+                                                       hto:Work
+                                                     )
+                                       ] ;
+                           rdfs:range hto:OriginalDescription .
+
+
+###  https://w3id.org/hto#hasSummary
+hto:hasSummary rdf:type owl:ObjectProperty ;
+               rdfs:subPropertyOf hto:hasDescription ;
+               owl:inverseOf hto:isSummaryOf ;
+               rdfs:domain hto:OriginalDescription ;
+               rdfs:range hto:Summary ;
+               rdfs:comment "A orginal descripton has a summary, to summarise original text content"@en ;
+               rdfs:label "has summary"@en .
+
+
+###  https://w3id.org/hto#hasTextQuality
+hto:hasTextQuality rdf:type owl:ObjectProperty ;
+                   rdfs:subPropertyOf <http://www.cidoc-crm.org/cidoc-crm/P2_has_type> ;
+                   rdfs:domain hto:Description ;
+                   rdfs:range hto:TextQuality ;
+                   rdfs:comment "a description has a certain lelvel of text quality. The difference in text quality can be the result of different digitalisation technologies when digitalisation process is involved to get the description."@en ;
+                   rdfs:label "has text quality"@en .
+
+
+###  https://w3id.org/hto#isAbout
+hto:isAbout rdf:type owl:ObjectProperty ;
+            rdfs:subPropertyOf <https://schema.org/about> ;
+            owl:inverseOf hto:isSubjectOf ;
+            rdfs:domain hto:Event ,
+                        hto:Work ;
+            rdfs:range hto:Subject ;
+            rdfs:comment "A work or event is about some subject."@en ;
+            rdfs:label "is about"@en .
+
+
+###  https://w3id.org/hto#isDescriptionOf
+hto:isDescriptionOf rdf:type owl:ObjectProperty .
+
+
+###  https://w3id.org/hto#isOriginalDescriptionOf
+hto:isOriginalDescriptionOf rdf:type owl:ObjectProperty ;
+                            rdfs:subPropertyOf hto:isDescriptionOf .
+
+
+###  https://w3id.org/hto#isSubjectOf
+hto:isSubjectOf rdf:type owl:ObjectProperty ;
+                rdfs:subPropertyOf <https://schema.org/subjectOf> ;
+                rdfs:label "is subject of"@en .
+
+
+###  https://w3id.org/hto#isSummaryOf
+hto:isSummaryOf rdf:type owl:ObjectProperty ;
+                rdfs:subPropertyOf hto:isDescriptionOf .
+
+
+###  https://w3id.org/hto#isTextQualityHigherThan
+hto:isTextQualityHigherThan rdf:type owl:ObjectProperty ;
+                            rdfs:subPropertyOf owl:topObjectProperty ;
+                            owl:inverseOf hto:isTextQualityLowerThan ;
+                            rdf:type owl:TransitiveProperty ;
+                            rdfs:domain hto:TextQuality ;
+                            rdfs:range hto:TextQuality .
+
+
+###  https://w3id.org/hto#isTextQualityLowerThan
+hto:isTextQualityLowerThan rdf:type owl:ObjectProperty ;
+                           rdfs:subPropertyOf owl:topObjectProperty ;
+                           rdf:type owl:TransitiveProperty .
+
+
+###  https://w3id.org/hto#permanentURL
+hto:permanentURL rdf:type owl:ObjectProperty ;
+                 rdfs:subPropertyOf prov:atLocation ;
+                 rdfs:domain hto:EntityWithProvenance ;
+                 rdfs:range hto:Location ;
+                 rdfs:comment "an permanent URL of an entity"@en ;
+                 rdfs:label "permanent URL"@en .
+
+
+###  https://w3id.org/hto#printedAt
+hto:printedAt rdf:type owl:ObjectProperty ;
+              rdfs:subPropertyOf prov:atLocation ;
+              rdfs:domain hto:Work ;
+              rdfs:range hto:Location ;
+              rdfs:comment "physical location where a work was printed"@en ;
+              rdfs:label "printed at"@en .
+
+
+###  https://w3id.org/hto#publisher
+hto:publisher rdf:type owl:ObjectProperty ;
+              rdfs:subPropertyOf <http://schema.org/publisher> ;
+              rdfs:domain hto:Work ;
+              rdfs:range [ rdf:type owl:Class ;
+                           owl:unionOf ( hto:Organization
+                                         hto:Person
+                                       )
+                         ] ;
+              rdfs:comment "The publisher of a work"@en ;
+              rdfs:label "publisher"@en .
+
+
+###  https://w3id.org/hto#referencedBy
+hto:referencedBy rdf:type owl:ObjectProperty ;
+                 owl:inverseOf hto:refersTo ;
+                 rdfs:comment "a thing was referenced by an entity"@en ;
+                 rdfs:label "referenced by"@en .
+
+
+###  https://w3id.org/hto#refersTo
+hto:refersTo rdf:type owl:ObjectProperty ;
+             rdfs:domain hto:EntityWithProvenance ;
+             rdfs:comment "one entity refers to another thing"@en ;
+             rdfs:label "refers to"@en .
+
+
+###  https://w3id.org/hto#shelfLocator
+hto:shelfLocator rdf:type owl:ObjectProperty ;
+                 rdfs:subPropertyOf prov:atLocation ;
+                 rdfs:domain hto:Work ;
+                 rdfs:range hto:Location ;
+                 rdfs:comment "physical shelf locator where a work was placed"@en ;
+                 rdfs:label "shelf locator"@en .
+
+
+###  https://w3id.org/hto#similarTo
+hto:similarTo rdf:type owl:ObjectProperty ,
+                       owl:SymmetricProperty ;
+              rdfs:domain hto:ConceptRecord ;
+              rdfs:range hto:ConceptRecord ;
+              rdfs:comment "if one concept recortd is similar to concept record, it means their descriptions are semantically simlar."@en ;
+              rdfs:label "siimilar to"@en .
+
+
+###  https://w3id.org/hto#startsAtPage
+hto:startsAtPage rdf:type owl:ObjectProperty ;
+                 rdfs:subPropertyOf hto:wasRecordedIn ;
+                 rdf:type owl:FunctionalProperty ;
+                 rdfs:domain hto:InternalRecord ;
+                 rdfs:range hto:Page ;
+                 rdfs:comment "is the page in which the description of a concept record starts."@en ;
+                 rdfs:label "starts at page"@en .
+
+
+###  https://w3id.org/hto#wasConceptRecordOf
+hto:wasConceptRecordOf rdf:type owl:ObjectProperty ;
+                       rdfs:subPropertyOf owl:topObjectProperty .
+
+
+###  https://w3id.org/hto#wasExtractedFrom
+hto:wasExtractedFrom rdf:type owl:ObjectProperty ;
+                     rdfs:subPropertyOf prov:wasDerivedFrom ;
+                     rdfs:domain hto:EntityWithProvenance ;
+                     rdfs:range hto:EntityWithProvenance .
+
+
+###  https://w3id.org/hto#wasMemberOf
+hto:wasMemberOf rdf:type owl:ObjectProperty .
+
+
+###  https://w3id.org/hto#wasRecordedIn
+hto:wasRecordedIn rdf:type owl:ObjectProperty ;
+                  rdfs:subPropertyOf prov:wasDerivedFrom ;
+                  rdfs:domain hto:InternalRecord ;
+                  rdfs:range hto:Work .
+
+
+###  https://w3id.org/hto#wasSupplementOf
+hto:wasSupplementOf rdf:type owl:ObjectProperty ;
+                    rdfs:subPropertyOf owl:topObjectProperty .
+
+
+#################################################################
+#    Data properties
+#################################################################
+
+###  http://schema.org/abstract
+<http://schema.org/abstract> rdf:type owl:DatatypeProperty .
+
+
+###  http://schema.org/birthDate
+<http://schema.org/birthDate> rdf:type owl:DatatypeProperty .
+
+
+###  http://schema.org/datePublished
+<http://schema.org/datePublished> rdf:type owl:DatatypeProperty ;
+                                  rdfs:subPropertyOf owl:topDataProperty .
+
+
+###  http://schema.org/deathDate
+<http://schema.org/deathDate> rdf:type owl:DatatypeProperty .
+
+
+###  http://schema.org/genre
+<http://schema.org/genre> rdf:type owl:DatatypeProperty .
+
+
+###  http://schema.org/identifier
+<http://schema.org/identifier> rdf:type owl:DatatypeProperty .
+
+
+###  http://schema.org/inLanguage
+<http://schema.org/inLanguage> rdf:type owl:DatatypeProperty .
+
+
+###  http://www.opengis.net/ont/geosparql#asGeoJSON
+<http://www.opengis.net/ont/geosparql#asGeoJSON> rdf:type owl:DatatypeProperty ;
+                                                 rdfs:subPropertyOf owl:topDataProperty ;
+                                                 rdfs:domain <http://www.opengis.net/ont/geosparql#Geometry> ;
+                                                 rdfs:range <http://www.opengis.net/ont/geosparql#geoJSONLiteral> ;
+                                                 rdfs:comment "This property is defined to link a Geometry with its GeoJSON serialization. (geo:asGeoJSON)"@en ;
+                                                 rdfs:label "asGeoJSON"@en .
+
+
+###  http://www.w3.org/ns/oa#end
+<http://www.w3.org/ns/oa#end> rdf:type owl:DatatypeProperty ;
+                              rdfs:range xsd:nonNegativeInteger ;
+                              rdfs:comment "The end property is used to convey the 0-based index of the end position of a range of content. (oa:end)" .
+
+
+###  http://www.w3.org/ns/oa#exact
+<http://www.w3.org/ns/oa#exact> rdf:type owl:DatatypeProperty ;
+                                rdfs:range xsd:string ;
+                                rdfs:comment "The object of the predicate is a copy of the text which is being selected, after normalization. (oa:exact)" .
+
+
+###  http://www.w3.org/ns/oa#prefix
+<http://www.w3.org/ns/oa#prefix> rdf:type owl:DatatypeProperty ;
+                                 rdfs:subPropertyOf owl:topDataProperty ;
+                                 rdfs:range xsd:string ;
+                                 rdfs:comment "The object of the property is a snippet of content that occurs immediately before the content which is being selected by the Selector. (oa:prefix)" .
+
+
+###  http://www.w3.org/ns/oa#start
+<http://www.w3.org/ns/oa#start> rdf:type owl:DatatypeProperty ;
+                                rdfs:range xsd:nonNegativeInteger ;
+                                rdfs:comment "The start position in a 0-based index at which a range of content is selected from the data in the source resource. (oa:start)" .
+
+
+###  http://www.w3.org/ns/oa#suffix
+<http://www.w3.org/ns/oa#suffix> rdf:type owl:DatatypeProperty ;
+                                 rdfs:range xsd:string ;
+                                 rdfs:comment "The snippet of text that occurs immediately after the text which is being selected. (oa:suffix)" .
+
+
+###  http://www.w3.org/ns/prov#value
+prov:value rdf:type owl:DatatypeProperty .
+
+
+###  http://xmlns.com/foaf/0.1/name
+foaf:name rdf:type owl:DatatypeProperty .
+
+
+###  https://w3id.org/hto#abstract
+hto:abstract rdf:type owl:DatatypeProperty ;
+             rdfs:subPropertyOf <http://schema.org/abstract> ;
+             rdfs:domain hto:Work ;
+             rdfs:range xsd:string ;
+             rdfs:comment "An abstract is a short description that summarizes a Work."@en ,
+                          "abstract"@en .
+
+
+###  https://w3id.org/hto#birthYear
+hto:birthYear rdf:type owl:DatatypeProperty ;
+              rdfs:subPropertyOf <http://schema.org/birthDate> ;
+              rdfs:domain hto:Person ;
+              rdfs:range xsd:int ;
+              rdfs:comment "Year of birth"@en ;
+              rdfs:label "birth year"@en .
+
+
+###  https://w3id.org/hto#deathYear
+hto:deathYear rdf:type owl:DatatypeProperty ;
+              rdfs:subPropertyOf <http://schema.org/deathDate> ;
+              rdfs:domain hto:Person ;
+              rdfs:range xsd:int .
+
+
+###  https://w3id.org/hto#genre
+hto:genre rdf:type owl:DatatypeProperty ;
+          rdfs:subPropertyOf <http://schema.org/genre> ;
+          rdfs:domain hto:Work ;
+          rdfs:range xsd:string ;
+          rdfs:comment "is the genre of a work"@en ;
+          rdfs:label "genre"@en .
+
+
+###  https://w3id.org/hto#header
+hto:header rdf:type owl:DatatypeProperty ;
+           rdfs:domain hto:Page ;
+           rdfs:range xsd:string ;
+           rdfs:comment "is the header of a page"@en ;
+           rdfs:label "header"@en .
+
+
+###  https://w3id.org/hto#language
+hto:language rdf:type owl:DatatypeProperty ;
+             rdfs:subPropertyOf <http://schema.org/inLanguage> ;
+             rdfs:domain hto:Work ;
+             rdfs:range xsd:string ;
+             rdfs:comment "is the language used to write the work. For example, a book can be written in Chinese, a file can be written in Python."@en ;
+             rdfs:label "language"@en .
+
+
+###  https://w3id.org/hto#letters
+hto:letters rdf:type owl:DatatypeProperty ;
+            rdfs:domain hto:Volume ;
+            rdfs:range xsd:string ;
+            rdfs:comment "is the range from which the term records are splitted across volumes."@en ;
+            rdfs:label "letters"@en .
+
+
+###  https://w3id.org/hto#mmsid
+hto:mmsid rdf:type owl:DatatypeProperty ;
+          rdfs:subPropertyOf <http://schema.org/identifier> ;
+          rdfs:domain [ rdf:type owl:Class ;
+                        owl:unionOf ( hto:Edition
+                                      hto:Series
+                                    )
+                      ] ;
+          rdfs:range xsd:string ;
+          rdfs:comment "is the Metadata Management System identifier of an edition or series"@en ;
+          rdfs:label "mmsid"@en .
+
+
+###  https://w3id.org/hto#name
+hto:name rdf:type owl:DatatypeProperty ;
+         rdfs:subPropertyOf prov:value ;
+         rdfs:domain hto:EntityWithProvenance ;
+         rdfs:range xsd:string ;
+         rdfs:comment "is the name of an entity"@en ;
+         rdfs:label "name"@en .
+
+
+###  https://w3id.org/hto#note
+hto:note rdf:type owl:DatatypeProperty ;
+         rdfs:domain hto:TermRecord ;
+         rdfs:range xsd:string ;
+         rdfs:comment "Additonal description of a term record."@en ;
+         rdfs:label "note"@en .
+
+
+###  https://w3id.org/hto#number
+hto:number rdf:type owl:DatatypeProperty ;
+           rdfs:subPropertyOf <http://schema.org/identifier> ;
+           rdfs:domain hto:EntityWithProvenance ;
+           rdfs:range xsd:int ;
+           rdfs:comment "is the number of an entity"@en ;
+           rdfs:label "number"@en .
+
+
+###  https://w3id.org/hto#numberOfPages
+hto:numberOfPages rdf:type owl:DatatypeProperty ;
+                  rdfs:domain hto:Volume ;
+                  rdfs:range xsd:int ;
+                  rdfs:comment "The number of pages of a volume."@en ;
+                  rdfs:label "Number of Pages"@en .
+
+
+###  https://w3id.org/hto#part
+hto:part rdf:type owl:DatatypeProperty ;
+         rdfs:domain hto:EntityWithProvenance ;
+         rdfs:range xsd:int ;
+         rdfs:comment "is the number representing the part of a collection"@en ;
+         rdfs:label "part" .
+
+
+###  https://w3id.org/hto#physicalDescription
+hto:physicalDescription rdf:type owl:DatatypeProperty ;
+                        rdfs:domain hto:Work ;
+                        rdfs:range xsd:string ;
+                        rdfs:comment "is the physical description of a work."@en ;
+                        rdfs:label "physical description"@en .
+
+
+###  https://w3id.org/hto#position
+hto:position rdf:type owl:DatatypeProperty ;
+             rdfs:domain hto:InternalRecord ;
+             rdfs:range xsd:integer ;
+             rdfs:comment "Number representing the position in which a record appears in a work."@en ;
+             rdfs:label "position"@en .
+
+
+###  https://w3id.org/hto#subtitle
+hto:subtitle rdf:type owl:DatatypeProperty ;
+             rdfs:domain hto:Work ;
+             rdfs:range xsd:string ;
+             rdfs:comment "is the subtitle of a work."@en ;
+             rdfs:label "subtitle"@en .
+
+
+###  https://w3id.org/hto#termsOfAddress
+hto:termsOfAddress rdf:type owl:DatatypeProperty ;
+                   rdfs:domain hto:Person ;
+                   rdfs:range xsd:string ;
+                   rdfs:comment "is the terms of address of a person."@en ;
+                   rdfs:label "terms of address"@en .
+
+
+###  https://w3id.org/hto#text
+hto:text rdf:type owl:DatatypeProperty ;
+         rdfs:subPropertyOf prov:value ;
+         rdfs:domain hto:Description ;
+         rdfs:range xsd:string ;
+         rdfs:comment "the textual content of the description"@en ;
+         rdfs:label "text" .
+
+
+###  https://w3id.org/hto#title
+hto:title rdf:type owl:DatatypeProperty ;
+          rdfs:domain hto:Work ;
+          rdfs:range xsd:string ;
+          rdfs:comment "is the title of a work."@en ;
+          rdfs:label "title"@en .
+
+
+###  https://w3id.org/hto#volumeId
+hto:volumeId rdf:type owl:DatatypeProperty ;
+             rdfs:subPropertyOf <http://schema.org/identifier> ;
+             rdfs:domain hto:Volume ;
+             rdfs:range xsd:string ;
+             rdfs:comment "is the identifier of a volume."@en ;
+             rdfs:label "volume id"@en .
+
+
+###  https://w3id.org/hto#yearPublished
+hto:yearPublished rdf:type owl:DatatypeProperty ;
+                  rdfs:subPropertyOf <http://schema.org/datePublished> ;
+                  rdfs:domain <https://schema.org/CreativeWork> ;
+                  rdfs:range xsd:int .
+
+
+#################################################################
+#    Classes
+#################################################################
+
+###  http://www.cidoc-crm.org/cidoc-crm/E21_Person
+<http://www.cidoc-crm.org/cidoc-crm/E21_Person> rdf:type owl:Class ;
+                                                owl:equivalentClass hto:Person ;
+                                                rdfs:subClassOf <http://www.cidoc-crm.org/cidoc-crm/E39_Actor> .
+
+
+###  http://www.cidoc-crm.org/cidoc-crm/E29_Design_or_Procedure
+<http://www.cidoc-crm.org/cidoc-crm/E29_Design_or_Procedure> rdf:type owl:Class ;
+                                                             rdfs:subClassOf <http://www.cidoc-crm.org/cidoc-crm/E73_Information_Object> .
+
+
+###  http://www.cidoc-crm.org/cidoc-crm/E39_Actor
+<http://www.cidoc-crm.org/cidoc-crm/E39_Actor> rdf:type owl:Class .
+
+
+###  http://www.cidoc-crm.org/cidoc-crm/E53_Place
+<http://www.cidoc-crm.org/cidoc-crm/E53_Place> rdf:type owl:Class ;
+                                               owl:equivalentClass hto:Location .
+
+
+###  http://www.cidoc-crm.org/cidoc-crm/E55_Type
+<http://www.cidoc-crm.org/cidoc-crm/E55_Type> rdf:type owl:Class ;
+                                              owl:equivalentClass hto:Type .
+
+
+###  http://www.cidoc-crm.org/cidoc-crm/E58_Measurement_Unit
+<http://www.cidoc-crm.org/cidoc-crm/E58_Measurement_Unit> rdf:type owl:Class ;
+                                                          rdfs:subClassOf hto:Type .
+
+
+###  http://www.cidoc-crm.org/cidoc-crm/E5_Event
+<http://www.cidoc-crm.org/cidoc-crm/E5_Event> rdf:type owl:Class ;
+                                              owl:equivalentClass hto:Event .
+
+
+###  http://www.cidoc-crm.org/cidoc-crm/E73_Information_Object
+<http://www.cidoc-crm.org/cidoc-crm/E73_Information_Object> rdf:type owl:Class ;
+                                                            owl:equivalentClass hto:InformationResource ;
+                                                            rdfs:subClassOf hto:PropositionalResource .
+
+
+###  http://www.cidoc-crm.org/cidoc-crm/E74_Group
+<http://www.cidoc-crm.org/cidoc-crm/E74_Group> rdf:type owl:Class ;
+                                               owl:equivalentClass hto:Group ;
+                                               rdfs:subClassOf <http://www.cidoc-crm.org/cidoc-crm/E39_Actor> .
+
+
+###  http://www.cidoc-crm.org/cidoc-crm/E7_Activity
+<http://www.cidoc-crm.org/cidoc-crm/E7_Activity> rdf:type owl:Class ;
+                                                 owl:equivalentClass hto:Activity ;
+                                                 rdfs:subClassOf hto:Event .
+
+
+###  http://www.cidoc-crm.org/cidoc-crm/E89_Propositional_Object
+<http://www.cidoc-crm.org/cidoc-crm/E89_Propositional_Object> rdf:type owl:Class ;
+                                                              owl:equivalentClass hto:PropositionalResource .
+
+
+###  http://www.cidoc-crm.org/cidoc-crm/SP2_Phenomenal_Place
+<http://www.cidoc-crm.org/cidoc-crm/SP2_Phenomenal_Place> rdf:type owl:Class ;
+                                                          rdfs:subClassOf <http://www.cidoc-crm.org/cidoc-crm/E53_Place> ,
+                                                                          <http://www.opengis.net/ont/geosparql#Feature> ;
+                                                          vann:example """* The place where the murder of Ceasar happened
+* Place on H.M.S. Victory at which Nelson died
+* The Place of the Varus Battle
+* The volume in space of my vine glass"""@en ;
+                                                          rdfs:comment "This class comprises instances of E53 Place (S) whose extent (U) and position is defined by the spatial projection of the spatiotemporal extent of a real world phenomenon that can be observed or measured. The spatial projection depends on the instance of S3 Reference Space onto which the extent of the phenomenon is projected. In general, there are no limitations to the number of Reference Spaces one could regard, but only few choices are relevant for the cultural-historical discourse. Typical for the archaeological discourse is to choose a reference space with respect to which the remains of some events would stay at the same place, for instance, relative to the bedrock of a continental plate. On the other side, for the citizenship of babies born in aeroplanes, the space in which the boundaries of the overflown state are defined may be relevant (I). Instances of SP2 Phenomenal Place exist as long as the respective reference space is defined. Note that we can talk in particular about what was at a place in a country before a city was built there, i.e., before the time the event occurred by which the place is defined, but we cannot talk about the place of earth before it came into existence due to lack of a reasonable reference space (E). (cidoc:SP2_Phenomenal_Place)" .
+
+
+###  http://www.cidoc-crm.org/cidoc-crm/SP4_Spatial_Coordinate_Reference_System
+<http://www.cidoc-crm.org/cidoc-crm/SP4_Spatial_Coordinate_Reference_System> rdf:type owl:Class ;
+                                                                             rdfs:subClassOf <http://www.cidoc-crm.org/cidoc-crm/E29_Design_or_Procedure> ;
+                                                                             vann:example """* Longitude-Latitude(ellipsoidal Coordinate System) in WGS84 (Datum)
+* EPSG 3241
+* the coordinate system to describe locations on H.M.S. Victory taking the deck foundation of the middle mast as origin, the mast as z axis, the line at right angle to the bow line as x axis and a right angle to both as y axis.
+* The printed lines of the millimeter paper on which an archaeological feature is drawn"""@en ;
+                                                                             rdfs:comment """This class compromises systems that are used to describe locations in a SP3 Reference Space (S). An instance of SP4 Spatial Coordinate Reference System is composed of two parts: The first is a Coordinate System which is a set of coordinate axes with specified units of measurement and axis directions. The second part is a set of reference features at rest in the Reference Space it describes in the real world that relate the Coordinate System to real world locations (U) and fix it with respect to the reference object of its Reference Space .
+In surveying and geodesy, instance of SP4 Spatial Coordinate Reference System are called a datum. In the case of spatial coordinate reference systems for the earth the datum consists of the reference points and an ellipsoid that approximates the shape of the earth. National systems often use ellipsoids that approximate their territory best and shift them in an appropriate position relative to the earth while WGS84 is an ellipsoid for the whole earth and used in GPS receivers. In engineering a datum is a reference feature of an object used to create a reference system for measurement.The set of reference features in the real world are subset of E26 Physical Feature that are within the described reference space at rest and pertain to the E18 Physical Thing the reference space is at rest with.
+SP4 Spatial Coordinate Reference Systems have a validity for a certain spatial extent of the SP3 Reference Space and in addition a temporal validity. The combination of coordinate reference system and datum provides a unique identity (I). SP4 Spatial Coordinate Reference Systems may be defined for the earth, moving objects like planes or ships, linear features like boreholes or local systems. If there is a standardised identifier system available, such as EPSG codes, it should be used. (cidoc:SP4_SpatialCoordinateReference_System)"""@en .
+
+
+###  http://www.cidoc-crm.org/cidoc-crm/SP5_GeometricPlaceExpression
+<http://www.cidoc-crm.org/cidoc-crm/SP5_GeometricPlaceExpression> rdf:type owl:Class ;
+                                                                  rdfs:subClassOf <http://www.cidoc-crm.org/cidoc-crm/E73_Information_Object> ;
+                                                                  vann:example "Coordinate Information in GML like <gml:Point gml:id=\"p21\" srsName=\"http://www.opengis.net/def/crs/EPSG/0/4326\"> <gml:coordinates>45.67, 88.56</gml:coordinates> </gml:Point>"@en ;
+                                                                  rdfs:comment """This class comprises definitions of places by quantitative expressions. An instance of SP5 Geometric Place Expression can be seen as a prescription of how to find the location meant by this expression in the real world (S), which is based on measuring where the quantities referred to in the expression lead to, beginning from the reference points of the respective reference system.
+A form of expression may be geometries or map elements defined in a SP4 Spatial Coordinate Reference System that unambiguously identify locations in a SP3 Reference Space. Other forms may refer to areas confined by imaginary lines connecting Phenomenal Places such as trees, islands, cities, mountain tops.
+The identity of a SP5 Place Expression is based on its script or symbolic form (I). Several SP5 Place Expressions can denote the same SP6 Declarative Place .
+Instances of SP5 Geometric Place Expressions that exist in one SP4 Spatial Coordinate Reference System can be transformed to geometries in other SP4 Spatial Coordinate Reference System if there is a known and valid transformation. The product of the transformation in general defines a new instance of SP6 Declarative Place , albeit close to the source of the transformation. This can be due to distortions resulting from the transformation and the limited precision by which the relative position of the reference points differing between the respective reference systems are determined. (cidoc:GeometricPlaceExpression)"""@en .
+
+
+###  http://www.cidoc-crm.org/cidoc-crm/SP6_Declarative_Place
+<http://www.cidoc-crm.org/cidoc-crm/SP6_Declarative_Place> rdf:type owl:Class ;
+                                                           rdfs:subClassOf <http://www.cidoc-crm.org/cidoc-crm/E53_Place> ,
+                                                                           <http://www.opengis.net/ont/geosparql#Geometry> ;
+                                                           vann:example """* the place defined by <gml:Point gml:id=\"p21\" srsName=\"http://www.opengis.net/def/crs/EPSG/0/4326\"> <gml:coordinates>45.67, 88.56</gml:coordinates> </gml:Point>
+* the place defined by a line approximating the Danube river
+* The place of the Orinoco river defined in the map of Diego Ribeiro
+* the place defined through a polygon that represents the boundaries of the UK in the year 2003"""@en ;
+                                                           rdfs:comment """This class comprises instances of E53 Place (S) whose extent (U) and position is defined by an E94 Space Primitive (S). There is one implicit or explicit SP3 Reference Space in which the SP5 Geometric Place Expression describes the intended place. Even though SP5 Geometric Place Expressions have an unlimited precision, measurement devices and the precision of the position of reference features relating the SP4 Spatial Coordinate Reference System to a SP3 Reference Space impose limitations to the determination of a SP6 Declarative Place in the real world (U).
+Several SP5 Geometric Place Expressions may denote the same SP6 Declarative Place if their precision falls within the same range (I).
+Instances of SP6 Declarative Places may be used to approximate instances of E53 Places or parts of them. They may as well be used to define the location and spatial extent of property rights or national borders. (cidoc:cidoc:SP6_Declarative_Place)"""@en .
+
+
+###  http://www.opengis.net/ont/geosparql#Feature
+<http://www.opengis.net/ont/geosparql#Feature> rdf:type owl:Class ;
+                                               rdfs:subClassOf prov:Location .
+
+
+###  http://www.opengis.net/ont/geosparql#Geometry
+<http://www.opengis.net/ont/geosparql#Geometry> rdf:type owl:Class .
+
+
+###  http://www.w3.org/2004/02/skos/core#Concept
+<http://www.w3.org/2004/02/skos/core#Concept> rdf:type owl:Class ;
+                                              owl:equivalentClass hto:Concept .
+
+
+###  http://www.w3.org/ns/oa#Annotation
+<http://www.w3.org/ns/oa#Annotation> rdf:type owl:Class ;
+                                     vann:example """<http://example.org/anno1> a oa:Annotation ;
+    oa:hasBody <http://example.org/person1> ;
+    oa:hasTarget <http://example.com/description>;
+    dcterms:creator <http://example.org/person2> ;
+    dcterms:created \"2024-12-16T12:00:00Z\" ."""@en .
+
+
+###  http://www.w3.org/ns/oa#ResourceSelection
+<http://www.w3.org/ns/oa#ResourceSelection> rdf:type owl:Class .
+
+
+###  http://www.w3.org/ns/oa#Selector
+<http://www.w3.org/ns/oa#Selector> rdf:type owl:Class .
+
+
+###  http://www.w3.org/ns/oa#SpecificResource
+<http://www.w3.org/ns/oa#SpecificResource> rdf:type owl:Class ;
+                                           rdfs:subClassOf <http://www.w3.org/ns/oa#ResourceSelection> .
+
+
+###  http://www.w3.org/ns/oa#TextPositionSelector
+<http://www.w3.org/ns/oa#TextPositionSelector> rdf:type owl:Class ;
+                                               rdfs:subClassOf <http://www.w3.org/ns/oa#Selector> ;
+                                               rdfs:comment "The TextPositionSelector describes a range of text by recording the start and end positions of the selection in the stream. Position 0 would be immediately before the first character, position 1 would be immediately before the second character, and so on. (oa:TextPositionSelector)"@en .
+
+
+###  http://www.w3.org/ns/oa#TextQuoteSelector
+<http://www.w3.org/ns/oa#TextQuoteSelector> rdf:type owl:Class ;
+                                            rdfs:subClassOf <http://www.w3.org/ns/oa#Selector> ;
+                                            rdfs:comment "The TextQuoteSelector describes a range of text by copying it, and including some of the text immediately before (a prefix) and after (a suffix) it to distinguish between multiple copies of the same sequence of characters. (oa:TextQuoteSelector)"@en .
+
+
+###  http://www.w3.org/ns/prov#Activity
+prov:Activity rdf:type owl:Class ;
+              owl:equivalentClass hto:Activity ;
+              rdfs:comment "An activity is something that occurs over a period of time and acts upon or with provenance entities; it may include consuming, processing, transforming, modifying, relocating, using, or generating entities."@en ;
+              rdfs:label "Activity"@en .
+
+
+###  http://www.w3.org/ns/prov#Agent
+prov:Agent rdf:type owl:Class .
+
+
+###  http://www.w3.org/ns/prov#Collection
+prov:Collection rdf:type owl:Class ;
+                rdfs:subClassOf hto:EntityWithProvenance ;
+                rdfs:comment "A collection is an entity that provides a structure to some constituents, which are themselves entities. These constituents are said to be member of the collections." .
+
+
+###  http://www.w3.org/ns/prov#Entity
+prov:Entity rdf:type owl:Class ;
+            owl:equivalentClass hto:EntityWithProvenance .
+
+
+###  http://www.w3.org/ns/prov#Location
+prov:Location rdf:type owl:Class ;
+              owl:equivalentClass hto:Location .
+
+
+###  http://www.w3.org/ns/prov#Organization
+prov:Organization rdf:type owl:Class ;
+                  owl:equivalentClass hto:Organization ;
+                  rdfs:subClassOf prov:Agent .
+
+
+###  http://www.w3.org/ns/prov#Person
+prov:Person rdf:type owl:Class ;
+            owl:equivalentClass hto:Person ;
+            rdfs:subClassOf prov:Agent .
+
+
+###  http://www.w3.org/ns/prov#SoftwareAgent
+prov:SoftwareAgent rdf:type owl:Class ;
+                   owl:equivalentClass hto:SoftwareAgent ;
+                   rdfs:subClassOf prov:Agent .
+
+
+###  https://schema.org/Article
+<https://schema.org/Article> rdf:type owl:Class ;
+                             rdfs:subClassOf <https://schema.org/CreativeWork> .
+
+
+###  https://schema.org/Book
+<https://schema.org/Book> rdf:type owl:Class ;
+                          rdfs:subClassOf hto:Work .
+
+
+###  https://schema.org/Collection
+<https://schema.org/Collection> rdf:type owl:Class ;
+                                owl:equivalentClass hto:WorkCollection ;
+                                rdfs:subClassOf <https://schema.org/CreativeWork> .
+
+
+###  https://schema.org/CreativeWork
+<https://schema.org/CreativeWork> rdf:type owl:Class ;
+                                  owl:equivalentClass hto:Work .
+
+
+###  https://schema.org/CreativeWorkSeries
+<https://schema.org/CreativeWorkSeries> rdf:type owl:Class ;
+                                        owl:equivalentClass hto:Series ;
+                                        rdfs:subClassOf <https://schema.org/CreativeWork> .
+
+
+###  https://schema.org/NewsArticle
+<https://schema.org/NewsArticle> rdf:type owl:Class ;
+                                 rdfs:subClassOf <https://schema.org/Article> .
+
+
+###  https://schema.org/Newspaper
+<https://schema.org/Newspaper> rdf:type owl:Class ;
+                               rdfs:subClassOf <https://schema.org/CreativeWorkSeries> .
+
+
+###  https://schema.org/Person
+<https://schema.org/Person> rdf:type owl:Class ;
+                            owl:equivalentClass hto:Person .
+
+
+###  https://schema.org/PublicationIssue
+<https://schema.org/PublicationIssue> rdf:type owl:Class ;
+                                      rdfs:subClassOf <https://schema.org/CreativeWork> .
+
+
+###  https://schema.org/PublicationVolume
+<https://schema.org/PublicationVolume> rdf:type owl:Class ;
+                                       owl:equivalentClass hto:Volume ;
+                                       rdfs:subClassOf <https://schema.org/CreativeWork> .
+
+
+###  https://w3id.org/hto#Activity
+hto:Activity rdf:type owl:Class ;
+             rdfs:subClassOf hto:Event ;
+             rdfs:comment "This class comprises actions intentionally carried out by instances of E39 Actor that result in changes of state in the cultural, social, or physical systems documented."@en ;
+             rdfs:label "Activity"@en .
+
+
+###  https://w3id.org/hto#Agent
+hto:Agent rdf:type owl:Class ;
+          owl:equivalentClass [ rdf:type owl:Class ;
+                                owl:unionOf ( <http://www.cidoc-crm.org/cidoc-crm/E39_Actor>
+                                              prov:Agent
+                                            )
+                              ] ;
+          rdfs:comment "An agent is something that bears some form of responsibility for some actions. Note that it does not have to be people, it can be tools, such as software as well."@en ;
+          rdfs:label "Agent"@en .
+
+
+###  https://w3id.org/hto#ArticleTermRecord
+hto:ArticleTermRecord rdf:type owl:Class ;
+                      rdfs:subClassOf hto:TermRecord ;
+                      rdfs:comment "any term record that is not a topic record"@en ;
+                      rdfs:label "Article Term Record"@en .
+
+
+###  https://w3id.org/hto#Concept
+hto:Concept rdf:type owl:Class ;
+            owl:disjointWith hto:EntityWithProvenance ;
+            rdfs:comment "A concept \"can be viewed as an idea or notion; a unit of thought. However, what constitutes a unit of thought is subjective, and this definition is meant to be suggestive, rather than restrictive.\" (schema:Concept). The concept in this ontology mainly focuses on any idea or notion which can have a record."@en ;
+            rdfs:label "Concept"@en .
+
+
+###  https://w3id.org/hto#ConceptRecord
+hto:ConceptRecord rdf:type owl:Class ;
+                  rdfs:subClassOf hto:EntityWithProvenance ;
+                  owl:disjointWith hto:Description ;
+                  rdfs:comment "A Concept Record is a specific record of a concept with provenance information. One concept might have multiple concept records." ;
+                  rdfs:label "Concept Record"@en .
+
+
+###  https://w3id.org/hto#Description
+hto:Description rdf:type owl:Class ;
+                rdfs:subClassOf hto:InformationResource ;
+                rdfs:comment "This class comprises textual descriptions whose provenance information could be tracked. It is used to present entity which has multiple descriptions from different data providers. For example, an article in a specific page of Encyclopaedia Britannica could have multple descriptions, each description reflects text extracted from the different datasets which are the result of different digitalisation or text cleaning methods."@en ;
+                rdfs:label "Description"@en .
+
+
+###  https://w3id.org/hto#Edition
+hto:Edition rdf:type owl:Class ;
+            rdfs:subClassOf hto:Work ;
+            rdfs:comment "An edition is a particular version or iteration of a specific work. For example, the encyclopaedia collection has serveral editions, each representing a revised or updated version of the original work."@en ;
+            rdfs:label "Edition"@en .
+
+
+###  https://w3id.org/hto#EntityWithProvenance
+hto:EntityWithProvenance rdf:type owl:Class ;
+                         rdfs:comment "An entity is \"a physical, digital, conceptual, or other kind of thing with some fixed aspects; entities may be real or imaginary.\" (prov:Entity)"@en ;
+                         rdfs:label "Entity With Provenance"@en .
+
+
+###  https://w3id.org/hto#Event
+hto:Event rdf:type owl:Class ;
+          rdfs:comment "An event is a change \"of states in cultural, social or physical systems, regardless of scale, brought about by a series or group of coherent physical, cultural, technological or legal phenomena\" (E5 Event in CIDOC CRM)" ;
+          rdfs:label "Event" .
+
+
+###  https://w3id.org/hto#ExternalRecord
+hto:ExternalRecord rdf:type owl:Class ;
+                   rdfs:subClassOf hto:ConceptRecord ;
+                   rdfs:comment "Record which is a not internal record. This class used to represent external record from external data providers, such as wikidata."@en ;
+                   rdfs:label "External Record"@en .
+
+
+###  https://w3id.org/hto#Group
+hto:Group rdf:type owl:Class ;
+          rdfs:subClassOf hto:Agent ;
+          rdfs:comment """This class comprises any gatherings or organizations of human individuals or groups that act collectively or in a similar way due to any form of unifying relationship. In the wider sense this class also comprises official positions which used to be regarded in certain contexts as one actor, independent of the current holder of the office, such as the president of a country. In such cases, it may happen that the group never had more than one member. A joint pseudonym (i.e., a name that seems indicative of an individual but that is actually used as a persona by two or more people) is a particular case of E74 Group.
+A gathering of people becomes an instance of E74 Group when it exhibits organizational characteristics usually typified by a set of ideas or beliefs held in common, or actions performed together. These might be communication, creating some common artifact, a common purpose such as study, worship, business, sports, etc. Nationality can be modelled as membership in an instance of E74 Group. Married couples and other concepts of family are regarded as particular examples of E74 Group."""@en ;
+          rdfs:label "Group"@en .
+
+
+###  https://w3id.org/hto#InformationResource
+hto:InformationResource rdf:type owl:Class ;
+                        rdfs:subClassOf hto:PropositionalResource ;
+                        rdfs:comment "This class comprises  \"identifiable immaterial items, such as poems, jokes, data sets, images, texts, multimedia objects, procedural prescriptions, computer program code, algorithm or mathematical formulae, that have an objectively recognizable structure and are documented as single units.\" (E73 Information Object in CIDOC CRM)"@en ;
+                        rdfs:label "Information Resource"@en .
+
+
+###  https://w3id.org/hto#InternalRecord
+hto:InternalRecord rdf:type owl:Class ;
+                   rdfs:subClassOf hto:ConceptRecord ,
+                                   [ rdf:type owl:Restriction ;
+                                     owl:onProperty hto:hasOriginalDescription ;
+                                     owl:someValuesFrom hto:OriginalDescription
+                                   ] ,
+                                   [ rdf:type owl:Restriction ;
+                                     owl:onProperty hto:wasRecordedIn ;
+                                     owl:someValuesFrom hto:Work
+                                   ] ;
+                   rdfs:comment "this class comprises a record which was mentioned or described  in a work"@en ;
+                   rdfs:label "Internal Record"@en .
+
+
+###  https://w3id.org/hto#Location
+hto:Location rdf:type owl:Class ;
+             rdfs:comment "A location can be \"an identifiable geographic place (ISO 19112), but it can also be a non-geographic place such as a directory, row, or column. As such, there are numerous ways in which location can be expressed, such as by a coordinate, address, landmark, and so forth.\" (Prov:Location)" ;
+             rdfs:label "Location"@en .
+
+
+###  https://w3id.org/hto#LocationRecord
+hto:LocationRecord rdf:type owl:Class ;
+                   rdfs:subClassOf hto:InternalRecord ;
+                   vann:example "The entry \"Edinburgh\" in the collection Gazetteer of Scotland published in 1803."@en ;
+                   rdfs:comment "A record about a location from a work."@en ;
+                   rdfs:label "Location Record"@en .
+
+
+###  https://w3id.org/hto#LocationType
+hto:LocationType rdf:type owl:Class ;
+                 rdfs:subClassOf hto:Type ;
+                 vann:example "City, Country, Town, Street."@en ;
+                 rdfs:comment "This class defines controlled vocabulary for different location types (mainly administative divisions)."@en ;
+                 rdfs:label "Location Type"@en .
+
+
+###  https://w3id.org/hto#Organization
+hto:Organization rdf:type owl:Class ;
+                 rdfs:subClassOf hto:Group ;
+                 rdfs:comment "An organization is a social or legal institution such as a company, society, etc."@en ;
+                 rdfs:label "Organization"@en .
+
+
+###  https://w3id.org/hto#OriginalDescription
+hto:OriginalDescription rdf:type owl:Class ;
+                        rdfs:subClassOf hto:Description ,
+                                        [ rdf:type owl:Restriction ;
+                                          owl:onProperty hto:hasTextQuality ;
+                                          owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger ;
+                                          owl:onClass hto:TextQuality
+                                        ] ;
+                        owl:disjointWith hto:Summary ;
+                        rdfs:comment "This class comprises original content of an texual entity, such as the text content of a page, or description of a term."@en ;
+                        rdfs:label "Original Description"@en .
+
+
+###  https://w3id.org/hto#Page
+hto:Page rdf:type owl:Class ;
+         rdfs:subClassOf hto:Work ,
+                         [ rdf:type owl:Restriction ;
+                           owl:onProperty hto:wasMemberOf ;
+                           owl:someValuesFrom hto:Work
+                         ] ;
+         rdfs:comment "is an page of a work"@en ;
+         rdfs:label "Page"@en .
+
+
+###  https://w3id.org/hto#Person
+hto:Person rdf:type owl:Class ;
+           rdfs:subClassOf hto:Agent ;
+           rdfs:comment """This class comprises \"real persons who live or are assumed to have lived.
+Legendary figures that may have existed, such as Ulysses and King Arthur, fall into this class if the documentation refers to them as historical figures.\"  (E21 Person in CIDOC CRM)"""@en ;
+           rdfs:label "Person"@en .
+
+
+###  https://w3id.org/hto#PropositionalResource
+hto:PropositionalResource rdf:type owl:Class ;
+                          rdfs:subClassOf hto:EntityWithProvenance ;
+                          rdfs:comment """This class comprises \"immaterial items, including but not limited to stories, plots, procedural prescriptions, algorithms, laws of physics or images that are, or represent in some sense, sets of propositions about real or imaginary things and that are documented as single units or serve as topic of discourse.
+This class also comprises items that are “about” something in the sense of a subject. In the wider sense, this class includes expressions of psychological value such as non-figural art and musical themes.\" (E89 Propositional Object in CIDOC CRM)"""@en ;
+                          rdfs:label "Propositional Resource"@en .
+
+
+###  https://w3id.org/hto#Series
+hto:Series rdf:type owl:Class ;
+           rdfs:subClassOf hto:WorkCollection ;
+           rdfs:comment "A series is a a group of related items, typically but not necessarily of the same kind. Series are usually organized into some order, often chronological. (schema:CreativeWorkSeries)"@en ;
+           rdfs:label "Series" .
+
+
+###  https://w3id.org/hto#SoftwareAgent
+hto:SoftwareAgent rdf:type owl:Class ;
+                  rdfs:subClassOf hto:Agent ;
+                  rdfs:comment "\"A software agent is running software.\" (prov:SoftwareAgent)"@en ;
+                  rdfs:label "Software Agent"@en .
+
+
+###  https://w3id.org/hto#Subject
+hto:Subject rdf:type owl:Class ;
+            rdfs:comment "A subject represents topics or themes on which a work or event is focused."@en ;
+            rdfs:label "Subject"@en .
+
+
+###  https://w3id.org/hto#Summary
+hto:Summary rdf:type owl:Class ;
+            rdfs:subClassOf hto:Description ;
+            rdfs:comment "This class comprises summary of an original description."@en ;
+            rdfs:label "Summary" .
+
+
+###  https://w3id.org/hto#TermRecord
+hto:TermRecord rdf:type owl:Class ;
+               rdfs:subClassOf hto:InternalRecord ,
+                               [ rdf:type owl:Restriction ;
+                                 owl:onProperty hto:wasMemberOf ;
+                                 owl:someValuesFrom hto:Page
+                               ] ,
+                               [ rdf:type owl:Restriction ;
+                                 owl:onProperty hto:endsAtPage ;
+                                 owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger ;
+                                 owl:onClass hto:Page
+                               ] ,
+                               [ rdf:type owl:Restriction ;
+                                 owl:onProperty hto:startsAtPage ;
+                                 owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger ;
+                                 owl:onClass hto:Page
+                               ] ;
+               rdfs:comment "is the article in the encyclopaedia, or an entry in a dictionary."@en ;
+               rdfs:label "Term Record"@en .
+
+
+###  https://w3id.org/hto#TextQuality
+hto:TextQuality rdf:type owl:Class ;
+                owl:equivalentClass [ rdf:type owl:Class ;
+                                      owl:oneOf ( hto:Clean
+                                                  hto:High
+                                                  hto:Low
+                                                  hto:Moderate
+                                                )
+                                    ] ;
+                rdfs:subClassOf <http://www.cidoc-crm.org/cidoc-crm/E58_Measurement_Unit> ;
+                rdfs:comment "This class comprises the categories of text quality. Note that, the measurement of text quality might be better represented in future version, now it is described within limited text quality instances (Low, Moderate, High, Clean)."@en ;
+                rdfs:label "Text Quality"@en .
+
+
+###  https://w3id.org/hto#TopicTermRecord
+hto:TopicTermRecord rdf:type owl:Class ;
+                    rdfs:subClassOf hto:TermRecord ;
+                    rdfs:comment "is article which has some description which covers more than three whole pages"@en ;
+                    rdfs:label "Topic Term Record"@en .
+
+
+###  https://w3id.org/hto#Type
+hto:Type rdf:type owl:Class ;
+         rdfs:comment "This class comprises concepts denoted by terms from thesauri and controlled vocabularies used to characterize and classify instances of CIDOC CRM classes."@en ;
+         rdfs:label "Type"@en .
+
+
+###  https://w3id.org/hto#Volume
+hto:Volume rdf:type owl:Class ;
+           rdfs:subClassOf hto:Work ,
+                           [ rdf:type owl:Restriction ;
+                             owl:onProperty hto:wasMemberOf ;
+                             owl:allValuesFrom [ rdf:type owl:Class ;
+                                                 owl:unionOf ( <https://schema.org/Collection>
+                                                               hto:Edition
+                                                               hto:Series
+                                                             )
+                                               ]
+                           ] ;
+           rdfs:comment "a work forming part of an edition, a series, or a collection ."@en ;
+           rdfs:label "Volume"@en .
+
+
+###  https://w3id.org/hto#Work
+hto:Work rdf:type owl:Class ;
+         rdfs:subClassOf hto:PropositionalResource ;
+         rdfs:comment "The most generic kind of creative work, including books, movies, photographs, software programs, etc. (schema:CreativeWork)"@en ;
+         rdfs:label "Work"@en .
+
+
+###  https://w3id.org/hto#WorkCollection
+hto:WorkCollection rdf:type owl:Class ;
+                   rdfs:subClassOf prov:Collection ,
+                                   hto:Work ;
+                   rdfs:comment "\"A collection of items, e.g. creative works or products\" (shema:Collection)"@en ;
+                   rdfs:label "Work Collection"@en .
+
+
+#################################################################
+#    Individuals
+#################################################################
+
+###  https://w3id.org/hto#City
+hto:City rdf:type owl:NamedIndividual ,
+                  hto:LocationType .
+
+
+###  https://w3id.org/hto#Clean
+hto:Clean rdf:type owl:NamedIndividual .
+
+
+###  https://w3id.org/hto#Country
+hto:Country rdf:type owl:NamedIndividual ,
+                     hto:LocationType .
+
+
+###  https://w3id.org/hto#County
+hto:County rdf:type owl:NamedIndividual ,
+                    hto:LocationType .
+
+
+###  https://w3id.org/hto#High
+hto:High rdf:type owl:NamedIndividual .
+
+
+###  https://w3id.org/hto#Low
+hto:Low rdf:type owl:NamedIndividual .
+
+
+###  https://w3id.org/hto#Moderate
+hto:Moderate rdf:type owl:NamedIndividual ,
+                      hto:TextQuality .
+
+
+###  https://w3id.org/hto#Region
+hto:Region rdf:type owl:NamedIndividual ,
+                    hto:LocationType .
+
+
+###  https://w3id.org/hto#State
+hto:State rdf:type owl:NamedIndividual ,
+                   hto:LocationType .
+
+
+###  https://w3id.org/hto#Town
+hto:Town rdf:type owl:NamedIndividual ,
+                  hto:LocationType .
+
+
+###  Generated by the OWL API (version 4.5.29.2024-05-13T12:11:03Z) https://github.com/owlcs/owlapi
