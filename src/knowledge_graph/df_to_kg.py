@@ -396,7 +396,7 @@ def link_references(dataframe, graph):
 
 if __name__ == "__main__":
     print(f"Loading entity name pairs mapping file")
-    name_map_file = "./name_map.pickle"
+    name_map_file = "name_map.pickle"
     load_name_map(name_map_file)
     print(f"{len(name_map)} names pairs loaded")
     # create collection
