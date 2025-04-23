@@ -2,4 +2,5 @@ openai>=1.0.0
 pandas>=2.0.0
 rdflib
 SPARQLWrapper
-
+numpy<2.0.0
+sentence_transformers
