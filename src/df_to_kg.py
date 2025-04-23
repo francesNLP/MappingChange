@@ -399,24 +399,30 @@ if __name__ == "__main__":
     name_map_file = "./name_map.pickle"
     load_name_map(name_map_file)
     print(f"{len(name_map)} names pairs loaded")
-
-    # load dataframe
-    print("Loading dataframe....")
-    dataframe_file = "path_to_your_dataframe"
-    gaz_df = pd.read_json(dataframe_file, orient='index')
-    print(f"Loaded {len(gaz_df)} records loaded")
-
-    print("Creating RDF triples....")
     # create collection
     collection_name = "Gazetteers of Scotland"
     collection_id_name = "GazetteersofScotland"
     gaz_collection = create_collection(collection_name, collection_id_name)
     # create dataset entity
     gazetteer_dataset = create_dataset(collection_id_name, nls, "NLS")
-    # create main triples
-    dataframe_with_uris = dataframe_to_rdf(gaz_collection, gaz_df, gazetteer_dataset)
-    print("Linking see references....")
-    link_references(dataframe_with_uris, graph)
+
+    # load dataframe
+    dataframe_files = ["your_path/gaz_dataframe_1803",
+                       "your_path/gaz_dataframe_1806",
+                       "your_path/gaz_dataframe_1825",
+                       "your_path/gaz_dataframe_1838",
+                       "your_path/gaz_dataframe_1842",
+                       "your_path/gaz_dataframe_1846"]
+    for dataframe_file in dataframe_files:
+        print(f"Loading dataframe file {dataframe_file}....")
+        gaz_df = pd.read_json(dataframe_file, orient='index')
+        print(f"Loaded {len(gaz_df)} records loaded")
+
+        print("Creating RDF triples....")
+        # create main triples
+        dataframe_with_uris = dataframe_to_rdf(gaz_collection, gaz_df, gazetteer_dataset)
+        print("Linking see references....")
+        link_references(dataframe_with_uris, graph)
 
     result_file = "gaz.ttl"
     print(f"Saving graph to {result_file}")
