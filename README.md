@@ -1,6 +1,6 @@
 # 🗺️ MappingChange
 ## Tracking the Evolution of Place Descriptions in the Gazetteers of Scotland (1803–1901)
-This repository supports a research project to transform [The Gazetteers of Scotland (1803–1901)](https://data.nls.uk/data/digitised-collections/gazetteers-of-scotland/), digitized by the National Library of Scotland, into structured article-level data. These gazetteers provide detailed historical accounts of Scottish places—towns, glens, castles, and parishes—captured across 21 volumes:
+This repository supports a research project to transform [The Gazetteers of Scotland (1803–1901)](https://data.nls.uk/data/digitised-collections/gazetteers-of-scotland/), digitized by the National Library of Scotland (NLS), into structured article-level data. These gazetteers provide detailed historical accounts of Scottish places—towns, glens, castles, and parishes—captured across 21 volumes:
   
 ![NumVolGaz1803_1901](https://github.com/user-attachments/assets/b81dca6b-87c7-4468-b0f4-caeb1e76d3bb)
 
@@ -47,10 +47,234 @@ We are using the dataframe version of this [KnowledgeGraph](https://zenodo.org/r
 
  2. [Merging Cleaning Data](./src/merge_cleaned_articles.py): Merges all the cleaned JSON article files into a single output file, sorting and aligning metadata across the dataset.
 
- 3. [Dataframe Generation](./src/dataframe_articles.py):A	Script that deduplicates and cleans already extracted articles. It includes advanced logic to detect fuzzy duplicates, substring containment, and prefix-based similarity across multiple pages. It also adds metadata from the original OCR dataset. These are then exported and analyzed in Jupyter/Colab notebooks.
+ 3. [Dataframe Generation](./src/dataframe_articles.py): A script that deduplicates and cleans already extracted articles. It includes advanced logic to detect fuzzy duplicates, substring containment, and prefix-based similarity across multiple pages. It also adds metadata from the original OCR dataset. These are then exported and analyzed in Jupyter/Colab notebooks.
 
+ 4. [Knowledge Graph Generation](./src/knowledge_graph/df_to_kg.py): This script constructs a RDF knowledge graph based on [Heritage Textual Ontology (HTO)](https://w3id.org/hto) and all dataframes generated from step 3. In this graph, articles with their "see reference" articles are linked.
+
+ 5. [Adding Page Permanent URLs](./src/knowledge_graph/add_page_permanent_url.py): Adds permanent url of each page to the graph from step 4. These permanent urls are extracted from [NLS digital gallery](https://digital.nls.uk/gazetteers-of-scotland-1803-1901/archive/97491608) and stored in `volume_page_urls.json`.
+
+ 6. Uploading Knowledge to Fuseki SPARQL Server: Upload the graph file from step 5 to a [Fuseki server](https://jena.apache.org/documentation/fuseki2/), a SPARQL server for storing and querying RDF graphs.
+
+ 7. [Knowledge Graph Dataframe Generation](./src/knowledge_graph/kg_to_df.py): This script generates dataframe from uploaded graph in step 6. Compare to the dataframe from step 3, this dataframe only stores essential data for knowledge enrichment and retrival in the following steps. It also includes uris of these essential data for enriched knowledge to link to.
+
+ 8. [Embedding Generation](./src/knowledge_graph/generate_embeddings.py): Generates vector representation (embedding) of each article using their descriptions. These embeddings are used to infer semantic relation and enrich knowledge in the following steps.
+
+ 9. [Article Linkage](./src/knowledge_graph/record_linkage.py): links articles across years using dataframe from step 8. It groups articles into concepts, and update the input dataframe with concept uris.
+
+ 10. [Wikidata Linkage](./src/knowledge_graph/wikidata_linkage.py): links articles with wikidata items using dataframe from step 9. It generates a dataframe for these linked items with uris of their corresponding grouped concepts from step 9. If a wikidata item has already been linked in other collections, this script can then link an article to this item through the concept built in that collection, thus allowing linkage across collections.
+Note that this cross-collection linkage requires wikidata dataframe generated for other collections. The dataframe generated from this script only includes newly linked wiki items. Also, it updates input dataframe from step 9 with concept uris from other collections if possible.
+
+ 11. [Dbpedia Linkage](./src/knowledge_graph/dbpedia_linkage.py): similar to wikidata linkage, this script links articles with dbpedia items using updated input dataframe from step 10.
+
+ 12. [Graph Generation for Enriched Knowledge](./src/knowledge_graph/add_concepts_to_graph.py): This script generates graph for enriched knowledge, including grouped concepts, links from articles, wikidata and dbpedia items to concepts. Upload this graph to the same dataset of the server in step 6.
+
+ 13. Elasticsearch Indices Creation ([create_gaz_index.py](./src/elasticsearch/create_gaz_index.py), [create_dbpedia_wikidata_index.py](./src/elasticsearch/create_dbpedia_wikidata_index.py)): create index for gazetteer articles using updated input dataframe from step 11. It creates (or updates if index already exists) index for wikidata or dbpedia items using generated items dataframe from step 10 or step 11. 
+This elasticsearch server allows both efficient full-text search and semantic search.
 
 All these scripts used are in [src](./src).
+
+## Pipeline Execution Walkthrough
+
+This section introduces all the details needed to run the pipeline using scripts mentioned above. In order to follow this guide, you will need to have:
+
+* Required python environment and libraries installed, see [set up environment section](#set-up-the-environment).
+* OpenAI API key.
+* Fuseki Server hostname, credential (username and password) to login.
+* Elasticsearch Server hostname, credential (certificate file, api key) to login.
+* Base input dataframe of this collection, drop us an email for access.
+* (Optional) wikidata items dataframe generated for other collections, drop us an email for access. 
+
+### Extraction Scripts
+
+**Script**: [extract_gaz_1803.py](./src/extract_gaz_1803.py), [extract_gaz_1806.py](./src/extract_gaz_1806.py) ....
+
+**Input**: `src/files/gazatteers_dataframe` (json format): the base input dataframe of this collection, includes metadata and page level texts.
+
+**Configuration**: 
+
+```python
+client = OpenAI(api_key="XXX") # change the api_key
+```
+
+**Execution**:
+```shell
+cd src
+# take extract_gaz_1803.py for example
+python extract_gaz_1803.py
+# you need to run other extract_gaz_*.py scripts
+```
+
+**Output**: 
+* A list of `src/files/1803/appendix/raw_extracted_articles_*_*.json` (json format): raw article segmentation result for various page ranges.
+* A list of `src/files/1803/appendix/cleaned_articles_*_*.json` (json format): cleaned article segmentation result for various page ranges.
+
+
+### Merging Cleaning Data
+
+**Script**: [merge_cleaned_articles.py](./src/merge_cleaned_articles.py)
+
+**Input**: A list of `src/files/1803/appendix/cleaned_articles_*_*.json` (json format): cleaned article segmentation result for various page ranges (from [Extraction Scripts](#extraction-scripts)).
+
+**Configuration**: 
+
+```python
+INPUT_DIR = "./1803/json_final/" # Set your input directory of cleaned article segmentation json files
+OUTPUT_FILE = "./1803/gazetteer_articles_merged_1803.json" # Set your output filepath
+```
+
+**Execution**:
+```shell
+cd src
+python merge_cleaned_articles.py
+# You need change the INPUT_DIR and OUTPUT_FILE in the script for each different input folder, 
+# and rerun this script
+```
+
+**Output**: 
+* `src/files/1803/gazetteer_articles_merged_1803.json` (json format): merged results of all cleaned articles in the given input folder.
+
+
+### Dataframe Generation
+
+**Script**: [dataframe_articles.py](./src/dataframe_articles.py)
+
+**Input**:
+* `src/files/gazatteers_dataframe` (json format): the base input dataframe of this collection, includes metadata and page level texts.
+* `src/files/1825/gazetteer_articles_merged_1825.json` (json format): merged results of all cleaned articles in the given folder.
+
+**Configuration**:
+
+```python
+client = OpenAI(api_key="XXX")  # change the api_key
+...... 
+json_path = "1825/gazetteer_articles_merged_1825.json" # change to the filepath of your merged articles result
+......
+g_df_fix.to_json(r'1825/gaz_dataframe_1825', orient="index") # change to the filepath for the result
+```
+
+**Execution**:
+```shell
+cd src
+python dataframe_articles.py
+# You need change the json_path and to_json output path in the script for each different input folder, 
+# and rerun this script
+```
+
+**Output**: `src/files/1825/gaz_dataframe_1825` (json format): dataframe of further cleaned articles. 
+You can access these dataframes that we have produced from [this section](#dataframes-with-extracted-articles). 
+Note that these dataframes are used for the knowledge graph generation scripts below.
+
+
+### Knowledge Graph Generation
+
+**Script**: [df_to_kg.py](./src/knowledge_graph/df_to_kg.py)
+
+**Input**: 
+* A list of `src/knowledge_graph/sources/gaz_dataframe_*` (json format): dataframe generated from section [Dataframe Generation](#dataframe-generation)
+* `src/knowledge_graph/hto.ttl` (turtle format): the HTO ontology file.
+
+**Configuration**:
+```python
+# Change the filepaths of input dataframes
+dataframe_files = ["sources/gaz_dataframe_1803",
+                   "sources/gaz_dataframe_1806",
+                   "sources/gaz_dataframe_1825",
+                   "sources/gaz_dataframe_1838",
+                   "sources/gaz_dataframe_1842",
+                   "sources/gaz_dataframe_1846"]
+```
+
+**Execution**:
+```shell
+cd src/knowledge_graph
+python df_to_kg.py
+```
+
+**Output**: `src/knowledge_graph/results/gaz.ttl` (turtle format): generated knowledge graph file in turtle format.
+
+
+### Adding Page Permanent URLs
+
+**Script**: [add_page_permanent_url.py](./src/knowledge_graph/add_page_permanent_url.py)
+
+**Input**: 
+* `src/knowledge_graph/volume_page_urls.json` (json format): json file with page permanent urls.
+* `src/knowledge_graph/gaz.ttl` (turtle format): generated gaz knowledge graph from [Knowledge Graph Generation](#knowledge-graph-generation)
+
+**Execution**:
+```shell
+cd src/knowledge_graph
+python add_page_permanent_url.py
+```
+
+**Output** `src/knowledge_graph/gaz.ttl` (turtle format): knowledge graph with extract page permanent urls added.
+
+
+### Uploading Knowledge to Fuseki SPARQL Server
+
+If you don't have Fuseki server, install one locally using this [docker image](https://hub.docker.com/r/stain/jena-fuseki).
+Note that only the latest working version is `stain/jena-fuseki:4.0.0`. This will deploy the fuseki powered web UI for easy interaction.
+
+Make sure your fuseki server is running. Create a new dataset in the server if you want, or using existing dataset, 
+then upload the `src/knowledge_graph/gaz.ttl` from [above](#adding-page-permanent-urls) to the dataset. 
+
+To create a new dataset in fuseki server, in home page, click `manage` tab -> click `new dataset` tab -> enter dataset name ->
+check in-memory option -> click `create dataset`
+
+To upload data in the fuseki server, in home page, click `datasets` tab -> click `add data` button -> click `select files` button ->
+ select `gaz.ttl` -> click `upload now` button
+
+#### Valid the uploaded knowledge:
+Click `query` button at the dataset we uploaded to, and run the following query:
+```sparql
+PREFIX hto: <https://w3id.org/hto#>
+SELECT * WHERE {
+    <https://w3id.org/hto/WorkCollection/GazetteersofScotland>  a hto:WorkCollection;
+        hto:hadMember ?series.
+    ?series a hto:Series;
+        hto:mmsid ?mmsid;
+        hto:title ?series_title;
+        hto:hadMember ?volume.
+    OPTIONAL {
+        ?series hto:subtitle ?series_subtitle;
+    }
+    OPTIONAL {
+        ?series hto:number ?series_number.
+    }
+    ?volume a hto:Volume;
+        hto:title ?vol_title;
+        hto:number ?vol_number;
+        hto:volumeId ?vol_id;
+        hto:permanentURL ?permanentURL.
+} ORDER BY ?series_number
+```
+If everything works, it should return all the volumes in this collection.
+
+Note that the SPARQL endpoint to query this dataset is `hostname/dataset_name`, for example: `http://localhost:3030/test_gaz`
+
+
+### Knowledge Graph Dataframe Generation
+
+**Script**: [kg_to_df.py](./src/knowledge_graph/kg_to_df.py)
+
+**Input**: `http://localhost:3030/test_gaz`: SPARQL endpoint of fuseki dataset with gazetteer knowledge graph uploaded. 
+
+**Configuration**: 
+```python
+sparql = SPARQLWrapper(
+    "http://localhost:3030/test_gaz" # change the endpoint
+)
+```
+
+**Execution**:
+```shell
+cd src/knowledge_graph
+python kg_to_df.py
+```
+
+**Output**: `src/knowledge_graph/results/gazetteers_entry_kg_df` (json format): dataframe for uploaded graph in fuseki dataset.
+
+
 
 ## Dataframes with Extracted Articles
 

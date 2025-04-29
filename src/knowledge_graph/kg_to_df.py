@@ -144,7 +144,7 @@ if __name__ == "__main__":
     gazetteers_df["references"] = gazetteers_df["record_uri"].apply(
         lambda record_uri: reference_terms[record_uri] if record_uri in reference_terms else [])
 
-    result_filename = "gazetteers_entry_kg_df"
+    result_filename = "results/gazetteers_entry_kg_df"
     print(f"----Saving the final dataframe to {result_filename}----")
     gazetteers_df.to_json(result_filename, orient="index")
 

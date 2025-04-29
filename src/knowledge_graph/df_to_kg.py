@@ -407,12 +407,12 @@ if __name__ == "__main__":
     gazetteer_dataset = create_dataset(collection_id_name, nls, "NLS")
 
     # load dataframe
-    dataframe_files = ["your_path/gaz_dataframe_1803",
-                       "your_path/gaz_dataframe_1806",
-                       "your_path/gaz_dataframe_1825",
-                       "your_path/gaz_dataframe_1838",
-                       "your_path/gaz_dataframe_1842",
-                       "your_path/gaz_dataframe_1846"]
+    dataframe_files = ["sources/gaz_dataframe_1803",
+                       "sources/gaz_dataframe_1806",
+                       "sources/gaz_dataframe_1825",
+                       "sources/gaz_dataframe_1838",
+                       "sources/gaz_dataframe_1842",
+                       "sources/gaz_dataframe_1846"]
     for dataframe_file in dataframe_files:
         print(f"Loading dataframe file {dataframe_file}....")
         gaz_df = pd.read_json(dataframe_file, orient='index')
@@ -424,7 +424,7 @@ if __name__ == "__main__":
         print("Linking see references....")
         link_references(dataframe_with_uris, graph)
 
-    result_file = "gaz.ttl"
+    result_file = "results/gaz.ttl"
     print(f"Saving graph to {result_file}")
     graph.serialize(destination=result_file, format='turtle')
 

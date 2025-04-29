@@ -4,3 +4,4 @@ rdflib
 SPARQLWrapper
 numpy<2.0.0
 sentence_transformers
+elasticsearch<=8.15.0
