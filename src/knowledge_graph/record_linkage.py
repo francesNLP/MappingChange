@@ -131,9 +131,9 @@ def group_records_to_concept(kg_df, concept_id_prefix=""):
 
 if __name__ == "__main__":
     print("Loading dataframe.....")
-    kg_df = pd.read_json("gaz_kg_df_with_embeddings", orient="index")
+    kg_df = pd.read_json("results/gaz_kg_df_with_embeddings", orient="index")
     print("Grouping terms into concepts.....")
     df = group_records_to_concept(kg_df, concept_id_prefix="gaz")
     print("Saving dataframe to file")
-    df.to_json("gaz_kg_concepts_df", orient="index")
+    df.to_json("results/gaz_kg_concepts_df", orient="index")
 

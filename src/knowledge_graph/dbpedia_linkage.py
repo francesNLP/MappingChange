@@ -147,24 +147,24 @@ def link_dbpedia_with_concept(df, linked_dbpedia_items_df):
 
 if __name__ == "__main__":
     print("Loading the source dataframe .....")
-    kg_df_filename = "gaz_kg_concepts_df"
+    kg_df_filename = "results/gaz_kg_concepts_df"
     kg_df = pd.read_json(kg_df_filename, orient="index")
     print("Loading existing linked dbpedia items dataframe .....")
-    existing_dbpedia_items_filename = "eb_concept_dbpedia_df"
+    existing_dbpedia_items_filename = "sources/eb_concept_dbpedia_df"
     existing_dbpedia_items_df = pd.read_json(existing_dbpedia_items_filename, orient="index")
     print("Linking dbpedia items.......")
     # Link dbpedia items, also link terms to existing concepts from other collections
     exception_concept_uris, concept_dbpedia_items = link_dbpedia_with_concept(kg_df, existing_dbpedia_items_df)
     concept_dbpedia_item_list = list(concept_dbpedia_items.values())
     concept_dbpedia_item_df = pd.DataFrame(concept_dbpedia_item_list)
-    result_dbpedia_df_filename = "gaz_concept_dbpedia_df"
+    result_dbpedia_df_filename = "results/gaz_concept_dbpedia_df"
     print(f"Saving the dbpedia linking result to file: {result_dbpedia_df_filename}")
     concept_dbpedia_item_df.to_json(result_dbpedia_df_filename, orient="index")
-    refined_source_filename = "refined_gaz_concepts_df"
+    refined_source_filename = kg_df_filename
     print(f"Saving refined source (link terms to existing concepts from other collections) to file: {refined_source_filename}")
     kg_df.to_json(refined_source_filename, orient="index")
     if len(exception_concept_uris) > 0:
-        exception_concept_uris_file = "exception_concept_uris.pkl"
+        exception_concept_uris_file = "dbpedia_exception_concept_uris.pkl"
         print(f"Saving the exception concept uris to file: {exception_concept_uris_file}")
         with open(exception_concept_uris_file, 'wb') as f:
             pickle.dump(exception_concept_uris, f)

@@ -27,7 +27,7 @@ def normalize_text(text):
     return ' '.join(all_normalised_words)
 
 if __name__ == "__main__":
-    kg_df_filename = "gazetteers_entry_kg_df"
+    kg_df_filename = "results/gazetteers_entry_kg_df"
     kg_df = pd.read_json(kg_df_filename, orient="index")
 
     descriptions = kg_df['description'].tolist()
@@ -37,6 +37,6 @@ if __name__ == "__main__":
     text_embeddings_new = model.encode(descriptions, show_progress_bar = True)
     kg_df["embedding"] = text_embeddings_new.tolist()
     # store this dataframe
-    result_df_filename = "gaz_kg_df_with_embeddings"
+    result_df_filename = "results/gaz_kg_df_with_embeddings"
     print(f"----Saving the final dataframe to {result_df_filename}----")
     kg_df.to_json(result_df_filename, orient="index")

@@ -43,28 +43,28 @@ The scripts used this repo support:
 
 We are using the dataframe version of this [KnowledgeGraph](https://zenodo.org/records/14051678) as an input data from our pipeline. If you want to have access to it, drop us an email. 
 
- 1. Extraction Scripts ([extract_gaz_1803.py](./src/extract_gaz_1803.py), [extract_gaz_1806.py](./src/extract_gaz_1806.py) ....): 	Main scripts for processing the respective editions. They extract articles from specific page ranges, send chunked prompts to OpenAI’s GPT-4 for article segmentation, and save both raw and cleaned JSON results. Different prompts are used across different scripts, since the format of the books (pages headers, articles names, descriptions) change over years. 
+ 1. [Extraction Scripts](#extraction-scripts) ([extract_gaz_1803.py](./src/extract_gaz_1803.py), [extract_gaz_1806.py](./src/extract_gaz_1806.py) ....): 	Main scripts for processing the respective editions. They extract articles from specific page ranges, send chunked prompts to OpenAI’s GPT-4 for article segmentation, and save both raw and cleaned JSON results. Different prompts are used across different scripts, since the format of the books (pages headers, articles names, descriptions) change over years. 
 
- 2. [Merging Cleaning Data](./src/merge_cleaned_articles.py): Merges all the cleaned JSON article files into a single output file, sorting and aligning metadata across the dataset.
+ 2. [Merging Cleaning Data](#merging-cleaning-data): Merges all the cleaned JSON article files into a single output file, sorting and aligning metadata across the dataset.
 
- 3. [Dataframe Generation](./src/dataframe_articles.py): A script that deduplicates and cleans already extracted articles. It includes advanced logic to detect fuzzy duplicates, substring containment, and prefix-based similarity across multiple pages. It also adds metadata from the original OCR dataset. These are then exported and analyzed in Jupyter/Colab notebooks.
+ 3. [Dataframe Generation](#dataframe-generation): A script that deduplicates and cleans already extracted articles. It includes advanced logic to detect fuzzy duplicates, substring containment, and prefix-based similarity across multiple pages. It also adds metadata from the original OCR dataset. These are then exported and analyzed in Jupyter/Colab notebooks.
 
- 4. [Knowledge Graph Generation](./src/knowledge_graph/df_to_kg.py): This script constructs a RDF knowledge graph based on [Heritage Textual Ontology (HTO)](https://w3id.org/hto) and all dataframes generated from step 3. In this graph, articles with their "see reference" articles are linked.
+ 4. [Knowledge Graph Generation](#knowledge-graph-generation): This script constructs a RDF knowledge graph based on [Heritage Textual Ontology (HTO)](https://w3id.org/hto) and all dataframes generated from step 3. In this graph, articles with their "see reference" articles are linked.
 
- 5. [Adding Page Permanent URLs](./src/knowledge_graph/add_page_permanent_url.py): Adds permanent url of each page to the graph from step 4. These permanent urls are extracted from [NLS digital gallery](https://digital.nls.uk/gazetteers-of-scotland-1803-1901/archive/97491608) and stored in `volume_page_urls.json`.
+ 5. [Adding Page Permanent URLs](#adding-page-permanent-urls): Adds permanent url of each page to the graph from step 4. These permanent urls are extracted from [NLS digital gallery](https://digital.nls.uk/gazetteers-of-scotland-1803-1901/archive/97491608) and stored in `volume_page_urls.json`.
 
- 6. Uploading Knowledge to Fuseki SPARQL Server: Upload the graph file from step 5 to a [Fuseki server](https://jena.apache.org/documentation/fuseki2/), a SPARQL server for storing and querying RDF graphs.
+ 6. [Uploading Knowledge to Fuseki SPARQL Server](#uploading-knowledge-to-fuseki-sparql-server): Upload the graph file from step 5 to a [Fuseki server](https://jena.apache.org/documentation/fuseki2/), a SPARQL server for storing and querying RDF graphs.
 
- 7. [Knowledge Graph Dataframe Generation](./src/knowledge_graph/kg_to_df.py): This script generates dataframe from uploaded graph in step 6. Compare to the dataframe from step 3, this dataframe only stores essential data for knowledge enrichment and retrival in the following steps. It also includes uris of these essential data for enriched knowledge to link to.
+ 7. [Knowledge Graph Dataframe Generation](#knowledge-graph-dataframe-generation): This script generates dataframe from uploaded graph in step 6. Compare to the dataframe from step 3, this dataframe only stores essential data for knowledge enrichment and retrival in the following steps. It also includes uris of these essential data for enriched knowledge to link to.
 
- 8. [Embedding Generation](./src/knowledge_graph/generate_embeddings.py): Generates vector representation (embedding) of each article using their descriptions. These embeddings are used to infer semantic relation and enrich knowledge in the following steps.
+ 8. [Embedding Generation](#embedding-generation): Generates vector representation (embedding) of each article using their descriptions. These embeddings are used to infer semantic relation and enrich knowledge in the following steps.
 
- 9. [Article Linkage](./src/knowledge_graph/record_linkage.py): links articles across years using dataframe from step 8. It groups articles into concepts, and update the input dataframe with concept uris.
+ 9. [Articles Linkage](#articles-linkage): links articles across years using dataframe from step 8. It groups articles into concepts, and update the input dataframe with concept uris.
 
- 10. [Wikidata Linkage](./src/knowledge_graph/wikidata_linkage.py): links articles with wikidata items using dataframe from step 9. It generates a dataframe for these linked items with uris of their corresponding grouped concepts from step 9. If a wikidata item has already been linked in other collections, this script can then link an article to this item through the concept built in that collection, thus allowing linkage across collections.
+ 10. [Wikidata Linkage](#wikidata-linkage): links articles with wikidata items using dataframe from step 9. It generates a dataframe for these linked items with uris of their corresponding grouped concepts from step 9. If a wikidata item has already been linked in other collections, this script can then link an article to this item through the concept built in that collection, thus allowing linkage across collections.
 Note that this cross-collection linkage requires wikidata dataframe generated for other collections. The dataframe generated from this script only includes newly linked wiki items. Also, it updates input dataframe from step 9 with concept uris from other collections if possible.
 
- 11. [Dbpedia Linkage](./src/knowledge_graph/dbpedia_linkage.py): similar to wikidata linkage, this script links articles with dbpedia items using updated input dataframe from step 10.
+ 11. [Dbpedia Linkage](#dbpedia-linkage): similar to wikidata linkage, this script links articles with dbpedia items using updated input dataframe from step 10.
 
  12. [Graph Generation for Enriched Knowledge](./src/knowledge_graph/add_concepts_to_graph.py): This script generates graph for enriched knowledge, including grouped concepts, links from articles, wikidata and dbpedia items to concepts. Upload this graph to the same dataset of the server in step 6.
 
@@ -73,7 +73,7 @@ This elasticsearch server allows both efficient full-text search and semantic se
 
 All these scripts used are in [src](./src).
 
-## Pipeline Execution Walkthrough
+## 🚀 Pipeline Execution Walkthrough
 
 This section introduces all the details needed to run the pipeline using scripts mentioned above. In order to follow this guide, you will need to have:
 
@@ -82,7 +82,7 @@ This section introduces all the details needed to run the pipeline using scripts
 * Fuseki Server hostname, credential (username and password) to login.
 * Elasticsearch Server hostname, credential (certificate file, api key) to login.
 * Base input dataframe of this collection, drop us an email for access.
-* (Optional) wikidata items dataframe generated for other collections, drop us an email for access. 
+* (Optional) dataframe generated for wikidata or dbpedia items linked in other collections, drop us an email for access. 
 
 ### Extraction Scripts
 
@@ -172,6 +172,8 @@ Note that these dataframes are used for the knowledge graph generation scripts b
 **Input**: 
 * A list of `src/knowledge_graph/sources/gaz_dataframe_*` (json format): dataframe generated from section [Dataframe Generation](#dataframe-generation)
 * `src/knowledge_graph/hto.ttl` (turtle format): the HTO ontology file.
+* `src/knowledge_graph/name_map.pickle` (pickle format): key-value pairs to map a string value to its ID, this ID is used to construct URI. 
+This design ensures URIs generated are valid, also makes the graph generation idempotent.
 
 **Configuration**:
 ```python
@@ -273,6 +275,77 @@ python kg_to_df.py
 ```
 
 **Output**: `src/knowledge_graph/results/gazetteers_entry_kg_df` (json format): dataframe for uploaded graph in fuseki dataset.
+
+### Embedding Generation
+
+**Script**: [generate_embeddings.py](./src/knowledge_graph/generate_embeddings.py)
+
+**Input**: `src/knowledge_graph/results/gazetteers_entry_kg_df` (json format): dataframe for uploaded graph in fuseki dataset from [above](#knowledge-graph-dataframe-generation).
+
+**Execution**:
+```shell
+cd src/knowledge_graph
+python generate_embeddings.py
+```
+
+**Output**: `src/knowledge_graph/results/gaz_kg_df_with_embeddings` (json format): the graph dataframe with embeddings.
+
+
+### Articles Linkage
+
+**Script**: [record_linkage.py](./src/knowledge_graph/record_linkage.py)
+
+**Input**: `src/knowledge_graph/results/gaz_kg_df_with_embeddings` (json format): the graph dataframe with embeddings.
+
+**Execution**
+```shell
+cd src/knowledge_graph
+python record_linkage.py
+```
+
+**Output**: `src/knowledge_graph/results/gaz_kg_concepts_df` (json format): the graph dataframe with embeddings and concept uris.
+
+### Wikidata Linkage
+
+**Script**: [wikidata_linkage.py](./src/knowledge_graph/wikidata_linkage.py)
+
+**Input**: 
+* `src/knowledge_graph/results/gaz_kg_concepts_df` (json format): the graph dataframe with embeddings and concept uris from [article linkage](#articles-linkage).
+* (Optional) `src/knowledge_graph/sources/eb_concept_wikidata_df` (json format): linked wikidata items dataframe generated for [Encyclopaedia Britannica collection](https://data.nls.uk/data/digitised-collections/encyclopaedia-britannica/).
+Check [this repo](https://github.com/frances-ai/KnowledgeGraph) to see how to generate this dataframe.
+
+
+**Execution**
+```shell
+cd src/knowledge_graph
+python wikidata_linkage.py
+```
+
+**Output**: 
+* `src/knowledge_graph/results/gaz_kg_concepts_df` (json format): the updated graph dataframe with embeddings and updated concept uris.
+* `src/knowledge_graph/results/gaz_concept_wikidata_df` (json format): dataframe for newly linked wikidata items with their names, descriptions, embeddings and concept uris.
+
+
+### Dbpedia Linkage
+
+**Script**: [dbpedia_linkage.py](./src/knowledge_graph/dbpedia_linkage.py)
+
+**Input**: 
+* `src/knowledge_graph/results/gaz_kg_concepts_df` (json format): the updated graph dataframe with embeddings and updated concept uris from [wikidata linkage](#wikidata-linkage).
+* (Optional) `src/knowledge_graph/sources/eb_concept_dbpedia_df` (json format): linked dbpedia items dataframe generated for [Encyclopaedia Britannica collection](https://data.nls.uk/data/digitised-collections/encyclopaedia-britannica/).
+Check [this repo](https://github.com/frances-ai/KnowledgeGraph) to see how to generate this dataframe.
+
+
+**Execution**
+```shell
+cd src/knowledge_graph
+python dbpedia_linkage.py
+```
+
+**Output**: 
+* `src/knowledge_graph/results/gaz_kg_concepts_df` (json format): the updated graph dataframe with embeddings and updated concept uris.
+* `src/knowledge_graph/results/gaz_concept_dbpedia_df` (json format): dataframe for newly linked dbpedia items with their names, descriptions, embeddings and concept uris.
+
 
 
 

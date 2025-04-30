@@ -122,13 +122,13 @@ def link_wikidata_with_concept(df, linked_wikidata_items_df):
                     same_wiki_item = same_wiki_item_df.iloc[0].to_dict()
                     existing_concept_uri = same_wiki_item["concept_uri"]
                     # link these terms to the existing concept
-                    print(f"Overwrite term concept with this wiki item {same_wiki_item['item_uri']}")
+                    #print(f"Overwrite term concept with this wiki item {same_wiki_item['item_uri']}")
                     df.loc[records_df.index, 'concept_uri'] = existing_concept_uri
                 else:
                     # check if dbpedia item has been added
                     if item_uri in concept_wiki_items:
-                        existing_dbpedia_item_record = concept_wiki_items[item_uri]
-                        if existing_dbpedia_item_record["max_score"] < score:
+                        existing_wiki_item_record = concept_wiki_items[item_uri]
+                        if existing_wiki_item_record["max_score"] < score:
                             concept_wiki_items[item_uri] = {
                                 "concept_uri": concept_uri,
                                 "item_uri": item_uri,
@@ -149,25 +149,25 @@ def link_wikidata_with_concept(df, linked_wikidata_items_df):
 
 
 if __name__ == "__main__":
-    print("Loading the source dataframe .....")
-    kg_df_filename = "gaz_kg_concepts_df"
+    kg_df_filename = "results/gaz_kg_concepts_df"
+    print(f"Loading the source dataframe {kg_df_filename} .....")
     kg_df = pd.read_json(kg_df_filename, orient="index")
     print("Loading existing linked wikidata items dataframe .....")
-    existing_wiki_items_filename = "eb_concept_wikidata_df"
+    existing_wiki_items_filename = "sources/eb_concept_wikidata_df"
     existing_wiki_items_df = pd.read_json(existing_wiki_items_filename, orient="index")
     print("Linking wikidata items.......")
     # Link wikidata items, also link records to existing concepts from other collections
     exception_concept_uris, concept_wiki_items = link_wikidata_with_concept(kg_df, existing_wiki_items_df)
     concept_wiki_item_list = list(concept_wiki_items.values())
     concept_wiki_item_df = pd.DataFrame(concept_wiki_item_list)
-    result_wiki_df_filename = "gaz_concept_wikidata_df"
+    result_wiki_df_filename = "results/gaz_concept_wikidata_df"
     print(f"Saving the wikidata linking result to file: {result_wiki_df_filename}")
     concept_wiki_item_df.to_json(result_wiki_df_filename, orient="index")
-    refined_source_filename = "refined_gaz_concepts_df"
+    refined_source_filename = kg_df_filename
     print(f"Saving refined source (link records to existing concepts from other collections) to file: {refined_source_filename}")
     kg_df.to_json(refined_source_filename, orient="index")
     if len(exception_concept_uris) > 0:
-        exception_concept_uris_file = "exception_concept_uris.pkl"
+        exception_concept_uris_file = "wiki_exception_concept_uris.pkl"
         print(f"Saving the exception concept uris to file: {exception_concept_uris_file}")
         with open(exception_concept_uris_file, 'wb') as f:
             pickle.dump(exception_concept_uris, f)
