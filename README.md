@@ -68,7 +68,7 @@ Note that this cross-collection linkage requires wikidata dataframe generated fo
 
  12. [Graph Generation for Enriched Knowledge](./src/knowledge_graph/add_concepts_to_graph.py): This script generates graph for enriched knowledge, including grouped concepts, links from articles, wikidata and dbpedia items to concepts. Upload this graph to the same dataset of the server in step 6.
 
- 13. Elasticsearch Indices Creation ([create_gaz_index.py](./src/elasticsearch/create_gaz_index.py), [create_dbpedia_wikidata_index.py](./src/elasticsearch/create_dbpedia_wikidata_index.py)): create index for gazetteer articles using updated input dataframe from step 11. It creates (or updates if index already exists) index for wikidata or dbpedia items using generated items dataframe from step 10 or step 11. 
+ 13. [Elasticsearch Indices Creation](#elasticsearch-indices-creation): create index for gazetteer articles using updated input dataframe from step 11. It creates (or updates if index already exists) index for wikidata or dbpedia items using generated items dataframe from step 10 or step 11. 
 This elasticsearch server allows both efficient full-text search and semantic search.
 
 All these scripts used are in [src](./src).
@@ -347,7 +347,84 @@ python dbpedia_linkage.py
 * `src/knowledge_graph/results/gaz_concept_dbpedia_df` (json format): dataframe for newly linked dbpedia items with their names, descriptions, embeddings and concept uris.
 
 
+### Graph Generation for Enriched Knowledge
 
+**Script**: [add_concepts_to_graph.py](./src/knowledge_graph/add_concepts_to_graph.py)
+
+**Input**:
+* `src/knowledge_graph/results/gaz_kg_concepts_df` (json format): the updated graph dataframe from [dbpedia linkage](#dbpedia-linkage).
+* `src/knowledge_graph/results/gaz_concept_dbpedia_df` (json format): dataframe for newly linked dbpedia items.
+* `src/knowledge_graph/results/gaz_concept_wikidata_df` (json format): dataframe for newly linked wikidata items.
+
+**Execution**:
+```shell
+cd src/knowledge_graph
+python add_concepts_to_graph.py
+```
+
+**Output**: `src/knowledge_graph/results/gaz_extra_concepts_links.ttl` (turtle format): graph file with enriched knowledge and links.
+
+**Upload to the dataset in fuseki server**: Similar to [previous step](#uploading-knowledge-to-fuseki-sparql-server), upload the 
+`src/knowledge_graph/results/gaz_extra_concepts_links.ttl` file to the previous dataset.
+
+**Validate**: run the following SPARQL query to validate uploaded graph:
+```sparql
+PREFIX hto: <https://w3id.org/hto#>
+SELECT * WHERE {
+  ?concept a hto:Concept;
+  	hto:hadConceptRecord ?record.
+} LIMIT 20
+```
+If everything works, it should return concept uri along with their linked records (gazetteer articles, wikidata items, or dbpedia items).
+
+
+### Elasticsearch Indices Creation
+
+**Script**: [create_gaz_index.py](./src/elasticsearch/create_gaz_index.py), [create_dbpedia_wikidata_index.py](./src/elasticsearch/create_dbpedia_wikidata_index.py)
+
+**Inputs**:
+* for script `create_gaz_index.py`, it needs `src/knowledge_graph/results/gaz_kg_concepts_df` (json format): the updated graph dataframe from [dbpedia linkage](#dbpedia-linkage).
+* for script `create_dbpedia_wikidata_index.py`, it needs `src/knowledge_graph/results/gaz_concept_dbpedia_df` from [dbpedia linkage](#dbpedia-linkage) 
+or `src/knowledge_graph/results/gaz_concept_wikidata_df` from [wikidata linkage](#wikidata-linkage)
+
+
+**Configuration**:
+
+In `src/elasticsearch/config.py`:
+```python
+ELASTIC_HOST = "https://elastic.frances-ai.com:9200/" # change to your elasticsearch host
+CA_CERT = "your_path/src/elasticsearch/ca.crt" # change to your certificate filepath 
+ELASTIC_API_KEY = "your_api_key" # change to your api key
+```
+
+In `src/elasticsearch/create_gaz_index.py`:
+```python
+index = "test_gazetteers" # change the index name
+```
+
+In `src/elasticsearch/create_dbpedia_wikidata_index.py`:
+```python
+index = "test_gazetteers" # change the index name
+...... 
+# change input dataframe filepath
+concept_df = pd.read_json("../knowledge_graph/results/gaz_concept_wikidata_df", orient="index")
+```
+
+**Execution**:
+
+```shell
+cd src/elasticsearch
+# Run create_gaz_index.py to create index for gazetteers articles
+python create_gaz_index.py
+
+# Configurate the create_dbpedia_wikidata_index.py for wikidata items and run it
+python create_dbpedia_wikidata_index.py
+
+# Configurate the create_dbpedia_wikidata_index.py for dbpedia items and run it
+python create_dbpedia_wikidata_index.py
+```
+
+If everything works, you should see created index in the kibana interface, web interface for interaction with elasticsearch server.
 
 ## Dataframes with Extracted Articles
 

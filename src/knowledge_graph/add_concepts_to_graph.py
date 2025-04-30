@@ -29,7 +29,7 @@ def external_link(concept_item_df):
     for index, row in concept_item_df.iterrows():
         concept_uri = row["concept_uri"]
         item_uri = row["item_uri"]
-        print(concept_uri, item_uri)
+        #print(concept_uri, item_uri)
         concept_uriref = URIRef(concept_uri)
         item_uriref = URIRef(item_uri)
         graph.add((item_uriref, RDF.type, hto.ExternalRecord))
@@ -38,17 +38,26 @@ def external_link(concept_item_df):
 
 if __name__ == "__main__":
     # add record links
-    df_with_concept_uris = pd.read_json("gaz_kg_concepts_df", orient="index")
+    print("Loading the source dataframe gaz dataframe with concept uris .....")
+    df_with_concept_uris = pd.read_json("results/refined2_gaz_concepts_df", orient="index")
+    print("Adding links from location records to concepts .....")
     record_links(df_with_concept_uris)
-    graph.serialize(format="turtle", destination="gaz_extra_concepts_records_link.ttl")
+    #graph.serialize(format="turtle", destination="gaz_extra_concepts_records_link.ttl")
 
     # add wikidata links
-    # concept_wiki_df = pd.read_json("gaz_concept_wikidata_df", orient="index")
-    # external_link(concept_wiki_df)
-    # graph.serialize(format="turtle", destination="gaz_extra_concepts_wikidata_link.ttl")
-
+    print("Loading the wikidata items dataframe .....")
+    concept_wiki_df = pd.read_json("results/gaz_concept_wikidata_df", orient="index")
+    print("Adding links from wikidata items to concepts .....")
+    external_link(concept_wiki_df)
+    #graph.serialize(format="turtle", destination="gaz_extra_concepts_wikidata_link.ttl")
 
     # add dbpedia links
-    # concept_dbpedia_df = pd.read_json("gaz_concept_dbpedia_df", orient="index")
-    # external_link(concept_dbpedia_df)
-    # graph.serialize(format="turtle", destination="gaz_extra_concepts_dbpedia_link.ttl")
+    print("Loading the dbpedia items dataframe .....")
+    concept_dbpedia_df = pd.read_json("results/gaz_concept_dbpedia_df", orient="index")
+    print("Adding links from dbpedia items to concepts .....")
+    external_link(concept_dbpedia_df)
+
+    result_graph_filepath = "results/gaz_extra_concepts_links.ttl"
+    print(f"Saving the result graph to {result_graph_filepath} .....")
+    graph.serialize(format="turtle", destination=result_graph_filepath)
+    print("Done")
