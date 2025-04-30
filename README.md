@@ -43,6 +43,9 @@ The scripts used this repo support:
 
 We are using the dataframe version of this [KnowledgeGraph](https://zenodo.org/records/14051678) as an input data from our pipeline. If you want to have access to it, drop us an email. 
 
+The figure below shows the overview pipeline, where yellow blocks represents the tasks listed below the figure.
+![img.png](pipeline_overview.png)
+
  1. [Extraction Scripts](#extraction-scripts) ([extract_gaz_1803.py](./src/extract_gaz_1803.py), [extract_gaz_1806.py](./src/extract_gaz_1806.py) ....): 	Main scripts for processing the respective editions. They extract articles from specific page ranges, send chunked prompts to OpenAI’s GPT-4 for article segmentation, and save both raw and cleaned JSON results. Different prompts are used across different scripts, since the format of the books (pages headers, articles names, descriptions) change over years. 
 
  2. [Merging Cleaning Data](#merging-cleaning-data): Merges all the cleaned JSON article files into a single output file, sorting and aligning metadata across the dataset.
