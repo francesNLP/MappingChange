@@ -79,7 +79,7 @@ def get_most_similar_item(query_embedding, wiki_items):
     return score, wiki_items[most_similar_index]
 
 
-def link_wikidata_with_concept(df, linked_wikidata_items_df):
+def link_wikidata_with_concept(df):
     concept_uris = df["concept_uri"].unique()
     all_searched_wiki_items = {}
     concept_wiki_items = {}
@@ -115,28 +115,10 @@ def link_wikidata_with_concept(df, linked_wikidata_items_df):
             #print(most_similar_wiki_item["description"])
             item_uri = most_similar_wiki_item["uri"]
             if score > 0.4:
-                # check if the wiki item has been linked
-                same_wiki_item_df = linked_wikidata_items_df[
-                    linked_wikidata_items_df["item_uri"] == most_similar_wiki_item["uri"]]
-                if len(same_wiki_item_df) > 0:
-                    same_wiki_item = same_wiki_item_df.iloc[0].to_dict()
-                    existing_concept_uri = same_wiki_item["concept_uri"]
-                    # link these terms to the existing concept
-                    #print(f"Overwrite term concept with this wiki item {same_wiki_item['item_uri']}")
-                    df.loc[records_df.index, 'concept_uri'] = existing_concept_uri
-                else:
-                    # check if dbpedia item has been added
-                    if item_uri in concept_wiki_items:
-                        existing_wiki_item_record = concept_wiki_items[item_uri]
-                        if existing_wiki_item_record["max_score"] < score:
-                            concept_wiki_items[item_uri] = {
-                                "concept_uri": concept_uri,
-                                "item_uri": item_uri,
-                                "item_description": most_similar_wiki_item["description"],
-                                "max_score": score,
-                                "embedding": most_similar_wiki_item["embedding"]
-                            }
-                    else:
+                # check if wikidata item has been added
+                if item_uri in concept_wiki_items:
+                    existing_wiki_item_record = concept_wiki_items[item_uri]
+                    if existing_wiki_item_record["max_score"] < score:
                         concept_wiki_items[item_uri] = {
                             "concept_uri": concept_uri,
                             "item_uri": item_uri,
@@ -144,6 +126,14 @@ def link_wikidata_with_concept(df, linked_wikidata_items_df):
                             "max_score": score,
                             "embedding": most_similar_wiki_item["embedding"]
                         }
+                else:
+                    concept_wiki_items[item_uri] = {
+                        "concept_uri": concept_uri,
+                        "item_uri": item_uri,
+                        "item_description": most_similar_wiki_item["description"],
+                        "max_score": score,
+                        "embedding": most_similar_wiki_item["embedding"]
+                    }
 
     return exception_concept_uris, concept_wiki_items
 
@@ -152,20 +142,13 @@ if __name__ == "__main__":
     kg_df_filename = "results/gaz_kg_concepts_df"
     print(f"Loading the source dataframe {kg_df_filename} .....")
     kg_df = pd.read_json(kg_df_filename, orient="index")
-    print("Loading existing linked wikidata items dataframe .....")
-    existing_wiki_items_filename = "sources/eb_concept_wikidata_df"
-    existing_wiki_items_df = pd.read_json(existing_wiki_items_filename, orient="index")
     print("Linking wikidata items.......")
-    # Link wikidata items, also link records to existing concepts from other collections
-    exception_concept_uris, concept_wiki_items = link_wikidata_with_concept(kg_df, existing_wiki_items_df)
+    exception_concept_uris, concept_wiki_items = link_wikidata_with_concept(kg_df)
     concept_wiki_item_list = list(concept_wiki_items.values())
     concept_wiki_item_df = pd.DataFrame(concept_wiki_item_list)
     result_wiki_df_filename = "results/gaz_concept_wikidata_df"
     print(f"Saving the wikidata linking result to file: {result_wiki_df_filename}")
     concept_wiki_item_df.to_json(result_wiki_df_filename, orient="index")
-    refined_source_filename = kg_df_filename
-    print(f"Saving refined source (link records to existing concepts from other collections) to file: {refined_source_filename}")
-    kg_df.to_json(refined_source_filename, orient="index")
     if len(exception_concept_uris) > 0:
         exception_concept_uris_file = "wiki_exception_concept_uris.pkl"
         print(f"Saving the exception concept uris to file: {exception_concept_uris_file}")

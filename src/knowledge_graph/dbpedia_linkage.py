@@ -79,7 +79,7 @@ def get_most_similar_item(query_embedding, dbpedia_items):
     return score, dbpedia_items[most_similar_index]
 
 
-def link_dbpedia_with_concept(df, linked_dbpedia_items_df):
+def link_dbpedia_with_concept(df):
     concept_uris = df["concept_uri"].unique()
     all_searched_dbpedia_items = {}
     concept_dbpedia_items = {}
@@ -112,28 +112,10 @@ def link_dbpedia_with_concept(df, linked_dbpedia_items_df):
             #print(most_similar_wiki_item["description"])
             item_uri = most_similar_dbpedia_item["uri"]
             if score > 0.4:
-                # check if the dbpedia item has been linked
-                same_dbpedia_item_df = linked_dbpedia_items_df[
-                    linked_dbpedia_items_df["item_uri"] == item_uri]
-                if len(same_dbpedia_item_df) > 0:
-                    same_dbpedia_item = same_dbpedia_item_df.iloc[0].to_dict()
-                    existing_concept_uri = same_dbpedia_item["concept_uri"]
-                    # link these terms to the existing concept
-                    #print(f"Overwrite term concept with this dbpedia item {same_dbpedia_item['item_uri']}")
-                    df.loc[records_df.index, 'concept_uri'] = existing_concept_uri
-                else:
-                    # check if dbpedia item has been added
-                    if item_uri in concept_dbpedia_items:
-                        existing_dbpedia_item_record = concept_dbpedia_items[item_uri]
-                        if existing_dbpedia_item_record["max_score"] < score:
-                            concept_dbpedia_items[item_uri] = {
-                                "concept_uri": concept_uri,
-                                "item_uri": item_uri,
-                                "item_description": most_similar_dbpedia_item["description"],
-                                "max_score": score,
-                                "embedding": most_similar_dbpedia_item["embedding"]
-                            }
-                    else:
+                # check if dbpedia item has been added
+                if item_uri in concept_dbpedia_items:
+                    existing_dbpedia_item_record = concept_dbpedia_items[item_uri]
+                    if existing_dbpedia_item_record["max_score"] < score:
                         concept_dbpedia_items[item_uri] = {
                             "concept_uri": concept_uri,
                             "item_uri": item_uri,
@@ -141,6 +123,14 @@ def link_dbpedia_with_concept(df, linked_dbpedia_items_df):
                             "max_score": score,
                             "embedding": most_similar_dbpedia_item["embedding"]
                         }
+                else:
+                    concept_dbpedia_items[item_uri] = {
+                        "concept_uri": concept_uri,
+                        "item_uri": item_uri,
+                        "item_description": most_similar_dbpedia_item["description"],
+                        "max_score": score,
+                        "embedding": most_similar_dbpedia_item["embedding"]
+                    }
 
     return exception_concept_uris, concept_dbpedia_items
 
@@ -149,20 +139,13 @@ if __name__ == "__main__":
     print("Loading the source dataframe .....")
     kg_df_filename = "results/gaz_kg_concepts_df"
     kg_df = pd.read_json(kg_df_filename, orient="index")
-    print("Loading existing linked dbpedia items dataframe .....")
-    existing_dbpedia_items_filename = "sources/eb_concept_dbpedia_df"
-    existing_dbpedia_items_df = pd.read_json(existing_dbpedia_items_filename, orient="index")
     print("Linking dbpedia items.......")
-    # Link dbpedia items, also link terms to existing concepts from other collections
-    exception_concept_uris, concept_dbpedia_items = link_dbpedia_with_concept(kg_df, existing_dbpedia_items_df)
+    exception_concept_uris, concept_dbpedia_items = link_dbpedia_with_concept(kg_df)
     concept_dbpedia_item_list = list(concept_dbpedia_items.values())
     concept_dbpedia_item_df = pd.DataFrame(concept_dbpedia_item_list)
     result_dbpedia_df_filename = "results/gaz_concept_dbpedia_df"
     print(f"Saving the dbpedia linking result to file: {result_dbpedia_df_filename}")
     concept_dbpedia_item_df.to_json(result_dbpedia_df_filename, orient="index")
-    refined_source_filename = kg_df_filename
-    print(f"Saving refined source (link terms to existing concepts from other collections) to file: {refined_source_filename}")
-    kg_df.to_json(refined_source_filename, orient="index")
     if len(exception_concept_uris) > 0:
         exception_concept_uris_file = "dbpedia_exception_concept_uris.pkl"
         print(f"Saving the exception concept uris to file: {exception_concept_uris_file}")

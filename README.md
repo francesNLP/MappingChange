@@ -64,14 +64,13 @@ The figure below shows the overview pipeline, where green blocks represents the 
 
  9. [Articles Linkage](#articles-linkage): links articles across years using dataframe from step 8. It groups articles into concepts, and update the input dataframe with concept uris.
 
- 10. [Wikidata Linkage](#wikidata-linkage): links articles with wikidata items using dataframe from step 9. It generates a dataframe for these linked items with uris of their corresponding grouped concepts from step 9. If a wikidata item has already been linked in other collections, this script can then link an article to this item through the concept built in that collection, thus allowing linkage across collections.
-Note that this cross-collection linkage requires wikidata dataframe generated for other collections. The dataframe generated from this script only includes newly linked wiki items. Also, it updates input dataframe from step 9 with concept uris from other collections if possible.
+ 10. [Wikidata Linkage](#wikidata-linkage): links articles with wikidata items using dataframe from step 9. It generates a dataframe for these linked items with uris of their corresponding grouped concepts from step 9.
 
- 11. [Dbpedia Linkage](#dbpedia-linkage): similar to wikidata linkage, this script links articles with dbpedia items using updated input dataframe from step 10.
+ 11. [Dbpedia Linkage](#dbpedia-linkage): similar to wikidata linkage, this script links articles with dbpedia items using updated input dataframe from step 9.
 
  12. [Graph Generation for Enriched Knowledge](./src/knowledge_graph/add_concepts_to_graph.py): This script generates graph for enriched knowledge, including grouped concepts, links from articles, wikidata and dbpedia items to concepts. Upload this graph to the same dataset of the server in step 6.
 
- 13. [Elasticsearch Indices Creation](#elasticsearch-indices-creation): create index for gazetteer articles using updated input dataframe from step 11. It creates (or updates if index already exists) index for wikidata or dbpedia items using generated items dataframe from step 10 or step 11. 
+ 13. [Elasticsearch Indices Creation](#elasticsearch-indices-creation): create index for gazetteer articles using updated input dataframe from step 9. It creates index for wikidata or dbpedia items using generated items dataframe from step 10 or step 11. 
 This elasticsearch server allows both efficient full-text search and semantic search.
 
 All these scripts used are in [src](./src).
@@ -85,7 +84,6 @@ This section introduces all the details needed to run the pipeline using scripts
 * Fuseki Server hostname, credential (username and password) to login.
 * Elasticsearch Server hostname, credential (certificate file, api key) to login.
 * Base input dataframe of this collection, drop us an email for access.
-* (Optional) dataframe generated for wikidata or dbpedia items linked in other collections, drop us an email for access. 
 
 ### Extraction Scripts
 
@@ -314,9 +312,6 @@ python record_linkage.py
 
 **Input**: 
 * `src/knowledge_graph/results/gaz_kg_concepts_df` (json format): the graph dataframe with embeddings and concept uris from [article linkage](#articles-linkage).
-* (Optional) `src/knowledge_graph/sources/eb_concept_wikidata_df` (json format): linked wikidata items dataframe generated for [Encyclopaedia Britannica collection](https://data.nls.uk/data/digitised-collections/encyclopaedia-britannica/).
-Check [this repo](https://github.com/frances-ai/KnowledgeGraph) to see how to generate this dataframe.
-
 
 **Execution**
 ```shell
@@ -325,8 +320,7 @@ python wikidata_linkage.py
 ```
 
 **Output**: 
-* `src/knowledge_graph/results/gaz_kg_concepts_df` (json format): the updated graph dataframe with embeddings and updated concept uris.
-* `src/knowledge_graph/results/gaz_concept_wikidata_df` (json format): dataframe for newly linked wikidata items with their names, descriptions, embeddings and concept uris.
+* `src/knowledge_graph/results/gaz_concept_wikidata_df` (json format): dataframe for linked wikidata items with their names, descriptions, embeddings and concept uris.
 
 
 ### Dbpedia Linkage
@@ -335,9 +329,6 @@ python wikidata_linkage.py
 
 **Input**: 
 * `src/knowledge_graph/results/gaz_kg_concepts_df` (json format): the updated graph dataframe with embeddings and updated concept uris from [wikidata linkage](#wikidata-linkage).
-* (Optional) `src/knowledge_graph/sources/eb_concept_dbpedia_df` (json format): linked dbpedia items dataframe generated for [Encyclopaedia Britannica collection](https://data.nls.uk/data/digitised-collections/encyclopaedia-britannica/).
-Check [this repo](https://github.com/frances-ai/KnowledgeGraph) to see how to generate this dataframe.
-
 
 **Execution**
 ```shell
@@ -346,7 +337,6 @@ python dbpedia_linkage.py
 ```
 
 **Output**: 
-* `src/knowledge_graph/results/gaz_kg_concepts_df` (json format): the updated graph dataframe with embeddings and updated concept uris.
 * `src/knowledge_graph/results/gaz_concept_dbpedia_df` (json format): dataframe for newly linked dbpedia items with their names, descriptions, embeddings and concept uris.
 
 
@@ -355,9 +345,9 @@ python dbpedia_linkage.py
 **Script**: [add_concepts_to_graph.py](./src/knowledge_graph/add_concepts_to_graph.py)
 
 **Input**:
-* `src/knowledge_graph/results/gaz_kg_concepts_df` (json format): the updated graph dataframe from [dbpedia linkage](#dbpedia-linkage).
-* `src/knowledge_graph/results/gaz_concept_dbpedia_df` (json format): dataframe for newly linked dbpedia items.
-* `src/knowledge_graph/results/gaz_concept_wikidata_df` (json format): dataframe for newly linked wikidata items.
+* `src/knowledge_graph/results/gaz_kg_concepts_df` (json format): the updated input graph dataframe from [articles linkage](#articles-linkage).
+* `src/knowledge_graph/results/gaz_concept_dbpedia_df` (json format): dataframe for linked dbpedia items.
+* `src/knowledge_graph/results/gaz_concept_wikidata_df` (json format): dataframe for linked wikidata items.
 
 **Execution**:
 ```shell
@@ -386,7 +376,7 @@ If everything works, it should return concept uri along with their linked record
 **Script**: [create_gaz_index.py](./src/elasticsearch/create_gaz_index.py), [create_dbpedia_wikidata_index.py](./src/elasticsearch/create_dbpedia_wikidata_index.py)
 
 **Inputs**:
-* for script `create_gaz_index.py`, it needs `src/knowledge_graph/results/gaz_kg_concepts_df` (json format): the updated graph dataframe from [dbpedia linkage](#dbpedia-linkage).
+* for script `create_gaz_index.py`, it needs `src/knowledge_graph/results/gaz_kg_concepts_df` (json format): the updated graph dataframe from [articles linkage](#articles-linkage).
 * for script `create_dbpedia_wikidata_index.py`, it needs `src/knowledge_graph/results/gaz_concept_dbpedia_df` from [dbpedia linkage](#dbpedia-linkage) 
 or `src/knowledge_graph/results/gaz_concept_wikidata_df` from [wikidata linkage](#wikidata-linkage)
 
