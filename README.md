@@ -11,6 +11,22 @@ The goal is to extract these entries from OCR-based page-level text and convert 
 
 This work forms part of the RSE-funded project and builds on prior research funded by the National Library of Scotland.
 
+
+## Related Publication
+
+This repository supports the ISWC 2025 Resources Track paper:
+
+**Mapping Change: A Temporal Knowledge Graph of Scottish Gazetteers (1803–1901)**  
+Authors: Lilin Yu, Rosa Filgueira 
+Submitted to: *ISWC 2025 – Resources Track*  
+Persistent Identifier: https://doi.org/10.5281/zenodo.XXXXXXX (if archived)
+
+**_Resource Availability Statement:_**  
+All source code, extraction scripts, and pipeline documentation are publicly available at [https://github.com/francesNLP/MappingChange](https://github.com/francesNLP/MappingChange).  
+
+The latest version of the codebase used in this paper has been archived on Zenodo at [https://doi.org/10.5281/zenodo.XXXXXXX](https://doi.org/10.5281/zenodo.XXXXXXX).
+
+
 ## Set Up the Environment
 ### Step 1: Create the environment with Python 3.11
 
