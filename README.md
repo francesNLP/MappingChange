@@ -199,7 +199,11 @@ dataframe_files = ["sources/gaz_dataframe_1803",
                    "sources/gaz_dataframe_1825",
                    "sources/gaz_dataframe_1838",
                    "sources/gaz_dataframe_1842",
-                   "sources/gaz_dataframe_1846"]
+                   "sources/gaz_dataframe_1846", 
+                   "sources/gaz_dataframe_1868", 
+                   "sources/gaz_dataframe_1882", 
+                   "sources/gaz_dataframe_1884", 
+                   ]
 ```
 
 **Execution**:
