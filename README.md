@@ -2,8 +2,7 @@
 ## Tracking the Evolution of Place Descriptions in the Gazetteers of Scotland (1803–1901)
 This repository supports a research project to transform [The Gazetteers of Scotland (1803–1901)](https://data.nls.uk/data/digitised-collections/gazetteers-of-scotland/), digitized by the National Library of Scotland (NLS), into structured article-level data. These gazetteers provide detailed historical accounts of Scottish places—towns, glens, castles, and parishes—captured across 21 volumes:
   
-![NumVolGaz1803_1901](https://github.com/user-attachments/assets/b81dca6b-87c7-4468-b0f4-caeb1e76d3bb)
-
+![NumVolGaz1803_1901](https://github.com/user-attachments/assets/e2d53722-93c7-443b-9a21-24121adf4398)
 
   
 
@@ -447,7 +446,7 @@ These cleaned, deduplicated DataFrames (as a result of running[dataframe_article
 * [dataframe_gaz_1846](https://drive.google.com/file/d/1JxGybA-op04Xvs6-MG-C6x1iuneLF5qQ/view?usp=share_link)
 * [dataframe_gaz_1868](https://drive.google.com/file/d/1thPWG2LXHvo7owEWOzu_K_B5XZ5znPMO/view?usp=share_link)
 * [dataframe_gaz_1882](https://drive.google.com/file/d/1r5DMWfOas_ajS71vrC0Cr4I3oxD6ZLjm/view?usp=share_link)
-* [dataframe_gaz_1884] (https://drive.google.com/file/d/1EHrlwH5cnZb1QISt_98ZcEpIVP3wIHmt/view?usp=share_link)
+* [dataframe_gaz_1884](https://drive.google.com/file/d/1EHrlwH5cnZb1QISt_98ZcEpIVP3wIHmt/view?usp=share_link)
 
 
 ## Google Colabs
