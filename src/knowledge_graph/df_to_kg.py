@@ -366,7 +366,7 @@ if __name__ == "__main__":
                        "sources/gaz_dataframe_1846"]
     for dataframe_file in dataframe_files:
         print(f"Loading dataframe file {dataframe_file}....")
-        gaz_df = pd.read_json(dataframe_file, orient='index')
+        gaz_df = pd.read_json(dataframe_file, orient='index', dtype={'MMSID': str})
         print(f"Loaded {len(gaz_df)} records loaded")
 
         print("Creating RDF triples....")
