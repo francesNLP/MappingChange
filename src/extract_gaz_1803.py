@@ -10,7 +10,7 @@ from openai import OpenAI
 g_df= pd.read_json('files/gazatteers_dataframe', orient="index")
 g_df_1803 = g_df[g_df['edition'] == '1803'].copy()
 g_df_1803_pages = g_df_1803[
-    (g_df_1803['pageNum'] >= 563) & (g_df_1803['pageNum'] <= 597)].copy()
+    (g_df_1803['pageNum'] >= 43) & (g_df_1803['pageNum'] <= 563)].copy()
 
 # Initialize OpenAI client
 client = OpenAI(api_key="XXX")
@@ -237,21 +237,21 @@ for start in range(0, num_pages, pages_per_chunk):
 
     g_df_1803_subset = g_df_1803_pages.iloc[start:end]
     marked_text = prepare_marked_text(g_df_1803_subset)
-    raw_json_path = f"files/1803/appendix/raw_article_entries_{start:04d}_{end-1:04d}.json"
+    raw_json_path = f"files/1803/raw_article_entries_{start:04d}_{end-1:04d}.json"
     result = extract_articles_from_marked_text(
         marked_text,
         calculate_raw_entries=1,
         save_raw_entries_to=raw_json_path
     )
 
-    raw_filename = f"files/1803/appendix/raw_extracted_articles_{start:04d}_{end-1:04d}.json"
+    raw_filename = f"files/1803/raw_extracted_articles_{start:04d}_{end-1:04d}.json"
     with open(raw_filename, "w", encoding="utf-8") as f:
         json.dump(result, f, indent=4, ensure_ascii=False)
     print(f"Saved RAW results to {raw_filename} with {result['total_articles']} articles.")
 
     cleaned_data = merge_index_entries(result)
 
-    clean_filename = f"files/1803/appendix/cleaned_articles_{start:04d}_{end-1:04d}.json"
+    clean_filename = f"files/1803/cleaned_articles_{start:04d}_{end-1:04d}.json"
     with open(clean_filename, "w", encoding="utf-8") as f:
         json.dump(cleaned_data, f, indent=4, ensure_ascii=False)
     print(f"Saved CLEANED results to {clean_filename} with {cleaned_data['total_articles']} articles.")
