@@ -18,14 +18,12 @@ This repository supports the ISWC 2025 Resources Track paper:
 **Mapping Change: A Temporal Knowledge Graph of Scottish Gazetteers (1803–1901)**  
 Authors: Lilin Yu, Rosa Filgueira 
 Submitted to: *ISWC 2025 – Resources Track* 
-Live paper at: https://rosafilgueira.github.io/MappingChange-Paper-ISWC2025/ 
+Live Paper: https://rosafilgueira.github.io/MappingChange-Paper-ISWC2025/ 
 Persistent Identifier: https://doi.org/10.5281/zenodo.XXXXXXX (if archived)
 
 **_Resource Availability Statement:_**  
 All source code, extraction scripts, and pipeline documentation are publicly available at [https://github.com/francesNLP/MappingChange](https://github.com/francesNLP/MappingChange).  
-
 The latest version of the codebase used in this paper has been archived on Zenodo at [https://doi.org/10.5281/zenodo.XXXXXXX](https://doi.org/10.5281/zenodo.XXXXXXX).
-
 
 ## Set Up the Environment
 #### Step 1: Create the environment with Python 3.11
@@ -57,7 +55,8 @@ The scripts used this repo support:
 
 ## 🗂️ Pipeline Overview
 
-We are using the dataframe version of this [KnowledgeGraph](https://zenodo.org/records/14051678) as an input data from our pipeline. If you want to have access to it, drop us an email. 
+We are using the dataframe (gazatteers_dataframe) version of this [KnowledgeGraph](https://zenodo.org/records/14051678) as an input data from our pipeline. 
+
 
 The figure below shows the overview pipeline, where green blocks represents the tasks listed below the figure.
 ![img.png](pipeline_overview.png)
@@ -102,7 +101,7 @@ This section introduces all the details needed to run the pipeline using scripts
 * Base input dataframe of this collection, drop us an email for access.
 
 
-Note: We have created a `file` folder where we place the ouput data, as well as the [gazetteers_dataframe](https://zenodo.org/records/14051678) (dataframe with all extracted pages text across all gazetteers). We recommend to download the gazetters_dataframe from [Zenodo]((https://zenodo.org/records/14051678)) and place it in a `file` folder. 
+Note: We have created a `file` folder where we place the ouput data, as well as the [gazetteers_dataframe](https://drive.google.com/file/d/1J6TxdKImw2rNgmdUBN19h202gl-iYupn/view?usp=share_link) (dataframe with all extracted pages text across all gazetteers). We recommend to download the gazetters_dataframe from the previous link and place it in a `file` folder. 
 
 ### Extraction Scripts
 
