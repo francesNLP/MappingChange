@@ -65,7 +65,7 @@ The figure below shows the overview pipeline, where green blocks represents the 
 
  2. [Merging Cleaning Data](#merging-cleaning-data): Merges all the cleaned JSON article files into a single output file, sorting and aligning metadata across the dataset.
 
- 3. [Dataframe Generation](#dataframe-generation): A script that deduplicates and cleans already extracted articles. It includes advanced logic to detect fuzzy duplicates, substring containment, and prefix-based similarity across multiple pages. It also adds metadata from the original OCR dataset. These are then exported and analyzed in Jupyter/Colab notebooks.
+ 3. [Dataframe Generation](#dataframe-generation): A script that deduplicates and cleans already extracted articles. It includes advanced logic to detect fuzzy duplicates, substring containment, and prefix-based similarity across multiple pages. It also adds metadata from the original OCR dataset. These are then exported and analyzed in Jupyter/Colab notebooks. Note that if a gazetteer has multiple volumes (e.g. 1838, 1842, etc.) you will need to call an extra script to combine the dataframes generated for each volume in a single one.
 
  4. [Knowledge Graph Generation](#knowledge-graph-generation): This script constructs a RDF knowledge graph based on [Heritage Textual Ontology (HTO)](https://w3id.org/hto) and all dataframes generated from step 3. In this graph, articles with their "see reference" articles are linked.
 
@@ -188,6 +188,41 @@ python dataframe_articles.py
 You can access these dataframes that we have produced from [this section](#dataframes-with-extracted-articles). 
 Note that these dataframes are used for the knowledge graph generation scripts below.
 
+
+### Combining Dataframes from different volumnes
+
+If a gazetteer has more than 1 volume (e.g. 1838, 1842, etc ...) we need to combine the dataframes generated at the volumen level (with the steps from 1.1 to 1.3) into a single one.
+In order to do that, we have the following script: 
+
+**Script**: [combine_vol_dataframes.py](./src/combine_vol_dataframes.py)
+
+**Input**:
+* `src/files/1838_vol1/gaz_dataframe_1838_vol1` (json format): dataframe of further cleaned articles. 
+* `src/files/1838_vol2/gaz_dataframe_1838_vol2` (json format): dataframe of further cleaned articles. 
+
+**Configuration**:
+
+```python
+...... 
+# Step 1: Load both DataFrames
+df_vol1 = pd.read_json("1838_vol1/gaz_dataframe_1838_vol1", orient="index")
+df_vol2 = pd.read_json("1838_vol2/gaz_dataframe_1838_vol2", orient="index")
+......
+df_combined.to_json("1838_combined/gaz_dataframe_1838", orient="index")
+```
+
+**Execution**:
+```shell
+cd src
+mkdir files/1838_combined
+python combine_vol_dataframes.py
+# You need change the json_path and to_json output path in the script for each different input folder, 
+# and rerun this script
+```
+
+**Output**: `src/files/1838_combined/gaz_dataframe_1838` (json format): dataframe of further cleaned articles. 
+You can access these dataframes that we have produced from [this section](#dataframes-with-extracted-articles). 
+Note that these dataframes are used for the knowledge graph generation scripts below.
 
 ### Knowledge Graph Generation
 
