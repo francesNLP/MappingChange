@@ -107,7 +107,8 @@ This section introduces all the details needed to run the pipeline mentioned abo
 * Fuseki Server hostname, credential (username and password) to login.
 * Elasticsearch Server hostname, credential (certificate file, api key) to login.
 * Base input dataframe of this collection, drop us an email for access.
-* Countries knowledge graph, a knowledge graph based on HTO ontology for countries geo information.
+* Edinburgh Geoparser library in this location: `src/geoparser/georesolve`, contact us for this resource.
+* [Countries knowledge graph](https://doi.org/10.5281/zenodo.15361108), a knowledge graph based on HTO ontology for countries geo information.
 
 Note: We have created a `file` folder where we place the ouput data, as well as the [gazetteers_dataframe](https://drive.google.com/file/d/1J6TxdKImw2rNgmdUBN19h202gl-iYupn/view?usp=share_link) (dataframe with all extracted pages text across all gazetteers). We recommend to download the gazetters_dataframe from the previous link and place it in a `file` folder. 
 

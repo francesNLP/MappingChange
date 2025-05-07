@@ -80,7 +80,7 @@ if __name__ == "__main__":
     # geoparse all samples
     sample_articles = eb_geo_samples_df.to_dict(orient='records')
     print("Geoparsing articles....")
-    for index, article in enumerate(tqdm(sample_articles[:4])):
+    for index, article in enumerate(tqdm(sample_articles)):
         article_location, locations = geoparse(article)
         article["locations"] = locations
         #print(locations)
