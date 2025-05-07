@@ -100,6 +100,8 @@ This section introduces all the details needed to run the pipeline using scripts
 * Elasticsearch Server hostname, credential (certificate file, api key) to login.
 * Base input dataframe of this collection, drop us an email for access.
 
+
+Note: We have created a files folder where we place the ouput data, as well as the gazetteers_dataframe (dataframe with all extracted pages text across all gazetteers). 
 ### Extraction Scripts
 
 **Script**: [extract_gaz_1803.py](./src/extract_gaz_1803.py), [extract_gaz_1806.py](./src/extract_gaz_1806.py) ....
@@ -115,21 +117,25 @@ client = OpenAI(api_key="XXX") # change the api_key
 **Execution**:
 ```shell
 cd src
+mkdir files/1803
+mkdir files/1803/main
 # take extract_gaz_1803.py for example
 python extract_gaz_1803.py
 # you need to run other extract_gaz_*.py scripts
 ```
 
 **Output**: 
-* A list of `src/files/1803/appendix/raw_extracted_articles_*_*.json` (json format): raw article segmentation result for various page ranges.
-* A list of `src/files/1803/appendix/cleaned_articles_*_*.json` (json format): cleaned article segmentation result for various page ranges.
+* A list of `src/files/1803/raw_extracted_articles_*_*.json` (json format): raw article segmentation result for various page ranges.
+* A list of `src/files/1803/cleaned_articles_*_*.json` (json format): cleaned article segmentation result for various page ranges.
 
 
 ### Merging Cleaning Data
 
 **Script**: [merge_cleaned_articles.py](./src/merge_cleaned_articles.py)
 
-**Input**: A list of `src/files/1803/appendix/cleaned_articles_*_*.json` (json format): cleaned article segmentation result for various page ranges (from [Extraction Scripts](#extraction-scripts)).
+**Input**: A list of `src/files/1803/cleaned_articles_*_*.json` (json format): cleaned article segmentation result for various page ranges (from [Extraction Scripts](#extraction-scripts)).
+
+
 
 **Configuration**: 
 
@@ -141,6 +147,8 @@ OUTPUT_FILE = "./1803/gazetteer_articles_merged_1803.json" # Set your output fil
 **Execution**:
 ```shell
 cd src
+mkdir 1803/json_final
+cp files/1803/cleaned_articles* 1803/json_final
 python merge_cleaned_articles.py
 # You need change the INPUT_DIR and OUTPUT_FILE in the script for each different input folder, 
 # and rerun this script
@@ -156,16 +164,16 @@ python merge_cleaned_articles.py
 
 **Input**:
 * `src/files/gazatteers_dataframe` (json format): the base input dataframe of this collection, includes metadata and page level texts.
-* `src/files/1825/gazetteer_articles_merged_1825.json` (json format): merged results of all cleaned articles in the given folder.
+* `src/files/1803/gazetteer_articles_merged_1803.json` (json format): merged results of all cleaned articles in the given folder.
 
 **Configuration**:
 
 ```python
 client = OpenAI(api_key="XXX")  # change the api_key
 ...... 
-json_path = "1825/gazetteer_articles_merged_1825.json" # change to the filepath of your merged articles result
+json_path = "1803/gazetteer_articles_merged_1803.json" # change to the filepath of your merged articles result
 ......
-g_df_fix.to_json(r'1825/gaz_dataframe_1825', orient="index") # change to the filepath for the result
+g_df_fix.to_json(r'1803/gaz_dataframe_1803', orient="index") # change to the filepath for the result
 ```
 
 **Execution**:
