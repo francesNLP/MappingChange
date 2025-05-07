@@ -102,7 +102,8 @@ This section introduces all the details needed to run the pipeline using scripts
 * Base input dataframe of this collection, drop us an email for access.
 
 
-Note: We have created a files folder where we place the ouput data, as well as the gazetteers_dataframe (dataframe with all extracted pages text across all gazetteers). 
+Note: We have created a `file` folder where we place the ouput data, as well as the [gazetteers_dataframe](https://zenodo.org/records/14051678) (dataframe with all extracted pages text across all gazetteers). We recommend to download the gazetters_dataframe from [Zenodo]((https://zenodo.org/records/14051678)) and place it in a `file` folder. 
+
 ### Extraction Scripts
 
 **Script**: [extract_gaz_1803.py](./src/extract_gaz_1803.py), [extract_gaz_1806.py](./src/extract_gaz_1806.py) ....
