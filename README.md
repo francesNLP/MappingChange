@@ -1,9 +1,8 @@
 # 🗺️ MappingChange
 ## Tracking the Evolution of Place Descriptions in the Gazetteers of Scotland (1803–1901)
-This repository supports a research project to transform [The Gazetteers of Scotland (1803–1901)](https://data.nls.uk/data/digitised-collections/gazetteers-of-scotland/), digitized by the National Library of Scotland (NLS), into structured article-level data. These gazetteers provide detailed historical accounts of Scottish places—towns, glens, castles, and parishes—captured across 19 volumes:
+This repository supports a research project to transform [The Gazetteers of Scotland (1803–1901)](https://data.nls.uk/data/digitised-collections/gazetteers-of-scotland/), digitized by the National Library of Scotland (NLS), into structured article-level data. These gazetteers provide detailed historical accounts of Scottish places—towns, glens, castles, and parishes—captured across 19 volumes (10 editions):
   
 ![NumVolGaz1803_1901](https://github.com/user-attachments/assets/e2d53722-93c7-443b-9a21-24121adf4398)
-
   
 
 The goal is to extract these entries from OCR-based page-level text and convert them into cleaned, deduplicated article records that can eventually populate a temporal and semantic knowledge graph (ScotGaz19-KG). This graph will be integrated into the [Frances platform](http://www.frances-ai.com), enabling rich visualizations and advanced NLP-driven analysis of Scotland’s historical landscape.
@@ -101,7 +100,14 @@ This section introduces all the details needed to run the pipeline using scripts
 * Base input dataframe of this collection, drop us an email for access.
 
 
-Note: We have created a `file` folder where we place the ouput data, as well as the [gazetteers_dataframe](https://drive.google.com/file/d/1J6TxdKImw2rNgmdUBN19h202gl-iYupn/view?usp=share_link) (dataframe with all extracted pages text across all gazetteers). We recommend to download the gazetters_dataframe from the previous link and place it in a `file` folder. 
+Note: In our local enviroment we have created a  `files folder where we placed the ouput data, as well as the [gazetteers_dataframe](https://drive.google.com/file/d/1J6TxdKImw2rNgmdUBN19h202gl-iYupn/view?usp=share_link) (dataframe with all extracted pages text across all gazetteers). We recommend to download the gazetters_dataframe from the previous link and place it in a `files` folder (inside `src` folder).
+
+```shell
+cd MappingChange/src
+mkdir files
+cd files
+# place the dataframe in files folder
+```
 
 ### Extraction Scripts
 
@@ -149,7 +155,7 @@ OUTPUT_FILE = "./1803/gazetteer_articles_merged_1803.json" # Set your output fil
 ```shell
 cd src
 mkdir 1803/json_final
-cp files/1803/cleaned_articles* 1803/json_final
+cp files/1803/cleaned_articles* 1803/json_final/.
 python merge_cleaned_articles.py
 # You need change the INPUT_DIR and OUTPUT_FILE in the script for each different input folder, 
 # and rerun this script
