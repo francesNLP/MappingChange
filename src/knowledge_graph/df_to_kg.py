@@ -1,5 +1,5 @@
 import pandas as pd
-from rdflib import Namespace, URIRef, RDF, Literal, XSD, RDFS, FOAF, PROV, Graph
+from rdflib import Namespace, URIRef, RDF, Literal, XSD, RDFS, FOAF, PROV, Graph, SDO, SKOS
 import re
 from tqdm import tqdm
 from utils import load_name_map, save_name_map, name_to_uri_name
@@ -38,7 +38,11 @@ def series2rdf(series_info, collection):
     series = URIRef("https://w3id.org/hto/Series/" + str(series_info["MMSID"]))
     series_title = str(series_info["serieTitle"])
     graph.add((series, RDF.type, hto.Series))
+
     graph.add((collection, hto.hadMember, series))
+    # migrate to schema:hasPart
+    graph.add((collection, SDO.hasPart, series))
+
     graph.add((series, hto.number, Literal(int(series_info["serieNum"]), datatype=XSD.integer)))
     graph.add((series, hto.title, Literal(series_title, datatype=XSD.string)))
     series_sub_title = str(series_info["serieSubTitle"])
@@ -152,8 +156,10 @@ def volume2rdf(volume_info, series):
     graph.add((volume, hto.permanentURL, permanentURL))
     graph.add((volume, hto.numberOfPages, Literal(volume_info["numberOfPages"], datatype=XSD.integer)))
     graph.add((series, RDF.type, hto.WorkCollection))
+
     graph.add((series, hto.hadMember, volume))
-    graph.add((volume, hto.wasMemberOf, series))
+    # migrate to schema:hasPart
+    graph.add((series, SDO.hasPart, volume))
 
     return volume
 
@@ -210,13 +216,13 @@ def dataframe_to_rdf(collection, dataframe, gazetteer_dataset):
                     entry_id = str(mmsid) + "_" + str(df_entry["volumeId"]) + "_" + entry_uri_name + "_" + str(t_count)
                     entry_ref = URIRef("https://w3id.org/hto/LocationRecord/" + entry_id)
                     graph.add((entry_ref, RDF.type, hto.LocationRecord))
+                    graph.add((entry_ref, RDF.type, hto.TermRecord))
                     graph.add((entry_ref, hto.name, Literal(entry_name, datatype=XSD.string)))
 
                     if "alter_names" in df_entry:
                         alter_names = df_entry["alter_names"]
                         for alter_name in alter_names:
                             graph.add((entry_ref, RDFS.label, Literal(alter_name, datatype=XSD.string)))
-
                     # Add the term_ref to dataframe
                     dataframe_equal = (dataframe['id'] == df_entry['id'])
                     dataframe.loc[dataframe_equal, "uri"] = entry_ref
@@ -271,9 +277,16 @@ def dataframe_to_rdf(collection, dataframe, gazetteer_dataset):
 
                     graph.add((volume_ref, RDF.type, hto.WorkCollection))
                     graph.add((volume_ref, hto.hadMember, page_startsAt))
+
+                    # migrate to schema:hasPart
+                    graph.add((volume_ref, SDO.hasPart, page_startsAt))
+                    graph.add((volume_ref, SDO.hasPart, entry_ref))
+
                     graph.add((entry_ref, hto.startsAtPage, page_startsAt))
+
                     graph.add((page_startsAt, RDF.type, hto.WorkCollection))
                     graph.add((page_startsAt, hto.hadMember, entry_ref))
+                    graph.add((page_startsAt, SDO.hasPart, entry_ref))
 
                     ## endsAt
                     page_endsAt = URIRef("https://w3id.org/hto/Page/" + str(df_entry["MMSID"]) + "_" + str(
@@ -281,9 +294,11 @@ def dataframe_to_rdf(collection, dataframe, gazetteer_dataset):
                     graph.add((page_endsAt, RDF.type, hto.Page))
                     graph.add((page_endsAt, hto.number, Literal(df_entry["ends_at_page"], datatype=XSD.int)))
                     graph.add((volume_ref, hto.hadMember, page_endsAt))
+                    graph.add((volume_ref, SDO.hasPart, page_endsAt))
                     graph.add((entry_ref, hto.endsAtPage, page_endsAt))
                     graph.add((page_endsAt, RDF.type, hto.WorkCollection))
                     graph.add((page_endsAt, hto.hadMember, entry_ref))
+                    graph.add((page_endsAt, SDO.hasPart, entry_ref))
     return dataframe
 
 
@@ -363,7 +378,12 @@ if __name__ == "__main__":
                        "sources/gaz_dataframe_1825",
                        "sources/gaz_dataframe_1838",
                        "sources/gaz_dataframe_1842",
-                       "sources/gaz_dataframe_1846"]
+                       "sources/gaz_dataframe_1846",
+                       "sources/gaz_dataframe_1868",
+                       "sources/gaz_dataframe_1882",
+                       "sources/gaz_dataframe_1884",
+                       "sources/gaz_dataframe_1901"
+                       ]
     for dataframe_file in dataframe_files:
         print(f"Loading dataframe file {dataframe_file}....")
         gaz_df = pd.read_json(dataframe_file, orient='index', dtype={'MMSID': str})
