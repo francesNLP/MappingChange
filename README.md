@@ -17,7 +17,8 @@ This repository supports the ISWC 2025 Resources Track paper:
 
 **Mapping Change: A Temporal Knowledge Graph of Scottish Gazetteers (1803–1901)**  
 Authors: Lilin Yu, Rosa Filgueira 
-Submitted to: *ISWC 2025 – Resources Track*  
+Submitted to: *ISWC 2025 – Resources Track* 
+Live paper at: https://rosafilgueira.github.io/MappingChange-Paper-ISWC2025/ 
 Persistent Identifier: https://doi.org/10.5281/zenodo.XXXXXXX (if archived)
 
 **_Resource Availability Statement:_**  
