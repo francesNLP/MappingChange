@@ -1,9 +1,8 @@
 # 🗺️ MappingChange
 ## Tracking the Evolution of Place Descriptions in the Gazetteers of Scotland (1803–1901)
-This repository supports a research project to transform [The Gazetteers of Scotland (1803–1901)](https://data.nls.uk/data/digitised-collections/gazetteers-of-scotland/), digitized by the National Library of Scotland (NLS), into structured article-level data. These gazetteers provide detailed historical accounts of Scottish places—towns, glens, castles, and parishes—captured across 21 volumes:
+This repository supports a research project to transform [The Gazetteers of Scotland (1803–1901)](https://data.nls.uk/data/digitised-collections/gazetteers-of-scotland/), digitized by the National Library of Scotland (NLS), into structured article-level data. These gazetteers provide detailed historical accounts of Scottish places—towns, glens, castles, and parishes—captured across 19 volumes:
   
-![NumVolGaz1803_1901](https://github.com/user-attachments/assets/b81dca6b-87c7-4468-b0f4-caeb1e76d3bb)
-
+![NumVolGaz1803_1901](https://github.com/user-attachments/assets/e2d53722-93c7-443b-9a21-24121adf4398)
 
   
 
@@ -11,18 +10,33 @@ The goal is to extract these entries from OCR-based page-level text and convert 
 
 This work forms part of the RSE-funded project and builds on prior research funded by the National Library of Scotland.
 
+
+## Related Publication
+
+This repository supports the ISWC 2025 Resources Track paper:
+
+**Mapping Change: A Temporal Knowledge Graph of Scottish Gazetteers (1803–1901)**  
+Authors: Lilin Yu, Rosa Filgueira 
+Submitted to: *ISWC 2025 – Resources Track* 
+Live Paper: https://rosafilgueira.github.io/MappingChange-Paper-ISWC2025/ 
+Persistent Identifier: https://doi.org/10.5281/zenodo.XXXXXXX (if archived)
+
+**_Resource Availability Statement:_**  
+All source code, extraction scripts, and pipeline documentation are publicly available at [https://github.com/francesNLP/MappingChange](https://github.com/francesNLP/MappingChange).  
+The latest version of the codebase used in this paper has been archived on Zenodo at [https://doi.org/10.5281/zenodo.XXXXXXX](https://doi.org/10.5281/zenodo.XXXXXXX).
+
 ## Set Up the Environment
-### Step 1: Create the environment with Python 3.11
+#### Step 1: Create the environment with Python 3.11
 
 ```
 conda create -n gazetteer_env python=3.11 -y
 ```
-### Step 2: Activate the environment
+#### Step 2: Activate the environment
 ```
 conda activate gazetteer_env
 ```
 
-### Step 3: Install required libraries
+#### Step 3: Install required libraries
 
 ```
 pip install -r requirements.txt
@@ -41,7 +55,8 @@ The scripts used this repo support:
 
 ## 🗂️ Pipeline Overview
 
-We are using the dataframe version of this [KnowledgeGraph](https://zenodo.org/records/14051678) as an input data from our pipeline. If you want to have access to it, drop us an email. 
+We are using the dataframe (gazatteers_dataframe) version of this [KnowledgeGraph](https://zenodo.org/records/14051678) as an input data from our pipeline. 
+
 
 The figure below shows the overview pipeline, where green blocks represents the tasks listed below the figure.
 ![img.png](pipeline_overview.png)
@@ -50,7 +65,7 @@ The figure below shows the overview pipeline, where green blocks represents the 
 
  2. [Merging Cleaning Data](#merging-cleaning-data): Merges all the cleaned JSON article files into a single output file, sorting and aligning metadata across the dataset.
 
- 3. [Dataframe Generation](#dataframe-generation): A script that deduplicates and cleans already extracted articles. It includes advanced logic to detect fuzzy duplicates, substring containment, and prefix-based similarity across multiple pages. It also adds metadata from the original OCR dataset. These are then exported and analyzed in Jupyter/Colab notebooks.
+ 3. [Dataframe Generation](#dataframe-generation): A script that deduplicates and cleans already extracted articles. It includes advanced logic to detect fuzzy duplicates, substring containment, and prefix-based similarity across multiple pages. It also adds metadata from the original OCR dataset. These are then exported and analyzed in Jupyter/Colab notebooks. Note that if a gazetteer has multiple volumes (e.g. 1838, 1842, etc.) you will need to call an extra script to combine the dataframes generated for each volume in a single one.
 
  4. [Knowledge Graph Generation](#knowledge-graph-generation): This script constructs a RDF knowledge graph based on [Heritage Textual Ontology (HTO)](https://w3id.org/hto) and all dataframes generated from step 3. In this graph, articles with their "see reference" articles are linked.
 
@@ -85,6 +100,9 @@ This section introduces all the details needed to run the pipeline using scripts
 * Elasticsearch Server hostname, credential (certificate file, api key) to login.
 * Base input dataframe of this collection, drop us an email for access.
 
+
+Note: We have created a `file` folder where we place the ouput data, as well as the [gazetteers_dataframe](https://drive.google.com/file/d/1J6TxdKImw2rNgmdUBN19h202gl-iYupn/view?usp=share_link) (dataframe with all extracted pages text across all gazetteers). We recommend to download the gazetters_dataframe from the previous link and place it in a `file` folder. 
+
 ### Extraction Scripts
 
 **Script**: [extract_gaz_1803.py](./src/extract_gaz_1803.py), [extract_gaz_1806.py](./src/extract_gaz_1806.py) ....
@@ -100,21 +118,25 @@ client = OpenAI(api_key="XXX") # change the api_key
 **Execution**:
 ```shell
 cd src
+mkdir files/1803
+mkdir files/1803/main
 # take extract_gaz_1803.py for example
 python extract_gaz_1803.py
 # you need to run other extract_gaz_*.py scripts
 ```
 
 **Output**: 
-* A list of `src/files/1803/appendix/raw_extracted_articles_*_*.json` (json format): raw article segmentation result for various page ranges.
-* A list of `src/files/1803/appendix/cleaned_articles_*_*.json` (json format): cleaned article segmentation result for various page ranges.
+* A list of `src/files/1803/raw_extracted_articles_*_*.json` (json format): raw article segmentation result for various page ranges.
+* A list of `src/files/1803/cleaned_articles_*_*.json` (json format): cleaned article segmentation result for various page ranges.
 
 
 ### Merging Cleaning Data
 
 **Script**: [merge_cleaned_articles.py](./src/merge_cleaned_articles.py)
 
-**Input**: A list of `src/files/1803/appendix/cleaned_articles_*_*.json` (json format): cleaned article segmentation result for various page ranges (from [Extraction Scripts](#extraction-scripts)).
+**Input**: A list of `src/files/1803/cleaned_articles_*_*.json` (json format): cleaned article segmentation result for various page ranges (from [Extraction Scripts](#extraction-scripts)).
+
+
 
 **Configuration**: 
 
@@ -126,6 +148,8 @@ OUTPUT_FILE = "./1803/gazetteer_articles_merged_1803.json" # Set your output fil
 **Execution**:
 ```shell
 cd src
+mkdir 1803/json_final
+cp files/1803/cleaned_articles* 1803/json_final
 python merge_cleaned_articles.py
 # You need change the INPUT_DIR and OUTPUT_FILE in the script for each different input folder, 
 # and rerun this script
@@ -141,16 +165,16 @@ python merge_cleaned_articles.py
 
 **Input**:
 * `src/files/gazatteers_dataframe` (json format): the base input dataframe of this collection, includes metadata and page level texts.
-* `src/files/1825/gazetteer_articles_merged_1825.json` (json format): merged results of all cleaned articles in the given folder.
+* `src/files/1803/gazetteer_articles_merged_1803.json` (json format): merged results of all cleaned articles in the given folder.
 
 **Configuration**:
 
 ```python
 client = OpenAI(api_key="XXX")  # change the api_key
 ...... 
-json_path = "1825/gazetteer_articles_merged_1825.json" # change to the filepath of your merged articles result
+json_path = "1803/gazetteer_articles_merged_1803.json" # change to the filepath of your merged articles result
 ......
-g_df_fix.to_json(r'1825/gaz_dataframe_1825', orient="index") # change to the filepath for the result
+g_df_fix.to_json(r'1803/gaz_dataframe_1803', orient="index") # change to the filepath for the result
 ```
 
 **Execution**:
@@ -165,6 +189,41 @@ python dataframe_articles.py
 You can access these dataframes that we have produced from [this section](#dataframes-with-extracted-articles). 
 Note that these dataframes are used for the knowledge graph generation scripts below.
 
+
+### Combining Dataframes from different volumnes
+
+If a gazetteer has more than 1 volume (e.g. 1838, 1842, etc ...) we need to combine the dataframes generated at the volumen level (with the steps from 1.1 to 1.3) into a single one.
+In order to do that, we have the following script: 
+
+**Script**: [combine_vol_dataframes.py](./src/combine_vol_dataframes.py)
+
+**Input**:
+* `src/files/1838_vol1/gaz_dataframe_1838_vol1` (json format): dataframe of further cleaned articles. 
+* `src/files/1838_vol2/gaz_dataframe_1838_vol2` (json format): dataframe of further cleaned articles. 
+
+**Configuration**:
+
+```python
+...... 
+# Step 1: Load both DataFrames
+df_vol1 = pd.read_json("1838_vol1/gaz_dataframe_1838_vol1", orient="index")
+df_vol2 = pd.read_json("1838_vol2/gaz_dataframe_1838_vol2", orient="index")
+......
+df_combined.to_json("1838_combined/gaz_dataframe_1838", orient="index")
+```
+
+**Execution**:
+```shell
+cd src
+mkdir files/1838_combined
+python combine_vol_dataframes.py
+# You need change the json_path and to_json output path in the script for each different input folder, 
+# and rerun this script
+```
+
+**Output**: `src/files/1838_combined/gaz_dataframe_1838` (json format): dataframe of further cleaned articles. 
+You can access these dataframes that we have produced from [this section](#dataframes-with-extracted-articles). 
+Note that these dataframes are used for the knowledge graph generation scripts below.
 
 ### Knowledge Graph Generation
 
@@ -184,7 +243,12 @@ dataframe_files = ["sources/gaz_dataframe_1803",
                    "sources/gaz_dataframe_1825",
                    "sources/gaz_dataframe_1838",
                    "sources/gaz_dataframe_1842",
-                   "sources/gaz_dataframe_1846"]
+                   "sources/gaz_dataframe_1846", 
+                   "sources/gaz_dataframe_1868", 
+                   "sources/gaz_dataframe_1882", 
+                   "sources/gaz_dataframe_1884", 
+                   "sources/gaz_dataframe_1901", 
+                   ]
 ```
 
 **Execution**:
@@ -431,11 +495,14 @@ These cleaned, deduplicated DataFrames (as a result of running[dataframe_article
 * [dataframe_gaz_1846](https://drive.google.com/file/d/1JxGybA-op04Xvs6-MG-C6x1iuneLF5qQ/view?usp=share_link)
 * [dataframe_gaz_1868](https://drive.google.com/file/d/1thPWG2LXHvo7owEWOzu_K_B5XZ5znPMO/view?usp=share_link)
 * [dataframe_gaz_1882](https://drive.google.com/file/d/1r5DMWfOas_ajS71vrC0Cr4I3oxD6ZLjm/view?usp=share_link)
+* [dataframe_gaz_1884](https://drive.google.com/file/d/1EHrlwH5cnZb1QISt_98ZcEpIVP3wIHmt/view?usp=share_link)
+* [dataframe_gaz_1901](https://drive.google.com/file/d/1a3Qi0Oj8HzFql0BkPjutaUQx8fSzqy1C/view?usp=share_link)
 
 
 ## Google Colabs
 
 * Explore extracted articles from [1803: Gazetteer of Scotland](https://digital.nls.uk/gazetteers-of-scotland-1803-1901/archive/97343436) -->  [Google Colab Notebook](https://colab.research.google.com/drive/1EGzcmjiDNEJNkAUfMjsqZis0k1ZVjzYh?usp=sharing)
+  
 * Explore extracted articles from [1806: Gazetteer of Scotland: containing a particular and concise description of the counties, parishes, islands, cities with maps](https://digital.nls.uk/gazetteers-of-scotland-1803-1901/archive/97414570) --> [Google Colab Notebook](https://colab.research.google.com/drive/1EfqonO3p6XGCxEXyEohUU5uQD7BlIQRr?usp=sharing) 
 
 * Explore extracted articles from [1825: Gazetteer of Scotland: arranged under the various descriptions of counties, parishes, islands -- 1 volume](https://digital.nls.uk/gazetteers-of-scotland-1803-1901/archive/97421702) --> [Google Colab Notebook](https://colab.research.google.com/drive/1CVd40bNGe-RAuPmv1M07tEjSWC5-wcgs?usp=sharing)
