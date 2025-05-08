@@ -109,7 +109,7 @@ This section introduces all the details needed to run the pipeline mentioned abo
 * Edinburgh Geoparser library in this location: `src/geoparser/georesolve`, contact us for this resource.
 * [Countries knowledge graph](https://doi.org/10.5281/zenodo.15361108), a knowledge graph based on HTO ontology for countries geo information.
 
-Note: In our local enviroment we have created a  `files folder where we placed the ouput data, as well as the [gazetteers_dataframe](https://drive.google.com/file/d/1J6TxdKImw2rNgmdUBN19h202gl-iYupn/view?usp=share_link) (dataframe with all extracted pages text across all gazetteers). We recommend to download the gazetters_dataframe from the previous link and place it in a `files` folder (inside `src` folder).
+Note: In our local enviroment we have created a  `files` folder where we placed the ouput data, as well as the [gazetteers_dataframe](https://drive.google.com/file/d/1J6TxdKImw2rNgmdUBN19h202gl-iYupn/view?usp=share_link) (dataframe with all extracted pages text across all gazetteers). We recommend to download the gazetters_dataframe from the previous link and place it in a `files` folder (inside `src` folder).
 
 ```shell
 cd MappingChange/src
