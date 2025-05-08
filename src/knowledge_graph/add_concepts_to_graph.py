@@ -41,7 +41,7 @@ def external_link(concept_item_df, type_uri):
 if __name__ == "__main__":
     # add record links
     print("Loading the source dataframe gaz dataframe with concept uris .....")
-    df_with_concept_uris = pd.read_json("results/gaz_concepts_df", orient="index")
+    df_with_concept_uris = pd.read_json("results/gaz_kg_concepts_df", orient="index")
     print("Adding links from location records to concepts .....")
     record_links(df_with_concept_uris)
     #graph.serialize(format="turtle", destination="gaz_extra_concepts_records_link.ttl")
