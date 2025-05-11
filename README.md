@@ -14,7 +14,7 @@ This resource contributes:
 - Article-level dataframes ( individual and agreegated) extracted from 19th-century Scottish Gazetteers
 - A reproducible pipeline for semantic enrichment and temporal modeling of historical place descriptions
 - Three interlinked Knowledge graphs aligned with [HTO
-ontology](https://w3id.org/hto) representing Gazetteer entries to external sources (Wikidata, DBpedia)
+ontology](https://w3id.org/hto) linking Gazetteer entries to external sources (Wikidata, DBpedia)
 - Notebooks an usage examples powered by SPARQL and Dataframes 
 - Search indexes powered by ElasticSearch 
 
