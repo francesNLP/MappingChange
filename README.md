@@ -26,11 +26,11 @@ This pipeline uniquely leverages GPT-4 for structured article segmentation acros
 - **Archived version**: [Zenodo DOI](https://doi.org/10.5281/zenodo.XXXXXXX)  
 - **License**: MIT License (see [LICENSE](./LICENSE))  
 - **Ontology used**: [Heritage Textual Ontology (HTO)](https://w3id.org/hto)  
-- **Main input dataset**: [`gazetteers_dataframe`](https://drive.google.com/file/d/1J6TxdKImw2rNgmdUBN19h202gl-iYupn/view?usp=share_link) — the page-level dataframe version of the Gazetteers of Scotland, derived from the OCR text and metadata stored in [this Zenodo record](https://zenodo.org/records/14051678)
-- **Other data**: Cleaned DataFrames and semantic-enriched outputs are downloadable [here](#dataframes-with-extracted-articles)  
+- **Main input dataset**: [`gazetteers_dataframe`](https://drive.google.com/file/d/1J6TxdKImw2rNgmdUBN19h202gl-iYupn/view?usp=share_link) — the structured **page-level** dataframe extracted from the Gazetteers of Scotland. This was derived from the OCR text and metadata in [this Zenodo record](https://zenodo.org/records/14051678).
+- **Derived data**: Article-level DataFrames, RDF knowledge graph, and enriched SPARQL/Elasticsearch outputs are downloadable [here](#dataframes-with-extracted-articles)  
 - **SPARQL Endpoint**: Deployable locally with [Apache Jena Fuseki](https://jena.apache.org/documentation/fuseki2/)  
-- **Pipeline Execution Guide**: Full step-by-step instructions available at [PIPELINE_EXECUTION.md](https://github.com/francesNLP/MappingChange/blob/main/PIPELINE_EXECUTION.md)  
-- **Reusability**: All [code/scripts](./src/) are modular and documented. Example [notebooks](./Notebooks) and configuration templates are provided.
+- **Pipeline Execution Guide**: [📄 PIPELINE_EXECUTION.md](https://github.com/francesNLP/MappingChange/blob/main/PIPELINE_EXECUTION.md) — a complete walkthrough for replicating the entire resource  
+- **Reusability**: All [scripts](./src/) are modular, reusable, and well-documented. [Notebooks](./Notebooks) provide worked examples and usage guidance.
 
 
 ## ✅ FAIR Principles Compliance
@@ -98,7 +98,9 @@ Required:
 
 This repository implements a modular pipeline for transforming the [Gazetteers of Scotland (1803–1901)](https://data.nls.uk/data/digitised-collections/gazetteers-of-scotland/)—spanning 19 volumes across 10 historical editions—into a semantically enriched, article-level knowledge graph.
 
-We begin with the previously released [`gazetteers_dataframe`](https://zenodo.org/records/14051678), which contains OCR-extracted text and metadata at the **page level**. Using large language models (GPT-4), we segment these pages into **structured article-level entries**, each corresponding to a specific place. This shift from unstructured page text to place-based articles enables downstream enrichment and is a core contribution of the MappingChange resource.
+We begin with the previously released [`gazetteers_dataframe`](https://zenodo.org/records/14051678), which contains OCR-extracted text and metadata at the **page level**. Using large language models (GPT-4), we segment these pages into **structured article-level entries**, each corresponding to a specific place. This shift from unstructured OCR pages to place-specific records is foundational for enabling semantic enrichment and knowledge graph construction.
+
+> **Note**: This is the first resource to semantically structure 19th-century Scottish Gazetteer content at the article level, supporting both historical research and Linked Data applications.
 
 The resulting entries are cleaned, deduplicated, semantically modeled using the [Heritage Textual Ontology (HTO)](https://w3id.org/hto), and linked across editions, to external sources (e.g., Wikidata, DBpedia), and to geospatial annotations. The output forms a reusable RDF knowledge graph for historical analysis.
 
