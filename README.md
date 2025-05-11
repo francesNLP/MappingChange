@@ -56,7 +56,7 @@ We are using the dataframe (gazatteers_dataframe) version of this [KnowledgeGrap
 
 
 The figure below shows the overview pipeline, where green blocks represents the tasks listed below the figure.
- ![img.png](pipeline_overview.png)
+<img src="pipeline_overview.png" alt="Pipeline Overview" width="700"/>
 
 ### Articles Extraction
 
