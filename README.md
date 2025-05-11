@@ -19,11 +19,6 @@ This repository supports the ISWC 2025 Resources Track paper:
 - 📦 [Zenodo archive (DOI)](https://doi.org/10.5281/zenodo.XXXXXXX)  
 - All code and data available at [github.com/francesNLP/MappingChange](https://github.com/francesNLP/MappingChange)
 
-**_Resource Availability Statement:_**  
-All source code, extraction scripts, and pipeline documentation are publicly available at [https://github.com/francesNLP/MappingChange](https://github.com/francesNLP/MappingChange).  
-
-The latest version of the codebase used in this paper has been archived on Zenodo at [https://doi.org/10.5281/zenodo.XXXXXXX](https://doi.org/10.5281/zenodo.XXXXXXX).
-
 ## ⚙️ Setup Instructions
 ```bash
 conda create -n gazetteer_env python=3.11 -y
