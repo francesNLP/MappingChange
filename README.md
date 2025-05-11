@@ -13,7 +13,8 @@ The goal is to extract these entries from OCR-based page-level text and convert 
 This resource contributes:
 - Article-level dataframes ( individual and agreegated) extracted from 19th-century Scottish Gazetteers
 - A reproducible pipeline for semantic enrichment and temporal modeling of historical place descriptions
-- Three interlinked Knowledge graphs aligned with HTO, linking Gazetteer entries to external sources (Wikidata, DBpedia)
+- Three interlinked Knowledge graphs aligned with [HTO
+ontology](https://w3id.org/hto) representing Gazetteer entries to external sources (Wikidata, DBpedia)
 - Notebooks an usage examples powered by SPARQL and Dataframes 
 - Search indexes powered by ElasticSearch 
 
@@ -25,7 +26,7 @@ This pipeline uniquely leverages GPT-4 for structured article segmentation acros
 - **Code repository**: [https://github.com/francesNLP/MappingChange](https://github.com/francesNLP/MappingChange)  
 - **Archived version**: [Zenodo DOI](https://doi.org/10.5281/zenodo.XXXXXXX)  
 - **License**: MIT License (see [LICENSE](./LICENSE))  
-- **Ontology used**: [Heritage Textual Ontology (HTO)](https://w3id.org/hto)  
+- **Ontology used**: [Heritage Textual Ontology (HTO)]()  
 - **Main input dataset**: [`gazetteers_dataframe`](https://drive.google.com/file/d/1J6TxdKImw2rNgmdUBN19h202gl-iYupn/view?usp=share_link) — the structured **page-level** dataframe extracted from the Gazetteers of Scotland. This was derived from the OCR text and metadata in [this Zenodo record](https://zenodo.org/records/14051678).
 - **Derived data**: Article-level DataFrames, RDF knowledge graph, and enriched SPARQL/Elasticsearch outputs are downloadable [here](#dataframes-with-extracted-articles)  
 - **SPARQL Endpoint**: Deployable locally with [Apache Jena Fuseki](https://jena.apache.org/documentation/fuseki2/)  
