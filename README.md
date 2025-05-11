@@ -34,32 +34,30 @@ Required:
 - Countries KG
 - Edinburgh Geoparser
 
-## 📚 Overview  
+## 📚 Overview and Pipeline
 
-This repository contains a set of scripts for extracting, processing, and cleaning historical article entries from multiple editions of the Gazetteers of Scotland. These Gazetteers are digitized historical documents structured as page-by-page OCR-extracted text. The aim is to extract individual location-based entries (articles), correct common OCR issues, and resolve duplicates across pages and editions.
+This repository provides a complete pipeline for transforming the [Gazetteers of Scotland (1803–1901)](https://data.nls.uk/data/digitised-collections/gazetteers-of-scotland/) into structured, semantically enriched article-level data. These Gazetteers are digitized as page-by-page OCR text and span 19 volumes across 10 historical editions.
 
-The scripts used this repo support:
+Our goal is to extract clean, deduplicated records of place descriptions and represent them in a temporal knowledge graph aligned with the [Heritage Textual Ontology (HTO)](https://w3id.org/hto). The outputs enable downstream analysis of cultural, geographical, and editorial change across 19th-century Scotland.
 
-* Entry-level extraction of articles from OCR-ed pages using GPT-4
-* Cleaning and deduplication of overlapping or fragmented entries
-* Metadata enrichment from the original XML files (via the dataframe)
-* Preparation for integration into a knowledge graph (HTO-compliant)
+We use the preprocessed dataframe [`gazetteers_dataframe`](https://zenodo.org/records/14051678), which contains OCR and metadata at the page level, as the main input to the pipeline.
 
-## 🗂️ Pipeline Overview
+<div align="center">
+  <img src="pipeline_overview.png" alt="Pipeline Overview" width="600"/>
+</div>
 
-We are using the dataframe (gazatteers_dataframe) version of this [KnowledgeGraph](https://zenodo.org/records/14051678) as an input data from our pipeline. It has all the information of the gazetteers but at the page-level.  The figure below summarizes the main components of the pipeline. Green boxes represent tasks executed via scripts in this repository, while red annotations show key data products exchanged between stages.
+### 🔄 Pipeline Stages
 
-<div align="center"> <img src="pipeline_overview.png" alt="Pipeline Overview" width="600"/> </div>
+- **1. Article Extraction**: Segment OCR pages into article-level entries using GPT-4, customized per edition.
+- **2. Cleaning & Deduplication**: Merge partial results, resolve duplicates and enrich with original XML metadata.
+- **3. Knowledge Graph Construction**: Convert articles into RDF triples using HTO, with links between redirected and referenced entries.
+- **4. Semantic Enrichment**:
+  - Link articles across editions into temporal concepts using embeddings.
+  - Align with external sources (Wikidata, DBpedia).
+  - Annotate locations via NER and georesolution (Stanza + Edinburgh Geoparser).
+- **5. Indexing**: Export enriched data into Elasticsearch for semantic and full-text search.
 
-The pipeline includes:
-
-* Article Extraction (via GPT-4): Segment OCR pages into articles and generate cleaned DataFrames per edition.
-* Basic Knowledge Graph Construction: Convert article-level data to RDF using HTO and upload to Fuseki.
-* Knowledge Enrichment: 
-   * Link articles into temporal concepts. 
-   * Align with external sources (Wikidata, DBpedia).
-   * Annotate geographical mentions using geoparsing and georesolution.
-* Index Creation: Publish the enriched knowledge into Elasticsearch for semantic and full-text search
+Each of these stages is modular and well-documented in the `src/` directory, with configuration examples and output formats clearly specified in the [Execution Walkthrough](#🚀-pipeline-execution-walkthrough).
 
 ### Articles Extraction
 
