@@ -9,15 +9,45 @@ The goal is to extract these entries from OCR-based page-level text and convert 
 
 This work forms part of the RSE-funded project and builds on prior research funded by the National Library of Scotland.
 
-## 📰 Associated Publication
+## 📦 Resource Availability Statement
 
-This repository supports the ISWC 2025 Resources Track paper:
+- **Code repository**: [https://github.com/francesNLP/MappingChange](https://github.com/francesNLP/MappingChange)  
+- **Archived version**: [Zenodo DOI](https://doi.org/10.5281/zenodo.XXXXXXX)  
+- **License**: MIT License (see [LICENSE](./LICENSE))  
+- **Ontology used**: [Heritage Textual Ontology (HTO)](https://w3id.org/hto)  
+- **Main input dataset**: [gazetteers_dataframe (Zenodo)](https://zenodo.org/records/14051678)  
+- **Other data**: Cleaned DataFrames and semantic-enriched outputs are downloadable [here](#dataframes-with-extracted-articles)  
+- **SPARQL Endpoint**: Deployable locally with [Apache Jena Fuseki](https://jena.apache.org/documentation/fuseki2/)  
+- **Reusability**: All code/scripts are modular and documented. Example notebooks and configuration templates are provided.
 
-**Mapping Change: A Temporal Knowledge Graph of Scottish Gazetteers (1803–1901)**  
-- Authors: Lilin Yu, Rosa Filgueira 
-- Submitted to: *ISWC 2025 – Resources Track* 
-- 📦 [Zenodo archive (DOI)](https://doi.org/10.5281/zenodo.XXXXXXX)  
-- All code and data available at [github.com/francesNLP/MappingChange](https://github.com/francesNLP/MappingChange)
+
+## 🧱 Components at a Glance
+
+| Component Type         | Name/Description                                       | Location |
+|------------------------|--------------------------------------------------------|----------|
+| 🗃 Dataset              | OCR-based Gazetteer pages (gazetteers_dataframe)      | Zenodo   |
+| 🛠 Scripts              | Article extraction, merging, RDF conversion, linking  | `/src`   |
+| 📘 Ontology            | Heritage Textual Ontology (HTO)                        | w3id.org |
+| 🧠 Knowledge Graph     | RDF + semantic enrichment (Wikidata, Geo, Concepts)    | SPARQL   |
+| 📊 Visual notebooks    | Colab/Notebook exploratory analyses                    | `/Notebooks` |
+| 🔎 Indexes             | Elasticsearch for full-text + semantic search         | Frances  |
+
+
+## 🧑 Target Users and Use Cases
+
+This resource is designed for:
+
+- Researchers in Digital Humanities and Cultural Heritage
+- Semantic Web and NLP scholars studying diachronic corpora
+- Developers of search tools and interfaces for historical archives
+- Educators teaching semantic enrichment and ontology modeling
+
+It supports use cases such as:
+- Semantic comparison of place descriptions across time
+- Linking regional gazetteers with global encyclopedic sources
+- Querying historical narratives using SPARQL and embeddings
+
+
 
 ## ⚙️ Setup Instructions
 ```bash
@@ -30,7 +60,7 @@ Required:
 
 - OpenAI API key
 - Fuseki + Elasticsearch server credentials
-- [Base dataframe at page-level: gazetteers_dataframe](./https://drive.google.com/file/d/1J6TxdKImw2rNgmdUBN19h202gl-iYupn/view?usp=share_link)
+- Base dataframe at page-level: [gazetteers_dataframe](https://drive.google.com/file/d/1J6TxdKImw2rNgmdUBN19h202gl-iYupn/view?usp=share_link)
 - Countries KG
 - Edinburgh Geoparser
 
@@ -158,3 +188,9 @@ This work contributes to the [MappingChange initiative](https://rse.org.uk/scotl
 - Compare local descriptions in the Gazetteers with national perspectives in the Encyclopaedia Britannica
 - Link and cluster places across editions and sources using NLP and semantic matching
 - The extracted articles will be integrated into Frances, an AI-driven platform for historical text analysis hosted at the Edinburgh International Data Facility (EIDF).
+
+## 📖 Cite This Resource
+
+If you use this dataset, pipeline, or knowledge graph in your work, please cite:
+
+
