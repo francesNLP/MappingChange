@@ -17,7 +17,7 @@ This resource contributes:
 - A knowledge graph aligned with HTO, linking Gazetteer entries to external sources (Wikidata, DBpedia)
 - Search and analysis interfaces powered by Elasticsearch and SPARQL
 
-This is the first semantically enriched and temporally aligned resource of its kind over this corpus.
+This pipeline uniquely leverages GPT-4 for structured article segmentation across noisy OCR editions, overcoming variability in historical formatting. This is the first semantically enriched and temporally aligned resource of its kind over this corpus.
 
 
 ## 📦 Resource Availability Statement
@@ -68,6 +68,15 @@ It supports use cases such as:
 - Querying historical narratives using SPARQL and embeddings
 
 
+## 🔁 Reuse Potential
+
+The resource supports reuse in:
+- Historical and cultural heritage studies (e.g., tracing socio-economic change)
+- Knowledge graph construction and ontology design evaluation
+- NLP benchmarking for long-form entity extraction and temporal linking
+- Geoparsing and semantic search applications
+
+Researchers can easily adapt our modular scripts and ontology to other historical corpora.
 
 ## ⚙️ Setup Instructions
 ```bash
@@ -84,13 +93,16 @@ Required:
 - Countries KG
 - Edinburgh Geoparser
 
+
 ## 📚 Overview and Pipeline
 
-This repository implements a modular pipeline for transforming the [Gazetteers of Scotland (1803–1901)](https://data.nls.uk/data/digitised-collections/gazetteers-of-scotland/)—19 volumes across 10 editions—into a semantically enriched, article-level knowledge graph.
+This repository implements a modular pipeline for transforming the [Gazetteers of Scotland (1803–1901)](https://data.nls.uk/data/digitised-collections/gazetteers-of-scotland/)—spanning 19 volumes across 10 historical editions—into a semantically enriched, article-level knowledge graph.
 
-The source material consists of OCR-extracted, page-level text enriched with metadata, available as a consolidated input [`gazetteers_dataframe`](https://zenodo.org/records/14051678). Our goal is to extract, clean, and structure place descriptions into a temporal RDF knowledge base, aligned with the [Heritage Textual Ontology (HTO)](https://w3id.org/hto), and enriched with spatial, temporal, and external linkages.
+We begin with the previously released [`gazetteers_dataframe`](https://zenodo.org/records/14051678), which contains OCR-extracted text and metadata at the **page level**. Using large language models (GPT-4), we segment these pages into **structured article-level entries**, each corresponding to a specific place. This shift from unstructured page text to place-based articles enables downstream enrichment and is a core contribution of the MappingChange resource.
 
-<div align="center">
+The resulting entries are cleaned, deduplicated, semantically modeled using the [Heritage Textual Ontology (HTO)](https://w3id.org/hto), and linked across editions, to external sources (e.g., Wikidata, DBpedia), and to geospatial annotations. The output forms a reusable RDF knowledge graph for historical analysis.
+
+<div align="center"> 
   <img src="pipeline_overview.png" alt="Pipeline Overview" width="600"/>
 </div>
 
@@ -207,16 +219,6 @@ This work contributes to the [MappingChange initiative](https://rse.org.uk/scotl
 - Compare local descriptions in the Gazetteers with national perspectives in the Encyclopaedia Britannica
 - Link and cluster places across editions and sources using NLP and semantic matching
 - The extracted articles will be integrated into Frances, an AI-driven platform for historical text analysis hosted at the Edinburgh International Data Facility (EIDF).
-
-## 🔁 Reuse Potential
-
-The resource supports reuse in:
-- Historical and cultural heritage studies (e.g., tracing socio-economic change)
-- Knowledge graph construction and ontology design evaluation
-- NLP benchmarking for long-form entity extraction and temporal linking
-- Geoparsing and semantic search applications
-
-Researchers can easily adapt our modular scripts and ontology to other historical corpora.
 
 
 ## 📖 Cite This Resource
