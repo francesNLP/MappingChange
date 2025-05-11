@@ -686,18 +686,21 @@ These cleaned, deduplicated DataFrames (as a result of running[dataframe_article
 **Important**: The aggreated dataframe, which also includes embeddings, can be downloaded from here: [`gaz_kg_concepts_df`](https://drive.google.com/file/d/1EyG_Jm5so6bGL6is9Br8eDs5gVutKdQX/view?usp=share_link)
 
 
-## Notebooks Exploration
 
-- [Exploring_Individual_Gz_Dataframes.ipynb](./src/Exploring_Individual_Gz_Dataframes.ipynb)
-- [Exploring_AggregatedDF.ipynb](./src/Exploring_AggregatedDF.ipynb)
-- [Knowledge_Exploration_SPARQL.ipynb](./src/Knowledge_Exploration_SPARQL.ipynb)
+## 📓 Notebooks Exploration
+
+These Jupyter notebooks offer different entry points for exploring the Gazetteers of Scotland dataset, enriched by the MappingChange pipeline:
+
+- [`Exploring_Individual_Gz_Dataframes.ipynb`](./Notebooks/Exploring_Individual_Gz_Dataframes.ipynb): Explores each gazetteer edition separately — useful for comparing formatting, cleaning strategies, and early article-level insights.
+
+- [`Exploring_AggregatedDF.ipynb`](./Notebooks/Exploring_AggregatedDF.ipynb): Main exploratory notebook working with the unified DataFrame (`gaz_kg_concepts_df`). Includes 22 analyses covering article counts, sentiment, keyword trends, embeddings, and semantic change across editions.
+
+- [`Knowledge_Exploration_SPARQL.ipynb`](./Notebooks/Knowledge_Exploration_SPARQL.ipynb):Queries the Gazetteers Knowledge Graph using SPARQL. Enables structured exploration of linked data, references, and ontology-backed relations.
+
+Each notebook serves a different aspect of the project: data quality, temporal-linguistic analysis, and semantic web querying.
 
 
 ### Comparative 
-As a result, we can already do experiment with some analyses in this [Google Colab](https://colab.research.google.com/drive/1mmspC8c1FcYOOY9-wqH4TU8qKVNtFQE1?usp=sharing)
-<img width="1192" alt="Screenshot 2025-04-09 at 18 59 03" src="https://github.com/user-attachments/assets/d7784a58-a3a9-464d-bc78-9d1edbfe6d8f" />
-
-<img width="1227" alt="Screenshot 2025-04-09 at 19 01 23" src="https://github.com/user-attachments/assets/437b5007-b824-4190-8617-512340658b3e" />
 
 
 ## ✨ Research Context
