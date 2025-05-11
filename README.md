@@ -9,6 +9,16 @@ The goal is to extract these entries from OCR-based page-level text and convert 
 
 This work forms part of the RSE-funded project and builds on prior research funded by the National Library of Scotland.
 
+## 🎯 Contribution Summary
+
+This resource contributes:
+- A high-quality, article-level dataset extracted from 19th-century Scottish Gazetteers
+- A reproducible pipeline for semantic enrichment and temporal modeling of historical place descriptions
+- A knowledge graph aligned with HTO, linking Gazetteer entries to external sources (Wikidata, DBpedia)
+- Search and analysis interfaces powered by Elasticsearch and SPARQL
+
+This is the first semantically enriched and temporally aligned resource of its kind over this corpus.
+
 
 ## 📦 Resource Availability Statement
 
@@ -16,11 +26,19 @@ This work forms part of the RSE-funded project and builds on prior research fund
 - **Archived version**: [Zenodo DOI](https://doi.org/10.5281/zenodo.XXXXXXX)  
 - **License**: MIT License (see [LICENSE](./LICENSE))  
 - **Ontology used**: [Heritage Textual Ontology (HTO)](https://w3id.org/hto)  
-- **Main input dataset**: [gazetteers_dataframe from KG stored at (Zenodo)](https://zenodo.org/records/14051678)  
+- **Main input dataset**: [`gazetteers_dataframe`](https://drive.google.com/file/d/1J6TxdKImw2rNgmdUBN19h202gl-iYupn/view?usp=share_link) — the page-level dataframe version of the Gazetteers of Scotland, derived from the OCR text and metadata stored in [this Zenodo record](https://zenodo.org/records/14051678)
 - **Other data**: Cleaned DataFrames and semantic-enriched outputs are downloadable [here](#dataframes-with-extracted-articles)  
 - **SPARQL Endpoint**: Deployable locally with [Apache Jena Fuseki](https://jena.apache.org/documentation/fuseki2/)  
 - **Pipeline Execution Guide**: Full step-by-step instructions available at [PIPELINE_EXECUTION.md](https://github.com/francesNLP/MappingChange/blob/main/PIPELINE_EXECUTION.md)  
 - **Reusability**: All [code/scripts](./src/) are modular and documented. Example [notebooks](./Notebooks) and configuration templates are provided.
+
+
+## ✅ FAIR Principles Compliance
+
+- **Findable**: Published on GitHub and Zenodo with DOI and persistent identifiers
+- **Accessible**: Openly licensed (MIT), full access to code and data
+- **Interoperable**: Uses RDF/OWL (HTO), standard vocabularies (e.g., schema.org, CIDOC-CRM)
+- **Reusable**: Modular code, documented pipeline, and detailed walkthroughs support reuse and extension
 
 
 ## 🧱 Components at a Glance
@@ -181,7 +199,6 @@ The full notebook includes the following types of analyses:
 These analyses help uncover editorial, linguistic, and conceptual changes in how Scottish places were described from 1803 to 1901.
 
 
-
 ## ✨ Research Context
 
 This work contributes to the [MappingChange initiative](https://rse.org.uk/scotlands-vibrant-research-sector-to-receive-over-705-5k-in-the-latest-rse-research-awards-programme/): building a temporal and semantic knowledge graph of 19th-century Scottish place descriptions. It enables researchers to:
@@ -190,6 +207,17 @@ This work contributes to the [MappingChange initiative](https://rse.org.uk/scotl
 - Compare local descriptions in the Gazetteers with national perspectives in the Encyclopaedia Britannica
 - Link and cluster places across editions and sources using NLP and semantic matching
 - The extracted articles will be integrated into Frances, an AI-driven platform for historical text analysis hosted at the Edinburgh International Data Facility (EIDF).
+
+## 🔁 Reuse Potential
+
+The resource supports reuse in:
+- Historical and cultural heritage studies (e.g., tracing socio-economic change)
+- Knowledge graph construction and ontology design evaluation
+- NLP benchmarking for long-form entity extraction and temporal linking
+- Geoparsing and semantic search applications
+
+Researchers can easily adapt our modular scripts and ontology to other historical corpora.
+
 
 ## 📖 Cite This Resource
 
