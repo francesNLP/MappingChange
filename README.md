@@ -2,8 +2,7 @@
 ## Tracking the Evolution of Place Descriptions in the Gazetteers of Scotland (1803–1901)
 This repository supports a research project to transform [The Gazetteers of Scotland (1803–1901)](https://data.nls.uk/data/digitised-collections/gazetteers-of-scotland/), digitized by the National Library of Scotland (NLS), into structured article-level data. These gazetteers provide detailed historical accounts of Scottish places—towns, glens, castles, and parishes—captured across 19 volumes (10 editions):
   
-![NumVolGaz1803_1901](https://github.com/user-attachments/assets/df691d57-b289-41c7-9064-f375492be953)
-
+<img src="./Notebooks/figures/gazetteers_vols.png" alt="Number of vol per edition" width="700"/>
 
 The goal is to extract these entries from OCR-based page-level text and convert them into cleaned, deduplicated article records that can eventually populate a temporal and semantic knowledge graph (ScotGaz19-KG). This graph will be integrated into the [Frances platform](http://www.frances-ai.com), enabling rich visualizations and advanced NLP-driven analysis of Scotland’s historical landscape.
 
@@ -700,7 +699,51 @@ These Jupyter notebooks offer different entry points for exploring the Gazetteer
 Each notebook serves a different aspect of the project: data quality, temporal-linguistic analysis, and semantic web querying.
 
 
-### Comparative 
+### 📊 Comparative Analyses
+
+The notebook [`Exploring_AggregatedDF.ipynb`](./Notebooks/Exploring_AggregatedDF.ipynb) provides a comprehensive suite of 22 comparative analyses across editions of the Gazetteers. These include trends in article length, sentiment, keyword frequency, semantic similarity, and named entity evolution—offering insights into how place descriptions shift across time.
+
+Below, we showcase just two representative visualizations:
+
+#### 1. Keyword Trends Over Time
+A heatmap showing how terms related to religion, gender, industry, education, and governance vary across editions (1803–1901).
+
+<img src="./Notebooks/figures/keyword_heatmap_small.png" alt="Keyword Heatmap" width="700"/>
+
+#### 2. Article Length Distribution
+A boxplot of word counts per article by edition, highlighting editorial and structural variation across volumes.
+
+<img src="./Notebooks/figures/wordcount_boxplot_small.png" alt="Word Count Boxplot" width="700"/>
+
+These examples illustrate the types of diachronic comparisons made possible by the MappingChange pipeline. For a deeper dive into all analyses, see the full [`Exploring_AggregatedDF.ipynb`](./Notebooks/Exploring_AggregatedDF.ipynb).
+
+The full notebook includes the following types of analyses:
+
+- 📊 Article count and length per edition
+- 📦 Boxplot of article word counts across years
+- 📈 Top longest article by edition
+- 🔤 First-letter distribution of article titles
+- 🧠 Most frequent adjectives per edition (using SpaCy)
+- 🏷️ Most referenced capitalized phrases (place-like terms)
+- 🔁 Repeated place names within each edition
+- 🔄 Place names reused across multiple editions
+- 🧮 Alternate name statistics (redirects and variants)
+- 🔗 Reference term usage and density per edition
+- 📉 Keyword frequency trends for selected terms (e.g. railway, harbour)
+- 📌 Keyword frequency heatmap across ~40 terms (e.g. church, cotton, parliament)
+- 🧠 TF-IDF keyword analysis (top distinctive terms per edition)
+- 🔍 TF-IDF trend tracking of specific words (e.g. "railway", "church")
+- 💬 Sentiment analysis of article texts across editions (VADER)
+- 🏙️ Sentiment over time for selected places (e.g. Edinburgh)
+- 🌍 Geocoding sample articles using Nominatim + Folium
+- 📎 Semantic similarity of articles (using precomputed embeddings)
+- 🧭 Ranking places by semantic drift over time
+- 🧾 Comparison of article lengths (pages, words) for specific places
+- 📝 Historical narrative shifts in key cities (e.g. Glasgow, Edinburgh)
+- 📚 Side-by-side text comparisons of places across editions
+
+These analyses help uncover editorial, linguistic, and conceptual changes in how Scottish places were described from 1803 to 1901.
+
 
 
 ## ✨ Research Context
