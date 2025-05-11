@@ -14,7 +14,8 @@ This resource contributes:
 - Article-level dataframes ( individual and agreegated) extracted from 19th-century Scottish Gazetteers
 - A reproducible pipeline for semantic enrichment and temporal modeling of historical place descriptions
 - Three interlinked Knowledge graphs aligned with HTO, linking Gazetteer entries to external sources (Wikidata, DBpedia)
-- Search and analysis interfaces powered by Elasticsearch and SPARQL
+- Notebooks an usage examples powered by SPARQL and Dataframes 
+- Search indexes powered by ElasticSearch 
 
 This pipeline uniquely leverages GPT-4 for structured article segmentation across noisy OCR editions, overcoming variability in historical formatting. This is the first semantically enriched and temporally aligned resource of its kind over this corpus.
 
