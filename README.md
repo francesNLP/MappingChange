@@ -50,7 +50,7 @@ This pipeline uniquely leverages GPT-4 for structured article segmentation acros
 | 📘 Ontology         | Heritage Textual Ontology (HTO) for semantic modeling         | [w3id.org/hto](https://w3id.org/hto) |
 | 🧠 Article DataFrames | Cleaned per-edition and aggregated article-level data         | Pandas / [Zenodo Links](#dataframes-with-extracted-articles) |
 | 🌐 Knowledge Graph   | RDF triples + enrichments (Wikidata, DBpedia, Geo)           | Turtle / Fuseki / Zenodo |
-| 📊 Notebooks        | Jupyter/Colab notebooks for exploratory and comparative analysis | [`/Notebooks`](./Notebooks) |
+| 📊 Notebooks        | Jupyter notebooks for exploratory and comparative analysis | [`/Notebooks`](./Notebooks) |
 | 🔎 Search Indexes   | Full-text + semantic search via Elasticsearch                | [Frances Platform](http://www.frances-ai.com)         |
 
 
