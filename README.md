@@ -15,7 +15,7 @@ This resource contributes:
 - A reproducible pipeline for semantic enrichment and temporal modeling of historical place descriptions
 - Three interlinked Knowledge graphs aligned with [HTO
 ontology](https://w3id.org/hto) linking Gazetteer entries to external sources (Wikidata, DBpedia)
-- Notebooks an usage examples powered by SPARQL and Dataframes 
+- Notebooks an usage examples of this resource powered by SPARQL and Dataframes 
 - Search indexes powered by ElasticSearch 
 
 This pipeline uniquely leverages GPT-4 for structured article segmentation across noisy OCR editions, overcoming variability in historical formatting. This is the first semantically enriched and temporally aligned resource of its kind over this corpus.
