@@ -79,7 +79,7 @@ The pipeline includes:
 1. [Knowledge Graph Generation](#knowledge-graph-generation): Constructs a RDF knowledge graph based on [Heritage Textual Ontology (HTO)](https://w3id.org/hto) and all dataframes generated from Articles Extraction step 3. In this graph, articles with their "see reference" articles are linked.
 2. [Adding Page Permanent URLs](#adding-page-permanent-urls): Adds permanent url of each page to the graph from the Knowledge Graph Generation task. These permanent urls are extracted from [NLS digital gallery](https://digital.nls.uk/gazetteers-of-scotland-1803-1901/archive/97491608) and stored in `volume_page_urls.json`.
 
-### Uploading Basic Knowledge Graph to Fuseki SPARQL Server
+#### Uploading Basic Knowledge Graph to Fuseki SPARQL Server
 [Uploading Knowledge to Fuseki SPARQL Server](#uploading-knowledge-to-fuseki-sparql-server): Upload the graph file from the Basic Knowledge Graph Construction step 2 to a [Fuseki server](https://jena.apache.org/documentation/fuseki2/), a SPARQL server for storing and querying RDF graphs.
 
 ### Knowledge Enrichment
