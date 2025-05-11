@@ -2,7 +2,7 @@
 ## Tracking the Evolution of Place Descriptions in the Gazetteers of Scotland (1803–1901)
 This repository supports a research project to transform [The Gazetteers of Scotland (1803–1901)](https://data.nls.uk/data/digitised-collections/gazetteers-of-scotland/), digitized by the National Library of Scotland (NLS), into structured article-level data. These gazetteers provide detailed historical accounts of Scottish places—towns, glens, castles, and parishes—captured across 19 volumes (10 editions):
   
-![NumVolGaz1803_1901]!(https://github.com/user-attachments/assets/df691d57-b289-41c7-9064-f375492be953)
+![NumVolGaz1803_1901](https://github.com/user-attachments/assets/df691d57-b289-41c7-9064-f375492be953)
 
   
 
