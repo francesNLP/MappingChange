@@ -37,20 +37,21 @@ This pipeline uniquely leverages GPT-4 for structured article segmentation acros
 
 - **Findable**: Published on GitHub and Zenodo with DOI and persistent identifiers
 - **Accessible**: Openly licensed (MIT), full access to code and data
-- **Interoperable**: Uses RDF/OWL (HTO), standard vocabularies (e.g., schema.org, CIDOC-CRM)
+- **Interoperable**: Uses RDF/Turtle (HTO), standard vocabularies (e.g., schema.org, CIDOC-CRM)
 - **Reusable**: Modular code, documented pipeline, and detailed walkthroughs support reuse and extension
-
 
 ## 🧱 Components at a Glance
 
-| Component Type         | Name/Description                                       | Location |
-|------------------------|--------------------------------------------------------|----------|
-| 🗃 Dataset              | OCR-based Gazetteer pages (gazetteers_dataframe)      | Zenodo   |
-| 🛠 Scripts              | Article extraction, merging, RDF conversion, linking  | `/src`   |
-| 📘 Ontology            | Heritage Textual Ontology (HTO)                        | w3id.org |
-| 🧠 Knowledge Graph     | RDF + semantic enrichment (Wikidata, Geo, Concepts)    | SPARQL   |
-| 📊 Visual notebooks    | Colab/Notebook exploratory analyses                    | `/Notebooks` |
-| 🔎 Indexes             | Elasticsearch for full-text + semantic search         | Frances  |
+| Component Type     | Description                                                   | Location / Format        |
+|--------------------|---------------------------------------------------------------|--------------------------|
+| 🗃️ Input Dataset     | OCR-based Gazetteer pages with metadata (`gazetteers_dataframe`) | [Zenodo](https://zenodo.org/records/14051678) |
+| 🛠️ Pipeline Scripts  | Article segmentation, merging, KG generation, enrichment     | [`/src`](./src)          |
+| 📘 Ontology         | Heritage Textual Ontology (HTO) for semantic modeling         | [w3id.org/hto](https://w3id.org/hto) |
+| 🧠 Article DataFrames | Cleaned per-edition and aggregated article-level data         | Pandas / [Zenodo Links](#dataframes-with-extracted-articles) |
+| 🌐 Knowledge Graph   | RDF triples + enrichments (Wikidata, DBpedia, Geo)           | Turtle / Fuseki / Zenodo |
+| 📊 Notebooks        | Jupyter/Colab notebooks for exploratory and comparative analysis | [`/Notebooks`](./Notebooks) |
+| 🔎 Search Indexes   | Full-text + semantic search via Elasticsearch                | [Frances Platform](http://www.frances-ai.com)         |
+
 
 
 ## 🧑 Target Users and Use Cases
@@ -115,7 +116,7 @@ The resulting entries are cleaned, deduplicated, semantically modeled using the 
 3. **Knowledge Graph Construction**: Converts cleaned entries into RDF using HTO, with redirects and references linked.
 4. **Semantic Enrichment**: Adds embeddings, temporal concepts, and links to Wikidata and DBpedia.
 5. **Geospatial Annotation**: Uses NER (Stanza) and georesolution (Edinburgh Geoparser) to tag locations.
-6. **Indexing**: Publishes data to Elasticsearch for semantic and full-text search in the Frances platform.
+6. **Indexing**: Publishes data to Elasticsearch for semantic and full-text search in the [Frances platform](http://www.frances-ai.com).
 
 Each step is implemented as a script in the `src/` directory, with well-defined inputs, outputs, and configurations.
 
@@ -220,7 +221,7 @@ This work contributes to the [MappingChange initiative](https://rse.org.uk/scotl
 - Analyze the evolution of geographical and cultural narratives
 - Compare local descriptions in the Gazetteers with national perspectives in the Encyclopaedia Britannica
 - Link and cluster places across editions and sources using NLP and semantic matching
-- The extracted articles will be integrated into Frances, an AI-driven platform for historical text analysis hosted at the Edinburgh International Data Facility (EIDF).
+- The extracted articles will be integrated into [Frances](http://www.frances-ai.com), an AI-driven platform for historical text analysis hosted at the Edinburgh International Data Facility (EIDF).
 
 
 ## 📖 Cite This Resource
