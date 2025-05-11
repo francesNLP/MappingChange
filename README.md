@@ -9,16 +9,18 @@ The goal is to extract these entries from OCR-based page-level text and convert 
 
 This work forms part of the RSE-funded project and builds on prior research funded by the National Library of Scotland.
 
+
 ## 📦 Resource Availability Statement
 
 - **Code repository**: [https://github.com/francesNLP/MappingChange](https://github.com/francesNLP/MappingChange)  
 - **Archived version**: [Zenodo DOI](https://doi.org/10.5281/zenodo.XXXXXXX)  
 - **License**: MIT License (see [LICENSE](./LICENSE))  
 - **Ontology used**: [Heritage Textual Ontology (HTO)](https://w3id.org/hto)  
-- **Main input dataset**: [gazetteers_dataframe (Zenodo)](https://zenodo.org/records/14051678)  
+- **Main input dataset**: [gazetteers_dataframe from KG stored at (Zenodo)](https://zenodo.org/records/14051678)  
 - **Other data**: Cleaned DataFrames and semantic-enriched outputs are downloadable [here](#dataframes-with-extracted-articles)  
 - **SPARQL Endpoint**: Deployable locally with [Apache Jena Fuseki](https://jena.apache.org/documentation/fuseki2/)  
-- **Reusability**: All code/scripts are modular and documented. Example notebooks and configuration templates are provided.
+- **Pipeline Execution Guide**: Full step-by-step instructions available at [PIPELINE_EXECUTION.md](https://github.com/francesNLP/MappingChange/blob/main/PIPELINE_EXECUTION.md)  
+- **Reusability**: All [code/scripts](./src/) are modular and documented. Example [notebooks](./Notebooks) and configuration templates are provided.
 
 
 ## 🧱 Components at a Glance
