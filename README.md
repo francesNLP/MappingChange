@@ -5,7 +5,7 @@ This repository supports a research project to transform [The Gazetteers of Scot
   
 <img src="./Notebooks/figures/gazetteers_vols.png" alt="Number of vol per edition" width="700"/>
 
-The goal is to extract these entries from OCR-based page-level text and convert them into cleaned, deduplicated article records that can eventually populate a temporal and semantic knowledge graph (ScotGaz19-KG). This graph will be integrated into the [Frances platform](http://www.frances-ai.com), an AI-driven platform for historical text analysis, enabling rich visualizations and advanced NLP-driven analysis of Scotland’s historical landscape.
+The goal is to extract these entries from OCR-based page-level text and convert them into cleaned, deduplicated article records that can eventually populate a temporal and semantic knowledge graph (ScotGaz19-KG). This work (and its new resources) has been integrated in the [Frances platform](http://www.frances-ai.com), an AI-driven platform for historical text analysis, enabling rich visualizations and advanced NLP-driven analysis of Scotland’s historical landscape.
 
 
 ## 🎯 Contribution Summary
