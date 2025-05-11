@@ -123,15 +123,11 @@ cd files
 ### Extraction Scripts
 
 **Script**: [extract_gaz_1803.py](./src/extract_gaz_1803.py), [extract_gaz_1806.py](./src/extract_gaz_1806.py) ....
-
 **Input**: `src/files/gazatteers_dataframe` (json format): the base input dataframe of this collection, includes metadata and page level texts.
-
 **Configuration**: 
-
 ```python
 client = OpenAI(api_key="XXX") # change the api_key
 ```
-
 **Execution**:
 ```shell
 cd src
@@ -150,13 +146,8 @@ python extract_gaz_1803.py
 ### Merging Cleaning Data
 
 **Script**: [merge_cleaned_articles.py](./src/merge_cleaned_articles.py)
-
 **Input**: A list of `src/files/1803/cleaned_articles_*_*.json` (json format): cleaned article segmentation result for various page ranges (from [Extraction Scripts](#extraction-scripts)).
-
-
-
 **Configuration**: 
-
 ```python
 INPUT_DIR = "./1803/json_final/" # Set your input directory of cleaned article segmentation json files
 OUTPUT_FILE = "./1803/gazetteer_articles_merged_1803.json" # Set your output filepath
@@ -171,7 +162,6 @@ python merge_cleaned_articles.py
 # You need change the INPUT_DIR and OUTPUT_FILE in the script for each different input folder, 
 # and rerun this script
 ```
-
 **Output**: 
 * `src/files/1803/gazetteer_articles_merged_1803.json` (json format): merged results of all cleaned articles in the given input folder.
 
@@ -179,11 +169,9 @@ python merge_cleaned_articles.py
 ### Dataframe Generation
 
 **Script**: [dataframe_articles.py](./src/dataframe_articles.py)
-
 **Input**:
 * `src/files/gazatteers_dataframe` (json format): the base input dataframe of this collection, includes metadata and page level texts.
 * `src/files/1803/gazetteer_articles_merged_1803.json` (json format): merged results of all cleaned articles in the given folder.
-
 **Configuration**:
 
 ```python
@@ -193,7 +181,6 @@ json_path = "1803/gazetteer_articles_merged_1803.json" # change to the filepath 
 ......
 g_df_fix.to_json(r'1803/gaz_dataframe_1803', orient="index") # change to the filepath for the result
 ```
-
 **Execution**:
 ```shell
 cd src
@@ -213,13 +200,10 @@ If a gazetteer has more than 1 volume (e.g. 1838, 1842, etc ...) we need to comb
 In order to do that, we have the following script: 
 
 **Script**: [combine_vol_dataframes.py](./src/combine_vol_dataframes.py)
-
 **Input**:
 * `src/files/1838_vol1/gaz_dataframe_1838_vol1` (json format): dataframe of further cleaned articles. 
 * `src/files/1838_vol2/gaz_dataframe_1838_vol2` (json format): dataframe of further cleaned articles. 
-
 **Configuration**:
-
 ```python
 ...... 
 # Step 1: Load both DataFrames
@@ -228,7 +212,6 @@ df_vol2 = pd.read_json("1838_vol2/gaz_dataframe_1838_vol2", orient="index")
 ......
 df_combined.to_json("1838_combined/gaz_dataframe_1838", orient="index")
 ```
-
 **Execution**:
 ```shell
 cd src
@@ -237,7 +220,6 @@ python combine_vol_dataframes.py
 # You need change the json_path and to_json output path in the script for each different input folder, 
 # and rerun this script
 ```
-
 **Output**: `src/files/1838_combined/gaz_dataframe_1838` (json format): dataframe of further cleaned articles. 
 You can access these dataframes that we have produced from [this section](#dataframes-with-extracted-articles). 
 Note that these dataframes are used for the knowledge graph generation scripts below.
@@ -245,7 +227,6 @@ Note that these dataframes are used for the knowledge graph generation scripts b
 ### Knowledge Graph Generation
 
 **Script**: [df_to_kg.py](./src/knowledge_graph/df_to_kg.py)
-
 **Input**: 
 * A list of `src/knowledge_graph/sources/gaz_dataframe_*` (json format): dataframe generated from section [Dataframe Generation](#dataframe-generation)
 * `src/knowledge_graph/hto.ttl` (turtle format): the HTO ontology file.
@@ -267,24 +248,19 @@ dataframe_files = ["sources/gaz_dataframe_1803",
                    "sources/gaz_dataframe_1901", 
                    ]
 ```
-
 **Execution**:
 ```shell
 cd src/knowledge_graph
 python df_to_kg.py
 ```
-
 **Output**: `src/knowledge_graph/results/gaz.ttl` (turtle format): generated basic knowledge graph in turtle format.
-
 
 ### Adding Page Permanent URLs
 
 **Script**: [add_page_permanent_url.py](./src/knowledge_graph/add_page_permanent_url.py)
-
 **Input**: 
 * `src/knowledge_graph/volume_page_urls.json` (json format): json file with page permanent urls.
 * `src/knowledge_graph/gaz.ttl` (turtle format): generated basic knowledge graph from [Knowledge Graph Generation](#knowledge-graph-generation)
-
 **Execution**:
 ```shell
 cd src/knowledge_graph
@@ -292,7 +268,6 @@ python add_page_permanent_url.py
 ```
 
 **Output** `src/knowledge_graph/gaz.ttl` (turtle format): basic knowledge graph with extract page permanent urls added.
-
 
 ### Uploading Knowledge to Fuseki SPARQL Server
 
@@ -340,7 +315,6 @@ Note that the SPARQL endpoint to query this dataset is `hostname/dataset_name`, 
 ### Knowledge Graph Dataframe Generation
 
 **Script**: [kg_to_df.py](./src/knowledge_graph/kg_to_df.py)
-
 **Input**: `http://localhost:3030/test_gaz`: SPARQL endpoint of fuseki dataset with gazetteer knowledge graph uploaded. 
 
 **Configuration**: 
@@ -349,19 +323,16 @@ sparql = SPARQLWrapper(
     "http://localhost:3030/test_gaz" # change the endpoint
 )
 ```
-
 **Execution**:
 ```shell
 cd src/knowledge_graph
 python kg_to_df.py
 ```
-
 **Output**: `src/knowledge_graph/results/gazetteers_entry_kg_df` (json format): dataframe for uploaded graph in fuseki dataset.
 
 ### Embedding Generation
 
 **Script**: [generate_embeddings.py](./src/knowledge_graph/generate_embeddings.py)
-
 **Input**: `src/knowledge_graph/results/gazetteers_entry_kg_df` (json format): dataframe for uploaded graph in fuseki dataset from [above](#knowledge-graph-dataframe-generation).
 
 **Execution**:
@@ -369,7 +340,6 @@ python kg_to_df.py
 cd src/knowledge_graph
 python generate_embeddings.py
 ```
-
 **Output**: `src/knowledge_graph/results/gaz_kg_df_with_embeddings` (json format): the graph dataframe with embeddings.
 
 
@@ -390,7 +360,6 @@ python record_linkage.py
 ### Wikidata Linkage
 
 **Script**: [wikidata_linkage.py](./src/knowledge_graph/wikidata_linkage.py)
-
 **Input**: 
 * `src/knowledge_graph/results/gaz_kg_concepts_df` (json format): the graph dataframe with embeddings and concept uris from [article linkage](#articles-linkage).
 
@@ -403,11 +372,9 @@ python wikidata_linkage.py
 **Output**: 
 * `src/knowledge_graph/results/gaz_concept_wikidata_df` (json format): dataframe for linked wikidata items with their names, descriptions, embeddings and concept uris.
 
-
 ### Dbpedia Linkage
 
 **Script**: [dbpedia_linkage.py](./src/knowledge_graph/dbpedia_linkage.py)
-
 **Input**: 
 * `src/knowledge_graph/results/gaz_kg_concepts_df` (json format): the updated graph dataframe with embeddings and updated concept uris from [wikidata linkage](#wikidata-linkage).
 
@@ -424,7 +391,6 @@ python dbpedia_linkage.py
 ### Concept Linkage Enriched Graph Generation
 
 **Script**: [add_concepts_to_graph.py](./src/knowledge_graph/add_concepts_to_graph.py)
-
 **Input**:
 * `src/knowledge_graph/results/gaz_kg_concepts_df` (json format): the updated input graph dataframe from [articles linkage](#articles-linkage).
 * `src/knowledge_graph/results/gaz_concept_dbpedia_df` (json format): dataframe for linked dbpedia items.
