@@ -36,42 +36,37 @@ Required:
 
 ## 📚 Overview and Pipeline
 
-This repository provides a complete pipeline for transforming the [Gazetteers of Scotland (1803–1901)](https://data.nls.uk/data/digitised-collections/gazetteers-of-scotland/) into structured, semantically enriched article-level data. These Gazetteers are digitized as page-by-page OCR text and span 19 volumes across 10 historical editions.
+This repository implements a modular pipeline for transforming the [Gazetteers of Scotland (1803–1901)](https://data.nls.uk/data/digitised-collections/gazetteers-of-scotland/)—19 volumes across 10 editions—into a semantically enriched, article-level knowledge graph.
 
-Our goal is to extract clean, deduplicated records of place descriptions and represent them in a temporal knowledge graph aligned with the [Heritage Textual Ontology (HTO)](https://w3id.org/hto). The outputs enable downstream analysis of cultural, geographical, and editorial change across 19th-century Scotland.
-
-We use the preprocessed dataframe [`gazetteers_dataframe`](https://zenodo.org/records/14051678), which contains OCR and metadata at the page level, as the main input to the pipeline.
+The source material consists of OCR-extracted, page-level text enriched with metadata, available as a consolidated input [`gazetteers_dataframe`](https://zenodo.org/records/14051678). Our goal is to extract, clean, and structure place descriptions into a temporal RDF knowledge base, aligned with the [Heritage Textual Ontology (HTO)](https://w3id.org/hto), and enriched with spatial, temporal, and external linkages.
 
 <div align="center">
   <img src="pipeline_overview.png" alt="Pipeline Overview" width="600"/>
 </div>
 
-### 🔄 Pipeline Stages
+### 🔄 Pipeline Components
 
-- **1. Article Extraction**: Segment OCR pages into article-level entries using GPT-4, customized per edition.
-- **2. Cleaning & Deduplication**: Merge partial results, resolve duplicates and enrich with original XML metadata.
-- **3. Knowledge Graph Construction**: Convert articles into RDF triples using HTO, with links between redirected and referenced entries.
-- **4. Semantic Enrichment**:
-  - Link articles across editions into temporal concepts using embeddings.
-  - Align with external sources (Wikidata, DBpedia).
-  - Annotate locations via NER and georesolution (Stanza + Edinburgh Geoparser).
-- **5. Indexing**: Export enriched data into Elasticsearch for semantic and full-text search.
+1. **Article Extraction**: Uses GPT-4 to segment OCR pages into structured entries (per edition).
+2. **Cleaning & Deduplication**: Merges outputs, resolves duplicates, and integrates original metadata.
+3. **Knowledge Graph Construction**: Converts cleaned entries into RDF using HTO, with redirects and references linked.
+4. **Semantic Enrichment**: Adds embeddings, temporal concepts, and links to Wikidata and DBpedia.
+5. **Geospatial Annotation**: Uses NER (Stanza) and georesolution (Edinburgh Geoparser) to tag locations.
+6. **Indexing**: Publishes data to Elasticsearch for semantic and full-text search in the Frances platform.
 
-Each of these stages is modular and well-documented in the `src/` directory, with configuration examples and output formats clearly specified in the [Execution Walkthrough](#🚀-pipeline-execution-walkthrough).
+Each step is implemented as a script in the `src/` directory, with well-defined inputs, outputs, and configurations.
 
-## 🚀 Pipeline Execution Guide
+## 🚀 Execution Guide
 
-For full setup instructions and detailed script walkthroughs, see the dedicated guide:
+For full setup instructions, script usage, configuration, and SPARQL examples, see:
 
 👉 [📄 PIPELINE_EXECUTION.md](./PIPELINE_EXECUTION.md)
 
 This includes:
 - Environment setup
-- GPT-based extraction
-- Data cleaning & merging
-- Knowledge graph generation
-- Semantic and spatial enrichment
-- SPARQL validation queries
+- GPT-based extraction and merging
+- Knowledge graph generation and uploading
+- Embedding, linking, and enrichment
+- Geotagging and spatial queries
 - Elasticsearch indexing
 
 
