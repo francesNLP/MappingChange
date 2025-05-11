@@ -26,7 +26,7 @@ This pipeline uniquely leverages GPT-4 for structured article segmentation acros
 - **Code repository**: [https://github.com/francesNLP/MappingChange](https://github.com/francesNLP/MappingChange)  
 - **Archived version**: [Zenodo DOI](https://doi.org/10.5281/zenodo.XXXXXXX)  
 - **License**: MIT License (see [LICENSE](./LICENSE))  
-- **Ontology used**: [Heritage Textual Ontology (HTO)]()  
+- **Ontology used**: [Heritage Textual Ontology (HTO)](http://query.frances-ai.com/hto_gazetteers)
 - **Main input dataset**: [`gazetteers_dataframe`](https://drive.google.com/file/d/1J6TxdKImw2rNgmdUBN19h202gl-iYupn/view?usp=share_link) — the structured **page-level** dataframe extracted from the Gazetteers of Scotland. This was derived from the OCR text and metadata in [this Zenodo record](https://zenodo.org/records/14051678).
 - **Derived data**: Article-level DataFrames, RDF knowledge graph, outputs are downloadable [here](#dataframes-with-extracted-articles)  
 - **SPARQL Endpoint**: Deployable locally with [Apache Jena Fuseki]()
