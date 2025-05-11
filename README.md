@@ -39,7 +39,7 @@ conda activate gazetteer_env
 pip install -r requirements.txt
 ```
 
-## 📚 Gazetteer Article Extraction 
+## 📚 Overview  
 
 This repository contains a set of scripts for extracting, processing, and cleaning historical article entries from multiple editions of the Gazetteers of Scotland. These Gazetteers are digitized historical documents structured as page-by-page OCR-extracted text. The aim is to extract individual location-based entries (articles), correct common OCR issues, and resolve duplicates across pages and editions.
 
@@ -54,9 +54,19 @@ The scripts used this repo support:
 
 We are using the dataframe (gazatteers_dataframe) version of this [KnowledgeGraph](https://zenodo.org/records/14051678) as an input data from our pipeline. 
 
+The figure below summarizes the main components of the pipeline. Green boxes represent tasks executed via scripts in this repository, while red annotations show key data products exchanged between stages.
 
-The figure below shows the overview pipeline, where green blocks represents the tasks listed below the figure.
-<img src="pipeline_overview.png" alt="Pipeline Overview" width="700"/>
+<div align="center"> <img src="pipeline_overview.png" alt="Pipeline Overview" width="600"/> </div>
+
+The pipeline includes:
+
+* Article Extraction (via GPT-4): Segment OCR pages into articles and generate cleaned DataFrames per edition.
+* Basic Knowledge Graph Construction: Convert article-level data to RDF using HTO and upload to Fuseki.
+* Knowledge Enrichment: 
+   * Link articles into temporal concepts. 
+   * Align with external sources (Wikidata, DBpedia).
+   * Annotate geographical mentions using geoparsing and georesolution.
+* Index Creation: Publish the enriched knowledge into Elasticsearch for semantic and full-text search
 
 ### Articles Extraction
 
