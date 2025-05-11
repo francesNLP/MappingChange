@@ -11,9 +11,9 @@ The goal is to extract these entries from OCR-based page-level text and convert 
 ## 🎯 Contribution Summary
 
 This resource contributes:
-- A high-quality, article-level dataset extracted from 19th-century Scottish Gazetteers
+- Article-level dataframes ( individual and agreegated) extracted from 19th-century Scottish Gazetteers
 - A reproducible pipeline for semantic enrichment and temporal modeling of historical place descriptions
-- A knowledge graph aligned with HTO, linking Gazetteer entries to external sources (Wikidata, DBpedia)
+- Three interlinked Knowledge graphs aligned with HTO, linking Gazetteer entries to external sources (Wikidata, DBpedia)
 - Search and analysis interfaces powered by Elasticsearch and SPARQL
 
 This pipeline uniquely leverages GPT-4 for structured article segmentation across noisy OCR editions, overcoming variability in historical formatting. This is the first semantically enriched and temporally aligned resource of its kind over this corpus.
