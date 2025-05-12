@@ -28,7 +28,7 @@ This pipeline uniquely leverages GPT-4 for structured article segmentation acros
 - **License**: MIT (see [LICENSE](./LICENSE))  
 - **Ontology**: [Heritage Textual Ontology (HTO)](http://query.frances-ai.com/hto_gazetteers) — semantic model used throughout the KG  
 - **Main Input Dataset**: [`gazetteers_dataframe`](https://drive.google.com/file/d/1J6TxdKImw2rNgmdUBN19h202gl-iYupn/view?usp=share_link) — page-level OCR + metadata structured dataframe derived from [Zenodo](https://zenodo.org/records/14051678)  
-- **Derived Data Outputs**: Cleaned article-level DataFrames, RDF triples, enriched KG — see [Extracted DataFrames](#dataframes-with-extracted-articles)  
+- **Derived Data Outputs**: Cleaned article-level DataFrames, RDF triples, enriched KG — see [Extracted DataFrames](#dataframes-with-extracted-articles) and [KGs with Extracted Articles](#kgs-with-extracted-articles)  
 - **SPARQL Endpoint**: Local deployment via Apache Jena Fuseki — [Live Example](http://query.frances-ai.com/hto_gazetteers)  
 - **Execution Instructions**: [📄 `PIPELINE_EXECUTION.md`](./PIPELINE_EXECUTION.md) — step-by-step guide for running the full pipeline  
 - **Query & Usage Examples**: [📄 `KG_ES_USAGE.md`](./KG_ES_USAGE.md) — how to query the KG and use Elasticsearch indices  
@@ -52,7 +52,7 @@ This pipeline uniquely leverages GPT-4 for structured article segmentation acros
 | 📘 Ontology              | Heritage Textual Ontology (HTO) for semantic modeling                       | [w3id.org/hto](https://w3id.org/hto) , [code](https://github.com/frances-ai/HeritageTextOntology)                                 |
 | 🧠 Article DataFrames    | Cleaned per-edition and aggregated article-level data                        | Pandas / [Zenodo Links](#dataframes-with-extracted-articles)        |
 | 🌐 Knowledge Graph       | RDF triples + enrichments (Wikidata, DBpedia, Geo)                           | Turtle / Fuseki / Zenodo / [KG_ES_USAGE.md](./KG_ES_USAGE.md)       |
-| 📊 Notebooks             | Jupyter notebooks for exploratory and comparative analysis                   | [`/Notebooks`](./Notebooks)                                         |
+| 📊 Notebooks             | Jupyter notebooks for exploratory and comparative analysis (KG and Dataframes)                   | [`/Notebooks`](./Notebooks)                                         |
 | 🔎 Search Indexes        | Full-text + semantic search via Elasticsearch (SPARQL + REST access)         | [Frances Platform](http://www.frances-ai.com), [KG_ES_USAGE.md](./KG_ES_USAGE.md) |
 
 
