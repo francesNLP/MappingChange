@@ -170,6 +170,14 @@ These cleaned, deduplicated DataFrames (as a result of running[dataframe_article
 
 **Important**: The aggreated dataframe, which also includes embeddings, can be downloaded from here: [`gaz_kg_concepts_df`](https://drive.google.com/file/d/1EyG_Jm5so6bGL6is9Br8eDs5gVutKdQX/view?usp=share_link)
 
+## KGs with Extracted Articles
+
+Here you can find the three KGs with the extracted articles: The first one is the main KG with all the concepts and relations, the second one includes the locations annotations and the third one includes the extra concepts links.
+
+* [gaz.ttl](https://drive.google.com/file/d/1fbpFu8ts7hPOsGAq8SUaiJn6IOZ73zez/view?usp=share_link)
+* [gaz_locations_annotations.ttl](https://drive.google.com/file/d/1vnYZEeiLjcfwgkHyJG4l9OECuwtvY1yy/view?usp=share_link)
+* [gaz_extra_concepts_links.ttl](https://drive.google.com/file/d/1UeT8v9Avwk0dlqPx_ZD5-IxOFpOgAyX7/view?usp=share_link)
+
 
 
 ## 📓 Notebooks Exploration
