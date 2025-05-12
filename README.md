@@ -3,7 +3,7 @@
 ## Tracking the Evolution of Place Descriptions in the Gazetteers of Scotland (1803–1901)
 This repository supports a research project to transform [The Gazetteers of Scotland (1803–1901)](https://data.nls.uk/data/digitised-collections/gazetteers-of-scotland/), digitized by the National Library of Scotland (NLS), into structured article-level data. These gazetteers provide detailed historical accounts of Scottish places—towns, glens, castles, and parishes—captured across 19 volumes (10 editions):
   
-<img src="./Notebooks/figures/gazetteers_vols.png" alt="Number of vol per edition" width="700"/>
+<img src="./Notebooks/figures/gazetteers_vols.png" alt="Number of vol per edition" width="500"/>
 
 The goal is to extract these entries from OCR-based page-level text and convert them into cleaned, deduplicated article records to populate a temporal and semantic knowledge graphs. This work (and its new resource) has been integrated in the [Frances platform](http://www.frances-ai.com), our AI-driven platform for historical text analysis, enabling rich visualizations and advanced NLP-driven analysis of Scotland’s historical landscape.
 
@@ -207,7 +207,7 @@ A heatmap showing how terms related to religion, gender, industry, education, an
 #### 2. Article Length Distribution
 A boxplot of word counts per article by edition, highlighting editorial and structural variation across volumes.
 
-<img src="./Notebooks/figures/wordcount_boxplot_small.png" alt="Word Count Boxplot" width="700"/>
+<img src="./Notebooks/figures/wordcount_boxplot_small.png" alt="Word Count Boxplot" width="500"/>
 
 These examples illustrate the types of diachronic comparisons made possible by the MappingChange pipeline. For a deeper dive into all analyses, see the full [`Exploring_AggregatedDF.ipynb`](./Notebooks/Exploring_AggregatedDF.ipynb).
 
