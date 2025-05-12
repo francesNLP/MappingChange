@@ -82,35 +82,14 @@ The resource supports reuse in:
 
 Researchers can easily adapt our modular scripts and ontology to other historical corpora.
 
-
 ## 🧪 Usage Overview
 
-The resources produced by the MappingChange pipeline—cleaned DataFrames and RDF Knowledge Graphs—can be queried, visualized, and analyzed through multiple interfaces:
+The resources produced by the MappingChange pipeline—cleaned DataFrames and RDF Knowledge Graphs—can be queried, visualized, and analyzed through multiple interfaces. This repository provides two key usage documents:
 
-### 🔍 Knowledge Graph Usage
+- [📄 PIPELINE_EXECUTION.md](./PIPELINE_EXECUTION.md): Complete, step-by-step walkthrough for extracting, cleaning, modeling, enriching, and indexing Gazetteer entries. Ideal for reproducing or extending the pipeline.
+- [📄 KG_ES_USAGE.md](./KG_ES_USAGE.md): Focused usage guide with SPARQL query examples and Elasticsearch index access patterns. Shows how to explore the deployed Knowledge Graph and ES indices.
 
-We provide a dedicated guide for querying and validating the Gazetteers Knowledge Graph using SPARQL, including spatial, temporal, and semantic queries:
-
-👉 [KG_USAGE.md](./KG_USAGE.md)
-
-This includes examples such as:
-- Retrieving articles that mention specific places (e.g., “Edinburgh”)
-- Exploring location proximity (e.g., places within 50 miles of Perth)
-- Linking Gazetteer entries to external entities via `hto:refersTo`, `hto:hasConcept`, and `schema:mentions`
-
-### 📓 Notebook-Based Exploration
-
-Notebooks located in [`/Notebooks`](./Notebooks) offer practical, reproducible examples for working with:
-- Individual DataFrames (per edition)
-- Aggregated DataFrames (`gaz_kg_concepts_df`) with embeddings and concept URIs
-- SPARQL queries against the deployed RDF knowledge graph
-
-See:
-- [`Exploring_Individual_Gz_Dataframes.ipynb`](./Notebooks/Exploring_Individual_Gz_Dataframes.ipynb)
-- [`Exploring_AggregatedDF.ipynb`](./Notebooks/Exploring_AggregatedDF.ipynb)
-- [`Knowledge_Exploration_SPARQL.ipynb`](./Notebooks/Knowledge_Exploration_SPARQL.ipynb)
-
-For full script setup and SPARQL endpoint deployment, refer to the [PIPELINE_EXECUTION.md](./PIPELINE_EXECUTION.md) guide.
+See also the [📓 Notebooks](./Notebooks) for additional worked examples, data exploration, and comparative analysis.
 
 
 ## ⚙️ Setup Instructions
