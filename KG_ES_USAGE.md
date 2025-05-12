@@ -1,4 +1,4 @@
-# 📊 Knowledge Graph and ElasticSearch Usage Guide (KG_ES_USAGE.md)
+# 📊 Knowledge Graph and ElasticSearch Usage Guide
 
 This file documents how to query and explore the knowledge graph produced by the MappingChange pipeline, deployed locally using [Apache Jena Fuseki](https://jena.apache.org/documentation/fuseki2/). For details on how to generate and upload the KG, refer to [`PIPELINE_EXECUTION.md`](./PIPELINE_EXECUTION.md).
 
