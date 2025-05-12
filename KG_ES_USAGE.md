@@ -2,12 +2,11 @@
 
 This file documents how to query and explore the knowledge graph produced by the MappingChange pipeline, deployed locally using [Apache Jena Fuseki](https://jena.apache.org/documentation/fuseki2/). For details on how to generate and upload the KG, refer to [`PIPELINE_EXECUTION.md`](./PIPELINE_EXECUTION.md).
 
-You can also find worked examples and visualizations in the notebooks at [`Notebooks/`](https://github.com/francesNLP/MappingChange/tree/main/Notebooks), especially in:
+You can also find worked examples on how to query our KGs in our available public Fuseki endpoit[http://query.frances-ai.com/hto_gazetteers](http://query.frances-ai.com/hto_gazetteers)  in the Notebook at [`Knowledge_Exploration_SPARQL `](https://github.com/francesNLP/MappingChange/tree/main/Notebooks/Knowledge_Exploration_SPARQL.ipynb). 
 
-- `Knowledge_Exploration_Remote.ipynb`
-- `Exploring_AggregatedDF.ipynb`
 
-It also provide a guide of how to use ES search indices.
+
+This document also provides a guide of how to use ES search indices.
 
 ---
 
