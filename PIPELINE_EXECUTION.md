@@ -331,7 +331,7 @@ sparql = SPARQLWrapper(
 
 **Execution**:
 ```shell
-cd src/geopraser
+cd src/geoparser
 python kg_to_df.py
 ```
 
@@ -346,7 +346,7 @@ this dataframe only minial types of data needed for location annotation enrichme
 
 **Execution**:
 ```shell
-cd src/geopraser
+cd src/geoparser
 python geotag.py
 ```
 
@@ -360,7 +360,7 @@ python geotag.py
 
 **Execution**:
 ```shell
-cd src/geopraser
+cd src/geoparser
 python georesolve.py
 ```
 
@@ -377,7 +377,7 @@ from the required countries knowledge graph.
 
 **Execution**:
 ```shell
-cd src/geopraser
+cd src/geoparser
 python add_location_annotations.py
 ```
 
