@@ -31,6 +31,8 @@ This pipeline uniquely leverages GPT-4 for structured article segmentation acros
 - **Derived data**: Article-level DataFrames, RDF knowledge graph, outputs are downloadable [here](#dataframes-with-extracted-articles)  
 - **SPARQL Endpoint**: Deployable locally with [Apache Jena Fuseki]()
 - **Pipeline Execution Guide**: [📄 PIPELINE_EXECUTION.md](https://github.com/francesNLP/MappingChange/blob/main/PIPELINE_EXECUTION.md) — a complete walkthrough for replicating the entire resource  
+- **KG and Elasticsearch Index Usage**: [📄 KG_ES_USAGE.md](https://github.com/francesNLP/MappingChange/blob/main/KG_ES_USAGE.md) — a walkthrough with examples for querying the deployed KG and Elasticsearch index
+- **Notebooks**: [📄 Notebooks](https://github.com/francesNLP/MappingChange/blob/main/Notebooks) — a complete walkthrough for querying the KG and Dataframes 
 - **Reusability**: All [scripts](./src/) are modular, reusable, and well-documented. [Notebooks](./Notebooks) provide worked examples and usage guidance.
 
 
@@ -79,6 +81,37 @@ The resource supports reuse in:
 - Geoparsing and semantic search applications
 
 Researchers can easily adapt our modular scripts and ontology to other historical corpora.
+
+
+## 🧪 Usage Overview
+
+The resources produced by the MappingChange pipeline—cleaned DataFrames and RDF Knowledge Graphs—can be queried, visualized, and analyzed through multiple interfaces:
+
+### 🔍 Knowledge Graph Usage
+
+We provide a dedicated guide for querying and validating the Gazetteers Knowledge Graph using SPARQL, including spatial, temporal, and semantic queries:
+
+👉 [KG_USAGE.md](./KG_USAGE.md)
+
+This includes examples such as:
+- Retrieving articles that mention specific places (e.g., “Edinburgh”)
+- Exploring location proximity (e.g., places within 50 miles of Perth)
+- Linking Gazetteer entries to external entities via `hto:refersTo`, `hto:hasConcept`, and `schema:mentions`
+
+### 📓 Notebook-Based Exploration
+
+Notebooks located in [`/Notebooks`](./Notebooks) offer practical, reproducible examples for working with:
+- Individual DataFrames (per edition)
+- Aggregated DataFrames (`gaz_kg_concepts_df`) with embeddings and concept URIs
+- SPARQL queries against the deployed RDF knowledge graph
+
+See:
+- [`Exploring_Individual_Gz_Dataframes.ipynb`](./Notebooks/Exploring_Individual_Gz_Dataframes.ipynb)
+- [`Exploring_AggregatedDF.ipynb`](./Notebooks/Exploring_AggregatedDF.ipynb)
+- [`Knowledge_Exploration_SPARQL.ipynb`](./Notebooks/Knowledge_Exploration_SPARQL.ipynb)
+
+For full script setup and SPARQL endpoint deployment, refer to the [PIPELINE_EXECUTION.md](./PIPELINE_EXECUTION.md) guide.
+
 
 ## ⚙️ Setup Instructions
 ```bash
@@ -134,6 +167,10 @@ This includes:
 - Embedding, linking, and enrichment
 - Geotagging and spatial queries
 - Elasticsearch indexing
+
+## KGs and ES Usage Guide
+
+👉 [📄 KG_ES_USAGE.md](./KG_ES_USAGE.md)
 
 
 ## Dataframes with Extracted Articles

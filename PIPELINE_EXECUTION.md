@@ -386,86 +386,8 @@ python add_location_annotations.py
 **Upload to the dataset in fuseki server**: Similar to [previous step](#uploading-knowledge-to-fuseki-sparql-server), upload the 
 `src/knowledge_graph/results/gaz_extra_concepts_links.ttl` file and also the countries knowledge graph to the previous dataset.
 
-**Validate**: run the following SPARQL query to validate uploaded graph:
+**Validate**: You can validate the uploaded graph by running the queries specifed in [KG_ES_USAGE.md](./KG_ES_USAGE.md)
 
-Query 1:
-```sparql
-PREFIX geo: <http://www.opengis.net/ont/geosparql#>
-PREFIX geof: <http://jena.apache.org/function/spatial#>
-PREFIX units: <http://www.opengis.net/def/uom/OGC/1.0/>
-PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/>
-
-SELECT ?name ?neigh_wkt WHERE {
-   ?edi a crm:SP2_Phenomenal_Place;
-        rdfs:label "Edinburgh";
-        geo:hasCentroid ?centroid.
-   ?centroid a crm:SP6_Declarative_Place;
-        geo:asWKT ?edi_wkt.
-   ?neigh a crm:SP2_Phenomenal_Place;
-        rdfs:label ?name;
-        geo:hasCentroid ?neigh_centroid.
-   ?neigh_centroid a crm:SP6_Declarative_Place;
-    geo:asWKT ?neigh_wkt.
-  FILTER(geof:distance(?edi_wkt, ?neigh_wkt, units:miles) < 50)
-} LIMIT 20
-```
-If everything works, it should return name and coordinates of top 20 places which are less than 50 miles from central Edinburgh.
-
-Query 2:
-```sparql
-PREFIX geo: <http://www.opengis.net/ont/geosparql#>
-PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/>
-PREFIX hto: <https://w3id.org/hto#>
-PREFIX oa: <http://www.w3.org/ns/oa#>
-PREFIX schema: <https://schema.org/>
-
-SELECT ?name ?start_index ?end_index ?text WHERE {
-   ?article a hto:LocationRecord;
-        hto:name ?name;
-        hto:hasOriginalDescription ?desc;
-        schema:mentions ?edi.
-   ?desc a hto:OriginalDescription;
-        hto:text ?text.
-   ?annotation a oa:Annotation;
-        oa:hasBody ?edi;
-        oa:hasTarget ?specific_words.
-   ?specific_words oa:hasSource ?desc;
-        oa:hasSelector ?selector.
-   ?selector a oa:TextPositionSelector;
-        oa:start ?start_index;
-        oa:end ?end_index.
-   ?edi a crm:SP2_Phenomenal_Place;
-        rdfs:label "Edinburgh";
-} LIMIT 20
-```
-If everything works, it should return name and description of top 20 articles which mentions Edinburgh, along with the start and end position where Edinburgh appears in the description.
-
-query 3:
-```sparql
-PREFIX geo: <http://www.opengis.net/ont/geosparql#>
-PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/>
-PREFIX hto: <https://w3id.org/hto#>
-
-SELECT ?country_name ?country_boundary_wkt ?perth_wkt WHERE {
-   ?perth a crm:SP2_Phenomenal_Place;
-        rdfs:label "Perth";
-        crm:P89_falls_within ?country;
-        geo:hasCentroid ?centroid.
-   ?centroid a crm:SP6_Declarative_Place;
-        geo:asWKT ?perth_wkt.
-   ?country a crm:SP2_Phenomenal_Place;
-        rdfs:label ?country_name;
-        hto:hasLocationType hto:Country;
-        geo:hasCentroid ?country_centroid;
-  		geo:defaultGeometry ?country_boundary.
-   ?country_boundary a crm:SP6_Declarative_Place;
-    geo:asWKT ?country_boundary_wkt.
-}
-```
-If everything works, it should return coordinates of all the places called 'Perth', names and boundaries of the countries where they belong. 
 
 
 ## Gazetteers Index Creation
@@ -532,5 +454,7 @@ python create_dbpedia_wikidata_index.py
 ```
 
 If everything works, you should see created index in the kibana interface, web interface for interaction with elasticsearch server.
+
+**Validate**: You can validate the uploaded graph by running the queries specifed in [KG_ES_USAGE.md](./KG_ES_USAGE.md)
 
 
