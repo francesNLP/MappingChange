@@ -1,6 +1,6 @@
 # 🚀 Pipeline Execution Walkthrough
 
-This section introduces all the details needed to run the pipeline mentioned above. All the scripts used are in [src](./src). In order to follow this guide, you will need to have:
+This document introduces all the details needed to run the pipeline mentioned above. All the scripts used are in [src](./src). In order to follow this guide, you will need to have:
 
 * Required python environment and libraries installed, see [set up environment section](#set-up-the-environment).
 * OpenAI API key.
