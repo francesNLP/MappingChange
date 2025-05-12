@@ -23,17 +23,20 @@ This pipeline uniquely leverages GPT-4 for structured article segmentation acros
 
 ## 📦 Resource Availability Statement
 
-- **Code repository**: [https://github.com/francesNLP/MappingChange](https://github.com/francesNLP/MappingChange)  
-- **Archived version**: [Zenodo DOI](https://doi.org/10.5281/zenodo.XXXXXXX)  
-- **License**: MIT License (see [LICENSE](./LICENSE))  
-- **Ontology used**: [Heritage Textual Ontology (HTO)](http://query.frances-ai.com/hto_gazetteers)
-- **Main input dataset**: [`gazetteers_dataframe`](https://drive.google.com/file/d/1J6TxdKImw2rNgmdUBN19h202gl-iYupn/view?usp=share_link) — the structured **page-level** dataframe extracted from the Gazetteers of Scotland. This was derived from the OCR text and metadata in [this Zenodo record](https://zenodo.org/records/14051678).
-- **Derived data**: Article-level DataFrames, RDF knowledge graph, outputs are downloadable [here](#dataframes-with-extracted-articles)  
-- **SPARQL Endpoint**: Deployable locally with Apache Jena Fuseki: [http://query.frances-ai.com/hto_gazetteers](http://query.frances-ai.com/hto_gazetteers)
-- **Pipeline Execution Guide**: [📄 PIPELINE_EXECUTION.md](https://github.com/francesNLP/MappingChange/blob/main/PIPELINE_EXECUTION.md) — a complete walkthrough for replicating the entire resource  
-- **KG and Elasticsearch Index Usage**: [📄 KG_ES_USAGE.md](https://github.com/francesNLP/MappingChange/blob/main/KG_ES_USAGE.md) — a walkthrough with examples for querying the deployed KG and Elasticsearch index
-- **Notebooks**: [📄 Notebooks](https://github.com/francesNLP/MappingChange/blob/main/Notebooks) — a complete walkthrough for querying the KG and Dataframes 
-- **Reusability**: All [scripts](./src/) are modular, reusable, and well-documented. [Notebooks](./Notebooks) provide worked examples and usage guidance.
+
+## 📦 Resource Availability Statement
+
+- **Code Repository**: [GitHub – francesNLP/MappingChange](https://github.com/francesNLP/MappingChange)  
+- **Archived Release**: [Zenodo DOI (pending)](https://doi.org/10.5281/zenodo.XXXXXXX)  
+- **License**: MIT (see [LICENSE](./LICENSE))  
+- **Ontology**: [Heritage Textual Ontology (HTO)](http://query.frances-ai.com/hto_gazetteers) — semantic model used throughout the KG  
+- **Main Input Dataset**: [`gazetteers_dataframe`](https://drive.google.com/file/d/1J6TxdKImw2rNgmdUBN19h202gl-iYupn/view?usp=share_link) — page-level OCR + metadata structured dataframe derived from [Zenodo](https://zenodo.org/records/14051678)  
+- **Derived Data Outputs**: Cleaned article-level DataFrames, RDF triples, enriched KG — see [Extracted DataFrames](#dataframes-with-extracted-articles)  
+- **SPARQL Endpoint**: Local deployment via Apache Jena Fuseki — [Live Example](http://query.frances-ai.com/hto_gazetteers)  
+- **Execution Instructions**: [📄 `PIPELINE_EXECUTION.md`](./PIPELINE_EXECUTION.md) — step-by-step guide for running the full pipeline  
+- **Query & Usage Examples**: [📄 `KG_ES_USAGE.md`](./KG_ES_USAGE.md) — how to query the KG and use Elasticsearch indices  
+- **Interactive Notebooks**: [📁 `Notebooks/`](./Notebooks) — Colab/Jupyter notebooks for KG and DataFrame analysis  
+- **Reusability & Extensibility**: All components are modular and documented. See [pipeline scripts](./src), [usage guide](./KG_ES_USAGE.md), and [execution walkthrough](./PIPELINE_EXECUTION.md) for adaptation and reuse.
 
 
 ## ✅ FAIR Principles Compliance
@@ -48,8 +51,8 @@ This pipeline uniquely leverages GPT-4 for structured article segmentation acros
 | Component Type        | Description                                                                 | Location / Format                                                   |
 |------------------------|-----------------------------------------------------------------------------|----------------------------------------------------------------------|
 | 🗃️  Input Dataset        | OCR-based Gazetteer pages with metadata (`gazetteers_dataframe`)             | [Zenodo](https://zenodo.org/records/14051678)                        |
-| 🛠️  Pipeline Scripts     | Article segmentation, merging, KG generation, enrichment                    | [`/src`](./src) /[PIPELINE_EXECUTION.md](./PIPELINE_EXECUTION.md]                                                    |
-| 📘 Ontology              | Heritage Textual Ontology (HTO) for semantic modeling                       | [w3id.org/hto](https://w3id.org/hto)/ [code](https://github.com/frances-ai/HeritageTextOntology)                                 |
+| 🛠️  Pipeline Scripts     | Article segmentation, merging, KG generation, enrichment                    | [`/src`](./src) , [PIPELINE_EXECUTION.md](./PIPELINE_EXECUTION.md]                                                    |
+| 📘 Ontology              | Heritage Textual Ontology (HTO) for semantic modeling                       | [w3id.org/hto](https://w3id.org/hto) , [code](https://github.com/frances-ai/HeritageTextOntology)                                 |
 | 🧠 Article DataFrames    | Cleaned per-edition and aggregated article-level data                        | Pandas / [Zenodo Links](#dataframes-with-extracted-articles)        |
 | 🌐 Knowledge Graph       | RDF triples + enrichments (Wikidata, DBpedia, Geo)                           | Turtle / Fuseki / Zenodo / [KG_ES_USAGE.md](./KG_ES_USAGE.md)       |
 | 📊 Notebooks             | Jupyter notebooks for exploratory and comparative analysis                   | [`/Notebooks`](./Notebooks)                                         |
