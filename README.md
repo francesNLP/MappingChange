@@ -5,7 +5,7 @@ This repository supports a research project to transform [The Gazetteers of Scot
   
 <img src="./Notebooks/figures/gazetteers_vols.png" alt="Number of vol per edition" width="700"/>
 
-The goal is to extract these entries from OCR-based page-level text and convert them into cleaned, deduplicated article records to populate a temporal and semantic knowledge graph (ScotGaz19-KG). This work (and its new resource) has been integrated in the [Frances platform](http://www.frances-ai.com), our AI-driven platform for historical text analysis, enabling rich visualizations and advanced NLP-driven analysis of Scotland’s historical landscape.
+The goal is to extract these entries from OCR-based page-level text and convert them into cleaned, deduplicated article records to populate a temporal and semantic knowledge graphs. This work (and its new resource) has been integrated in the [Frances platform](http://www.frances-ai.com), our AI-driven platform for historical text analysis, enabling rich visualizations and advanced NLP-driven analysis of Scotland’s historical landscape.
 
 
 ## 🎯 Contribution Summary
@@ -26,7 +26,7 @@ This pipeline uniquely leverages GPT-4 for structured article segmentation acros
 - **Code Repository**: [GitHub – francesNLP/MappingChange](https://github.com/francesNLP/MappingChange)  
 - **Archived Release**: [Zenodo DOI (pending)](https://doi.org/10.5281/zenodo.XXXXXXX)  
 - **License**: MIT (see [LICENSE](./LICENSE))  
-- **Ontology**: [Heritage Textual Ontology (HTO)](http://query.frances-ai.com/hto_gazetteers) ([code](https://github.com/frances-ai/HeritageTextOntology?tab=readme-ov-file)) — semantic model used throughout the KG  
+- **Ontology**: [Heritage Textual Ontology (HTO)](http://query.frances-ai.com/hto_gazetteers) ([code](https://github.com/frances-ai/HeritageTextOntology?tab=readme-ov-file)) — semantic model used throughout the KsG  
 - **Main Input Dataset**: [`gazetteers_dataframe`](https://drive.google.com/file/d/1J6TxdKImw2rNgmdUBN19h202gl-iYupn/view?usp=share_link) — page-level OCR + metadata structured dataframe derived from [Zenodo](https://zenodo.org/records/14051678)  
 - **Derived Data Outputs**: Cleaned article-level DataFrames, RDF triples, enriched KG — see [Extracted DataFrames](#dataframes-with-extracted-articles) and [KGs with Extracted Articles](#kgs-with-extracted-articles)  
 - **SPARQL Endpoint**: Local deployment via Apache Jena Fuseki — [Live Example](http://query.frances-ai.com/hto_gazetteers)  
