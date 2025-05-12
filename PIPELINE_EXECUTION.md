@@ -1,8 +1,8 @@
 # 🚀 Pipeline Execution Walkthrough
 
-This section introduces all the details needed to run the pipeline mentioned above. All the scripts used are in [src](./src). In order to follow this guide, you will need to have:
+This document introduces all the details needed to run the pipeline mentioned above. All the scripts used are in [src](./src). In order to follow this guide, you will need to have:
 
-* Required python environment and libraries installed, see [set up environment section](#set-up-the-environment).
+* Required python environment and libraries installed, see [set up instructions](https://github.com/francesNLP/MappingChange?tab=readme-ov-file#%EF%B8%8F-setup-instructions).
 * OpenAI API key.
 * Fuseki Server hostname, credential (username and password) to login.
 * Elasticsearch Server hostname, credential (certificate file, api key) to login.
@@ -22,7 +22,9 @@ cd files
 ## Extraction Scripts
 
 **Script**: [extract_gaz_1803.py](./src/extract_gaz_1803.py), [extract_gaz_1806.py](./src/extract_gaz_1806.py) ....
+
 **Input**: `src/files/gazatteers_dataframe` (json format): the base input dataframe of this collection, includes metadata and page level texts.
+
 **Configuration**: 
 ```python
 client = OpenAI(api_key="XXX") # change the api_key
@@ -45,7 +47,9 @@ python extract_gaz_1803.py
 ## Merging Cleaning Data
 
 **Script**: [merge_cleaned_articles.py](./src/merge_cleaned_articles.py)
+
 **Input**: A list of `src/files/1803/cleaned_articles_*_*.json` (json format): cleaned article segmentation result for various page ranges (from [Extraction Scripts](#extraction-scripts)).
+
 **Configuration**: 
 ```python
 INPUT_DIR = "./1803/json_final/" # Set your input directory of cleaned article segmentation json files
@@ -68,9 +72,11 @@ python merge_cleaned_articles.py
 ## Dataframe Generation
 
 **Script**: [dataframe_articles.py](./src/dataframe_articles.py)
+
 **Input**:
 * `src/files/gazatteers_dataframe` (json format): the base input dataframe of this collection, includes metadata and page level texts.
 * `src/files/1803/gazetteer_articles_merged_1803.json` (json format): merged results of all cleaned articles in the given folder.
+
 **Configuration**:
 
 ```python
@@ -99,9 +105,11 @@ If a gazetteer has more than 1 volume (e.g. 1838, 1842, etc ...) we need to comb
 In order to do that, we have the following script: 
 
 **Script**: [combine_vol_dataframes.py](./src/combine_vol_dataframes.py)
+
 **Input**:
 * `src/files/1838_vol1/gaz_dataframe_1838_vol1` (json format): dataframe of further cleaned articles. 
 * `src/files/1838_vol2/gaz_dataframe_1838_vol2` (json format): dataframe of further cleaned articles. 
+
 **Configuration**:
 ```python
 ...... 
@@ -126,6 +134,7 @@ Note that these dataframes are used for the knowledge graph generation scripts b
 ## Knowledge Graph Generation
 
 **Script**: [df_to_kg.py](./src/knowledge_graph/df_to_kg.py)
+
 **Input**: 
 * A list of `src/knowledge_graph/sources/gaz_dataframe_*` (json format): dataframe generated from section [Dataframe Generation](#dataframe-generation)
 * `src/knowledge_graph/hto.ttl` (turtle format): the HTO ontology file.
@@ -157,9 +166,11 @@ python df_to_kg.py
 ### Adding Page Permanent URLs
 
 **Script**: [add_page_permanent_url.py](./src/knowledge_graph/add_page_permanent_url.py)
+
 **Input**: 
 * `src/knowledge_graph/volume_page_urls.json` (json format): json file with page permanent urls.
 * `src/knowledge_graph/gaz.ttl` (turtle format): generated basic knowledge graph from [Knowledge Graph Generation](#knowledge-graph-generation)
+
 **Execution**:
 ```shell
 cd src/knowledge_graph
@@ -214,6 +225,7 @@ Note that the SPARQL endpoint to query this dataset is `hostname/dataset_name`, 
 ## Knowledge Graph Dataframe Generation
 
 **Script**: [kg_to_df.py](./src/knowledge_graph/kg_to_df.py)
+
 **Input**: `http://localhost:3030/test_gaz`: SPARQL endpoint of fuseki dataset with gazetteer knowledge graph uploaded. 
 
 **Configuration**: 
@@ -232,6 +244,7 @@ python kg_to_df.py
 ## Embedding Generation
 
 **Script**: [generate_embeddings.py](./src/knowledge_graph/generate_embeddings.py)
+
 **Input**: `src/knowledge_graph/results/gazetteers_entry_kg_df` (json format): dataframe for uploaded graph in fuseki dataset from [above](#knowledge-graph-dataframe-generation).
 
 **Execution**:
@@ -274,6 +287,7 @@ python wikidata_linkage.py
 ## Dbpedia Linkage
 
 **Script**: [dbpedia_linkage.py](./src/knowledge_graph/dbpedia_linkage.py)
+
 **Input**: 
 * `src/knowledge_graph/results/gaz_kg_concepts_df` (json format): the updated graph dataframe with embeddings and updated concept uris from [wikidata linkage](#wikidata-linkage).
 
@@ -290,6 +304,7 @@ python dbpedia_linkage.py
 ## Concept Linkage Enriched Graph Generation
 
 **Script**: [add_concepts_to_graph.py](./src/knowledge_graph/add_concepts_to_graph.py)
+
 **Input**:
 * `src/knowledge_graph/results/gaz_kg_concepts_df` (json format): the updated input graph dataframe from [articles linkage](#articles-linkage).
 * `src/knowledge_graph/results/gaz_concept_dbpedia_df` (json format): dataframe for linked dbpedia items.
@@ -331,7 +346,7 @@ sparql = SPARQLWrapper(
 
 **Execution**:
 ```shell
-cd src/geopraser
+cd src/geoparser
 python kg_to_df.py
 ```
 
@@ -346,7 +361,7 @@ this dataframe only minial types of data needed for location annotation enrichme
 
 **Execution**:
 ```shell
-cd src/geopraser
+cd src/geoparser
 python geotag.py
 ```
 
@@ -360,7 +375,7 @@ python geotag.py
 
 **Execution**:
 ```shell
-cd src/geopraser
+cd src/geoparser
 python georesolve.py
 ```
 
@@ -377,7 +392,7 @@ from the required countries knowledge graph.
 
 **Execution**:
 ```shell
-cd src/geopraser
+cd src/geoparser
 python add_location_annotations.py
 ```
 
@@ -386,86 +401,8 @@ python add_location_annotations.py
 **Upload to the dataset in fuseki server**: Similar to [previous step](#uploading-knowledge-to-fuseki-sparql-server), upload the 
 `src/knowledge_graph/results/gaz_extra_concepts_links.ttl` file and also the countries knowledge graph to the previous dataset.
 
-**Validate**: run the following SPARQL query to validate uploaded graph:
+**Validate**: You can validate the uploaded graph by running the queries specifed in [KG_ES_USAGE.md](./KG_ES_USAGE.md)
 
-Query 1:
-```sparql
-PREFIX geo: <http://www.opengis.net/ont/geosparql#>
-PREFIX geof: <http://jena.apache.org/function/spatial#>
-PREFIX units: <http://www.opengis.net/def/uom/OGC/1.0/>
-PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/>
-
-SELECT ?name ?neigh_wkt WHERE {
-   ?edi a crm:SP2_Phenomenal_Place;
-        rdfs:label "Edinburgh";
-        geo:hasCentroid ?centroid.
-   ?centroid a crm:SP6_Declarative_Place;
-        geo:asWKT ?edi_wkt.
-   ?neigh a crm:SP2_Phenomenal_Place;
-        rdfs:label ?name;
-        geo:hasCentroid ?neigh_centroid.
-   ?neigh_centroid a crm:SP6_Declarative_Place;
-    geo:asWKT ?neigh_wkt.
-  FILTER(geof:distance(?edi_wkt, ?neigh_wkt, units:miles) < 50)
-} LIMIT 20
-```
-If everything works, it should return name and coordinates of top 20 places which are less than 50 miles from central Edinburgh.
-
-Query 2:
-```sparql
-PREFIX geo: <http://www.opengis.net/ont/geosparql#>
-PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/>
-PREFIX hto: <https://w3id.org/hto#>
-PREFIX oa: <http://www.w3.org/ns/oa#>
-PREFIX schema: <https://schema.org/>
-
-SELECT ?name ?start_index ?end_index ?text WHERE {
-   ?article a hto:LocationRecord;
-        hto:name ?name;
-        hto:hasOriginalDescription ?desc;
-        schema:mentions ?edi.
-   ?desc a hto:OriginalDescription;
-        hto:text ?text.
-   ?annotation a oa:Annotation;
-        oa:hasBody ?edi;
-        oa:hasTarget ?specific_words.
-   ?specific_words oa:hasSource ?desc;
-        oa:hasSelector ?selector.
-   ?selector a oa:TextPositionSelector;
-        oa:start ?start_index;
-        oa:end ?end_index.
-   ?edi a crm:SP2_Phenomenal_Place;
-        rdfs:label "Edinburgh";
-} LIMIT 20
-```
-If everything works, it should return name and description of top 20 articles which mentions Edinburgh, along with the start and end position where Edinburgh appears in the description.
-
-query 3:
-```sparql
-PREFIX geo: <http://www.opengis.net/ont/geosparql#>
-PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/>
-PREFIX hto: <https://w3id.org/hto#>
-
-SELECT ?country_name ?country_boundary_wkt ?perth_wkt WHERE {
-   ?perth a crm:SP2_Phenomenal_Place;
-        rdfs:label "Perth";
-        crm:P89_falls_within ?country;
-        geo:hasCentroid ?centroid.
-   ?centroid a crm:SP6_Declarative_Place;
-        geo:asWKT ?perth_wkt.
-   ?country a crm:SP2_Phenomenal_Place;
-        rdfs:label ?country_name;
-        hto:hasLocationType hto:Country;
-        geo:hasCentroid ?country_centroid;
-  		geo:defaultGeometry ?country_boundary.
-   ?country_boundary a crm:SP6_Declarative_Place;
-    geo:asWKT ?country_boundary_wkt.
-}
-```
-If everything works, it should return coordinates of all the places called 'Perth', names and boundaries of the countries where they belong. 
 
 
 ## Gazetteers Index Creation
@@ -532,5 +469,7 @@ python create_dbpedia_wikidata_index.py
 ```
 
 If everything works, you should see created index in the kibana interface, web interface for interaction with elasticsearch server.
+
+**Validate**: You can validate the uploaded graph by running the queries specifed in [KG_ES_USAGE.md](./KG_ES_USAGE.md)
 
 
