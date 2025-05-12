@@ -23,9 +23,6 @@ This pipeline uniquely leverages GPT-4 for structured article segmentation acros
 
 ## 📦 Resource Availability Statement
 
-
-## 📦 Resource Availability Statement
-
 - **Code Repository**: [GitHub – francesNLP/MappingChange](https://github.com/francesNLP/MappingChange)  
 - **Archived Release**: [Zenodo DOI (pending)](https://doi.org/10.5281/zenodo.XXXXXXX)  
 - **License**: MIT (see [LICENSE](./LICENSE))  
@@ -95,6 +92,7 @@ See also the [📓 Notebooks](./Notebooks) for additional worked examples, data 
 
 
 ## ⚙️ Setup Instructions
+
 ```bash
 conda create -n gazetteer_env python=3.11 -y
 conda activate gazetteer_env
