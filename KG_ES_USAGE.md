@@ -12,7 +12,7 @@ This document also provides a guide of how to use ES search indices.
 
 ## 🔎 SPARQL Queries for Validation and Exploration
 
-**Upload to the dataset in fuseki server**: Upload the `src/knowledge_graph/results/gaz_extra_concepts_links.ttl` (see [instructions]./PIPELINE_EXECUTION.md) file and also the countries knowledge graph to the previous dataset.
+**Upload to the dataset in fuseki server**: Upload the `src/knowledge_graph/results/gaz_extra_concepts_links.ttl` (see [instructions](./PIPELINE_EXECUTION.md)) file and also the countries knowledge graph to the previous dataset.
 
 ### Query 1: Places near Edinburgh (within 50 miles)
 
