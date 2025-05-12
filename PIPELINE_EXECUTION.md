@@ -2,7 +2,7 @@
 
 This document introduces all the details needed to run the pipeline mentioned above. All the scripts used are in [src](./src). In order to follow this guide, you will need to have:
 
-* Required python environment and libraries installed, see [set up environment section](#set-up-the-environment).
+* Required python environment and libraries installed, see [set up instructions](https://github.com/francesNLP/MappingChange?tab=readme-ov-file#%EF%B8%8F-setup-instructions).
 * OpenAI API key.
 * Fuseki Server hostname, credential (username and password) to login.
 * Elasticsearch Server hostname, credential (certificate file, api key) to login.
