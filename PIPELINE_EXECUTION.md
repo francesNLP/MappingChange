@@ -473,3 +473,29 @@ If everything works, you should see created index in the kibana interface, web i
 **Validate**: You can validate the uploaded graph by running the queries specifed in [KG_ES_USAGE.md](./KG_ES_USAGE.md)
 
 
+## 📥 Access or Download Pre-Built Knowledge Graphs
+
+You can either download the knowledge graphs produced by this pipeline or access them via our live Fuseki SPARQL endpoint.
+
+### 🔗 Online SPARQL Endpoint
+
+All three knowledge graphs are deployed and queryable at:
+
+▶️ [http://query.frances-ai.com/hto_gazetteers](http://query.frances-ai.com/hto_gazetteers)
+
+This endpoint supports SPARQL queries via both browser interface and programmatic access.
+
+🧪 See our usage notebook for worked examples:
+👉 [`Knowledge_Exploration_SPARQL.ipynb`](https://github.com/francesNLP/MappingChange/blob/main/Notebooks/Knowledge_Exploration_SPARQL.ipynb) — uses this endpoint to query Gazetteer entries, places, references, and enriched metadata.
+
+---
+
+### 💾 Direct Downloads
+
+| File | Description |
+|------|-------------|
+| [`gaz.ttl`](https://drive.google.com/file/d/1fbpFu8ts7hPOsGAq8SUaiJn6IOZ73zez/view?usp=share_link) | Main Gazetteers KG: article-level concepts, metadata, and redirects |
+| [`gaz_locations_annotations.ttl`](https://drive.google.com/file/d/1vnYZEeiLjcfwgkHyJG4l9OECuwtvY1yy/view?usp=share_link) | Gazetteer entries annotated with location/georesolution data |
+| [`gaz_extra_concepts_links.ttl`](https://drive.google.com/file/d/1UeT8v9Avwk0dlqPx_ZD5-IxOFpOgAyX7/view?usp=share_link) | Links to external sources (e.g., Wikidata, DBpedia) via semantic enrichment |
+
+These files can be uploaded to your own SPARQL server or used offline in any RDF-compatible tool.

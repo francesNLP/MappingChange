@@ -14,6 +14,8 @@ This document also provides a guide of how to use ES search indices.
 
 **Upload to the dataset in fuseki server**: Upload the `src/knowledge_graph/results/gaz_extra_concepts_links.ttl` (see [instructions](./PIPELINE_EXECUTION.md)) file and also the countries knowledge graph to the previous dataset.
 
+You can also download [gaz_extra_concepts_links.ttl](https://drive.google.com/file/d/1UeT8v9Avwk0dlqPx_ZD5-IxOFpOgAyX7/view?usp=share_link) from that link. 
+
 ### Query 1: Places near Edinburgh (within 50 miles)
 
 ```sparql

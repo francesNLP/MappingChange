@@ -3,9 +3,9 @@
 ## Tracking the Evolution of Place Descriptions in the Gazetteers of Scotland (1803–1901)
 This repository supports a research project to transform [The Gazetteers of Scotland (1803–1901)](https://data.nls.uk/data/digitised-collections/gazetteers-of-scotland/), digitized by the National Library of Scotland (NLS), into structured article-level data. These gazetteers provide detailed historical accounts of Scottish places—towns, glens, castles, and parishes—captured across 19 volumes (10 editions):
   
-<img src="./Notebooks/figures/gazetteers_vols.png" alt="Number of vol per edition" width="700"/>
+<img src="./Notebooks/figures/gazetteers_vols.png" alt="Number of vol per edition" width="500"/>
 
-The goal is to extract these entries from OCR-based page-level text and convert them into cleaned, deduplicated article records to populate a temporal and semantic knowledge graph (ScotGaz19-KG). This work (and its new resource) has been integrated in the [Frances platform](http://www.frances-ai.com), our AI-driven platform for historical text analysis, enabling rich visualizations and advanced NLP-driven analysis of Scotland’s historical landscape.
+The goal is to extract these entries from OCR-based page-level text and convert them into cleaned, deduplicated article records to populate a temporal and semantic knowledge graphs. This work (and its new resource) has been integrated in the [Frances platform](http://www.frances-ai.com), our AI-driven platform for historical text analysis, enabling rich visualizations and advanced NLP-driven analysis of Scotland’s historical landscape.
 
 
 ## 🎯 Contribution Summary
@@ -25,10 +25,10 @@ This pipeline uniquely leverages GPT-4 for structured article segmentation acros
 
 - **Code Repository**: [GitHub – francesNLP/MappingChange](https://github.com/francesNLP/MappingChange)  
 - **Archived Release**: [Zenodo DOI (pending)](https://doi.org/10.5281/zenodo.XXXXXXX)  
-- **License**: MIT (see [LICENSE](./LICENSE))  
-- **Ontology**: [Heritage Textual Ontology (HTO)](http://query.frances-ai.com/hto_gazetteers) — semantic model used throughout the KG  
+- **License**: [MIT](./LICENSE) 
+- **Ontology**: [Heritage Textual Ontology (HTO)](http://query.frances-ai.com/hto_gazetteers) ([code](https://github.com/frances-ai/HeritageTextOntology?tab=readme-ov-file)) — semantic model used throughout the KsG  
 - **Main Input Dataset**: [`gazetteers_dataframe`](https://drive.google.com/file/d/1J6TxdKImw2rNgmdUBN19h202gl-iYupn/view?usp=share_link) — page-level OCR + metadata structured dataframe derived from [Zenodo](https://zenodo.org/records/14051678)  
-- **Derived Data Outputs**: Cleaned article-level DataFrames, RDF triples, enriched KG — see [Extracted DataFrames](#dataframes-with-extracted-articles)  
+- **Derived Data Outputs**: Cleaned article-level DataFrames, RDF triples, enriched KG — see [Extracted DataFrames](#dataframes-with-extracted-articles) and [KGs with Extracted Articles](#kgs-with-extracted-articles)  
 - **SPARQL Endpoint**: Local deployment via Apache Jena Fuseki — [Live Example](http://query.frances-ai.com/hto_gazetteers)  
 - **Execution Instructions**: [📄 `PIPELINE_EXECUTION.md`](./PIPELINE_EXECUTION.md) — step-by-step guide for running the full pipeline  
 - **Query & Usage Examples**: [📄 `KG_ES_USAGE.md`](./KG_ES_USAGE.md) — how to query the KG and use Elasticsearch indices  
@@ -45,15 +45,15 @@ This pipeline uniquely leverages GPT-4 for structured article segmentation acros
 
 ## 🧱 Components at a Glance
 
-| Component Type        | Description                                                                 | Location / Format                                                   |
-|------------------------|-----------------------------------------------------------------------------|----------------------------------------------------------------------|
-| 🗃️  Input Dataset        | OCR-based Gazetteer pages with metadata (`gazetteers_dataframe`)             | [Zenodo](https://zenodo.org/records/14051678)                        |
-| 🛠️  Pipeline Scripts     | Article segmentation, merging, KG generation, enrichment                    | [`/src`](./src) , [PIPELINE_EXECUTION.md](./PIPELINE_EXECUTION.md]                                                    |
-| 📘 Ontology              | Heritage Textual Ontology (HTO) for semantic modeling                       | [w3id.org/hto](https://w3id.org/hto) , [code](https://github.com/frances-ai/HeritageTextOntology)                                 |
-| 🧠 Article DataFrames    | Cleaned per-edition and aggregated article-level data                        | Pandas / [Zenodo Links](#dataframes-with-extracted-articles)        |
-| 🌐 Knowledge Graph       | RDF triples + enrichments (Wikidata, DBpedia, Geo)                           | Turtle / Fuseki / Zenodo / [KG_ES_USAGE.md](./KG_ES_USAGE.md)       |
-| 📊 Notebooks             | Jupyter notebooks for exploratory and comparative analysis                   | [`/Notebooks`](./Notebooks)                                         |
-| 🔎 Search Indexes        | Full-text + semantic search via Elasticsearch (SPARQL + REST access)         | [Frances Platform](http://www.frances-ai.com), [KG_ES_USAGE.md](./KG_ES_USAGE.md) |
+| Component Type         | Description                                                              | Access / Link                                                                                      | Format / Type                  |
+|------------------------|--------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------|-------------------------------|
+| 🗃️ Input Dataset        | OCR-based Gazetteer pages with metadata (`gazetteers_dataframe`)          | [Zenodo](https://zenodo.org/records/14051678)                                                       | JSON (page-level)             |
+| 🛠️ Pipeline Scripts     | Article segmentation, merging, KG generation, enrichment                 | [`/src`](./src), [Pipeline Guide](./PIPELINE_EXECUTION.md)                                          | Python scripts                |
+| 📘 Ontology             | Heritage Textual Ontology (HTO) for semantic modeling                    | [w3id.org/hto](https://w3id.org/hto), [GitHub](https://github.com/frances-ai/HeritageTextOntology) | RDF / Turtle                     |
+| 🧠 Article DataFrames   | Cleaned per-edition and aggregated article-level data                    | [Zenodo](https://zenodo.org/records/14051678), [See full list](#dataframes-with-extracted-articles) | Pandas / JSON                 |
+| 🌐 Knowledge Graph      | RDF triples + enrichments (Wikidata, DBpedia, Geo)                        | [Zenodo](https://zenodo.org/records/14051678), [See full list](#kgs-with-extracted-articles)        | RDF/Turtle, SPARQL (Fuseki)  |
+| 📊 Notebooks            | Exploratory and comparative analysis of KGs and DataFrames               | [`/Notebooks`](./Notebooks)                                                                         | Jupyter (.ipynb)              |
+| 🔎 Search Indexes       | Full-text + semantic search via Elasticsearch (SPARQL + REST access)      | [Frances Platform](http://www.frances-ai.com), [Usage Guide](./KG_ES_USAGE.md)                      | Elasticsearch / JSON / SPARQL |
 
 
 ## 🧑 Target Users and Use Cases
@@ -170,6 +170,14 @@ These cleaned, deduplicated DataFrames (as a result of running[dataframe_article
 
 **Important**: The aggreated dataframe, which also includes embeddings, can be downloaded from here: [`gaz_kg_concepts_df`](https://drive.google.com/file/d/1EyG_Jm5so6bGL6is9Br8eDs5gVutKdQX/view?usp=share_link)
 
+## KGs with Extracted Articles
+
+Here you can find the three KGs with the extracted articles: The first one is the main KG with all the concepts and relations, the second one includes the locations annotations and the third one includes the extra concepts links.
+
+* [gaz.ttl](https://drive.google.com/file/d/1fbpFu8ts7hPOsGAq8SUaiJn6IOZ73zez/view?usp=share_link)
+* [gaz_locations_annotations.ttl](https://drive.google.com/file/d/1vnYZEeiLjcfwgkHyJG4l9OECuwtvY1yy/view?usp=share_link)
+* [gaz_extra_concepts_links.ttl](https://drive.google.com/file/d/1UeT8v9Avwk0dlqPx_ZD5-IxOFpOgAyX7/view?usp=share_link)
+
 
 
 ## 📓 Notebooks Exploration
@@ -199,7 +207,7 @@ A heatmap showing how terms related to religion, gender, industry, education, an
 #### 2. Article Length Distribution
 A boxplot of word counts per article by edition, highlighting editorial and structural variation across volumes.
 
-<img src="./Notebooks/figures/wordcount_boxplot_small.png" alt="Word Count Boxplot" width="700"/>
+<img src="./Notebooks/figures/wordcount_boxplot_small.png" alt="Word Count Boxplot" width="500"/>
 
 These examples illustrate the types of diachronic comparisons made possible by the MappingChange pipeline. For a deeper dive into all analyses, see the full [`Exploring_AggregatedDF.ipynb`](./Notebooks/Exploring_AggregatedDF.ipynb).
 
