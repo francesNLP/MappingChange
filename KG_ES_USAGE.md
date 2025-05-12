@@ -39,6 +39,7 @@ SELECT ?name ?neigh_wkt WHERE {
 ```
 
 If everything works, it should return name and coordinates of top 20 places which are less than 50 miles from central Edinburgh.
+
 ---
 
 ### Query 2: Article Descriptions Mentioning Edinburgh
