@@ -11,7 +11,7 @@ The goal is to extract these entries from OCR-based page-level text and convert 
 ## 🎯 Contribution Summary
 
 This resource contributes:
-- Article-level dataframes ( individual and agreegated) extracted from 19th-century Scottish Gazetteers
+- Article-level dataframes ( individual and aggregated) extracted from 19th-century Scottish Gazetteers
 - A reproducible pipeline for semantic enrichment and temporal modeling of historical place descriptions
 - Three interlinked Knowledge graphs aligned with [HTO
 ontology](https://w3id.org/hto) linking Gazetteer entries to external sources (Wikidata, DBpedia)
@@ -29,7 +29,7 @@ This pipeline uniquely leverages GPT-4 for structured article segmentation acros
 - **Ontology used**: [Heritage Textual Ontology (HTO)](http://query.frances-ai.com/hto_gazetteers)
 - **Main input dataset**: [`gazetteers_dataframe`](https://drive.google.com/file/d/1J6TxdKImw2rNgmdUBN19h202gl-iYupn/view?usp=share_link) — the structured **page-level** dataframe extracted from the Gazetteers of Scotland. This was derived from the OCR text and metadata in [this Zenodo record](https://zenodo.org/records/14051678).
 - **Derived data**: Article-level DataFrames, RDF knowledge graph, outputs are downloadable [here](#dataframes-with-extracted-articles)  
-- **SPARQL Endpoint**: Deployable locally with [Apache Jena Fuseki]()
+- **SPARQL Endpoint**: Deployable locally with Apache Jena Fuseki: [http://query.frances-ai.com/hto_gazetteers](http://query.frances-ai.com/hto_gazetteers)
 - **Pipeline Execution Guide**: [📄 PIPELINE_EXECUTION.md](https://github.com/francesNLP/MappingChange/blob/main/PIPELINE_EXECUTION.md) — a complete walkthrough for replicating the entire resource  
 - **KG and Elasticsearch Index Usage**: [📄 KG_ES_USAGE.md](https://github.com/francesNLP/MappingChange/blob/main/KG_ES_USAGE.md) — a walkthrough with examples for querying the deployed KG and Elasticsearch index
 - **Notebooks**: [📄 Notebooks](https://github.com/francesNLP/MappingChange/blob/main/Notebooks) — a complete walkthrough for querying the KG and Dataframes 
