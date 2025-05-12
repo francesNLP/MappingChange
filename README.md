@@ -48,7 +48,7 @@ This pipeline uniquely leverages GPT-4 for structured article segmentation acros
 | Component Type        | Description                                                                 | Location / Format                                                   |
 |------------------------|-----------------------------------------------------------------------------|----------------------------------------------------------------------|
 | 🗃️  Input Dataset        | OCR-based Gazetteer pages with metadata (`gazetteers_dataframe`)             | [Zenodo](https://zenodo.org/records/14051678)                        |
-| 🛠️  Pipeline Scripts     | Article segmentation, merging, KG generation, enrichment                    | [`/src`](./src) , [PIPELINE_EXECUTION.md](./PIPELINE_EXECUTION.md]                                                    |
+| 🛠️  Pipeline Scripts     | Article segmentation, merging, KG generation, enrichment                    | [`/src`](./src) , [PIPELINE_EXECUTION.md](./PIPELINE_EXECUTION.md)                                                   |
 | 📘 Ontology              | Heritage Textual Ontology (HTO) for semantic modeling                       | [w3id.org/hto](https://w3id.org/hto) , [code](https://github.com/frances-ai/HeritageTextOntology)                                 |
 | 🧠 Article DataFrames    | Cleaned per-edition and aggregated article-level data                        | Pandas / [Zenodo Links](#dataframes-with-extracted-articles)        |
 | 🌐 Knowledge Graph       | RDF triples + enrichments (Wikidata, DBpedia, Geo)                           | Turtle / Fuseki / Zenodo / [KG_ES_USAGE.md](./KG_ES_USAGE.md)       |
