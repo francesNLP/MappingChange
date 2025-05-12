@@ -194,7 +194,7 @@ Below, we showcase just two representative visualizations:
 #### 1. Keyword Trends Over Time
 A heatmap showing how terms related to religion, gender, industry, education, and governance vary across editions (1803–1901).
 
-<img src="./Notebooks/figures/keyword_heatmap_small.png" alt="Keyword Heatmap" width="700"/>
+<img src="./Notebooks/figures/keyword_heatmap_small.png" alt="Keyword Heatmap" width="500"/>
 
 #### 2. Article Length Distribution
 A boxplot of word counts per article by edition, highlighting editorial and structural variation across volumes.
