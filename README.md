@@ -253,4 +253,6 @@ This work contributes to the [MappingChange initiative](https://rse.org.uk/scotl
 
 If you use this dataset, pipeline, or knowledge graph in your work, please cite:
 
+Yu, L., & Filgueira, R. (2025). MappingChange: A Temporal and Semantic Knowledge Base of the Scottish Gazetteers (1803–1901). Zenodo. https://doi.org/10.5281/zenodo.15397756
+
 
