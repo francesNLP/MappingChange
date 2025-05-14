@@ -8,6 +8,13 @@ This repository supports a research project to transform [The Gazetteers of Scot
 The goal is to extract these entries from OCR-based page-level text and convert them into cleaned, deduplicated article records to populate a temporal and semantic knowledge graphs. This work (and its new resource) has been integrated in the [Frances platform](http://www.frances-ai.com), our AI-driven platform for historical text analysis, enabling rich visualizations and advanced NLP-driven analysis of Scotland’s historical landscape.
 
 
+## 📖 Cite This Resource
+
+If you use this dataset, pipeline, or knowledge graph in your work, please cite:
+
+Yu, L., & Filgueira, R. (2025). MappingChange: A Temporal and Semantic Knowledge Base of the Scottish Gazetteers (1803–1901). Zenodo. https://doi.org/10.5281/zenodo.15397756
+
+
 ## 🎯 Contribution Summary
 
 This resource contributes:
@@ -244,15 +251,8 @@ These analyses help uncover editorial, linguistic, and conceptual changes in how
 This work contributes to the [MappingChange initiative](https://rse.org.uk/scotlands-vibrant-research-sector-to-receive-over-705-5k-in-the-latest-rse-research-awards-programme/): building a temporal and semantic knowledge graph of 19th-century Scottish place descriptions. It enables researchers to:
 
 - Analyze the evolution of geographical and cultural narratives
-- Compare local descriptions in the Gazetteers with national perspectives in the Encyclopaedia Britannica
+- Compare local descriptions in the Gazetteers with contemporal resources (Wikipedia, DBpedia)
 - Link and cluster places across editions and sources using NLP and semantic matching
 - The extracted articles are integrated into [Frances](http://www.frances-ai.com).
-
-
-## 📖 Cite This Resource
-
-If you use this dataset, pipeline, or knowledge graph in your work, please cite:
-
-Yu, L., & Filgueira, R. (2025). MappingChange: A Temporal and Semantic Knowledge Base of the Scottish Gazetteers (1803–1901). Zenodo. https://doi.org/10.5281/zenodo.15397756
 
 
