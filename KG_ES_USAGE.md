@@ -36,7 +36,7 @@ SELECT ?name ?neigh_wkt WHERE {
         geo:hasCentroid ?neigh_centroid.
    ?neigh_centroid a crm:SP6_Declarative_Place;
         geo:asWKT ?neigh_wkt.
-  FILTER(geof:distance(?edi_wkt, ?neigh_wkt, units:miles) < 50)
+  FILTER(geof:distance(?edi_wkt, ?neigh_wkt, units:mile) < 50)
 } LIMIT 20
 ```
 
