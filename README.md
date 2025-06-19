@@ -36,16 +36,18 @@ This pipeline uniquely leverages GPT-4 for structured article segmentation acros
 - **Ontology**: [Heritage Textual Ontology (HTO)](http://query.frances-ai.com/hto_gazetteers) ([code](https://github.com/frances-ai/HeritageTextOntology?tab=readme-ov-file)) — semantic model used throughout the KsG  
 - **Main Input Dataset**: [`gazetteers_dataframe`](https://drive.google.com/file/d/1J6TxdKImw2rNgmdUBN19h202gl-iYupn/view?usp=share_link) — page-level OCR + metadata structured dataframe derived from [Zenodo](https://zenodo.org/records/14051678)  
 - **Derived Data Outputs**: Cleaned article-level DataFrames, RDF triples, enriched KG — see [Extracted DataFrames](#dataframes-with-extracted-articles) and [KGs with Extracted Articles](#kgs-with-extracted-articles)  
-- **SPARQL Endpoint**:  http://query.frances-ai.com/hto_gazetteers - You can use it programatically, see our [Notebooks](./Notebooks)
-  ```
-  from SPARQLWrapper import SPARQLWrapper, JSON
-  sparql = SPARQLWrapper("http://query.frances-ai.com/hto_gazetteers")
-  sparql.setReturnFormat(JSON)
-```
+- **SPARQL Endpoint**:  http://query.frances-ai.com/hto_gazetteers - You can use it programmatically, see our [Notebooks](./Notebooks) (and the python code bellow). 
 - **Execution Instructions**: [📄 `PIPELINE_EXECUTION.md`](./PIPELINE_EXECUTION.md) — step-by-step guide for running the full pipeline  
 - **Query & Usage Examples**: [📄 `KG_ES_USAGE.md`](./KG_ES_USAGE.md) — how to query the KG and use Elasticsearch indices  
 - **Interactive Notebooks**: [📁 `Notebooks/`](./Notebooks) — Colab/Jupyter notebooks for KG and DataFrame analysis  
 - **Reusability & Extensibility**: All components are modular and documented. See [pipeline scripts](./src), [usage guide](./KG_ES_USAGE.md), and [execution walkthrough](./PIPELINE_EXECUTION.md) for adaptation and reuse.
+
+
+```python 
+  from SPARQLWrapper import SPARQLWrapper, JSON
+  sparql = SPARQLWrapper("http://query.frances-ai.com/hto_gazetteers")
+  sparql.setReturnFormat(JSON)
+```
 
 
 ## ✅ FAIR Principles Compliance
