@@ -90,6 +90,30 @@ This poses several key difficulties:
 
 > These issues make large-scale semantic modeling infeasible without first extracting coherent, self-contained articles.
 
+### 🖼️ OCR Page-Level Format
+
+<img src="./Notebooks/figures/1803-gazetteer-page.jpg" alt="First page of 1803 Gazetteer" width="400"/>
+
+*Figure: First page from the 1803 Gazetteer. Articles begin mid-page, vary in length, and contain embedded headers and footnotes.*
+
+<img src="./Notebooks/figures/1884-gazetteer-page.jpg" alt="First page of 1884 Gazetteer" width="400"/>
+
+*Figure: The 1884 edition shows a denser two-column layout, inconsistent casing, and smaller font shifts. Article boundaries are visually ambiguous. Note the change in title from “The Gazetteer of Scotland” to “Ordnance Gazetteer of Scotland.”*
+
+---
+
+### 📄 Corresponding OCR/XML Structure
+
+<img src="./Notebooks/figures/Pag2-1884Image.jpg" alt="Page 2 of 1884 Gazetteer" width="500"/>
+
+*Figure: Page 2 of the 1884 edition.*
+
+<img src="./Notebooks/figures/Page2-1884XML.png" alt="Page 2 of 1884 Gazetteer OCR-XML structure" width="500"/>
+
+*Figure: XML representation of OCR output. Note that layout and semantic structure (e.g., headers, article breaks) are absent—just positional `CONTENT` strings.*
+
+
+
 ### 🧠 Strategy and Impact
 
 To overcome these challenges, we use **GPT-4 with a sliding window strategy** to extract article-level records from noisy OCR streams. This LLM-driven approach is flexible, layout-aware, and portable across editions, offering a scalable alternative to fragile rule-based methods.
