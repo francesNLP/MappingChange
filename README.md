@@ -70,6 +70,57 @@ This pipeline uniquely leverages GPT-4 for structured article segmentation acros
 | 🔎 Search Indexes       | Full-text + semantic search via Elasticsearch (SPARQL + REST access)      | [Frances Platform](http://www.frances-ai.com), [Usage Guide](./KG_ES_USAGE.md)                      | Elasticsearch / JSON / SPARQL |
 
 
+## 🔍 From Unstructured Text to Structured Knowledge
+
+MappingChange tackles a fundamental challenge in historical NLP and Semantic Web research: **transforming noisy, unstructured OCR data into coherent, article-level structured content**. 
+
+The Gazetteers of Scotland were digitized as **page-level XMLs**, lacking article layout markers or semantic annotations—a common scenario in many historical corpora (depending on their OCR-ed scanned techniques). But this problem is not limited to historical sources: **modern born-digital corpora containing unstructured free text can exhibit similar challenges** when structure is implicit or inconsistently applied.
+
+This poses several key difficulties:
+
+- 🧩 **Article segmentation is not trivial**: Articles can range from two lines to twenty pages, start mid-column or mid-page, and lack consistent visual separators. Entries often blend with headers, footers, or adjacent entries.
+
+- ⚡️ **No clear boundary between content and metadata**: Page numbers, running titles, and section headers appear in the same OCR layer as article content, making it hard to isolate meaningful segments with rules alone.
+
+- 🔭 **Place name ambiguity**: Many locations share names (e.g., "Springfield"), requiring context (e.g., county, neighboring places) to distinguish them correctly across entries and editions.
+
+- 🔍 **Layout inconsistency and OCR errors**: Variations in scan quality, column structure, and print formatting affect OCR accuracy, compounding the difficulty of clean segmentation.
+
+- ❌ **Limits of unstructured corpora**: Without article-level structure, historical corpora are often reduced to keyword counts or regex-style searches — hindering semantic enrichment, alignment, and temporal comparison.
+
+> These issues make large-scale semantic modeling infeasible without first extracting coherent, self-contained articles.
+
+
+### 🖼️ OCR Page-Level Format
+
+<img src="./figures/1803-gazetteer-page.jpg" alt="First page of 1803 Gazetteer" width="400"/>
+
+*Figure: Fist page from the 1803 Gazetteer. Articles begin mid-page, vary in length, and contain embedded headers and footnotes.*
+
+<img src="./figures/1884-gazetteer-page.jpg" alt="First page of 1884 Gazetteer" width="400"/>
+
+*Figure: The 1884 edition shows a denser two-column layout, inconsistent casing, and smaller font shifts. Article boundaries are visually ambiguous. Note the change in title from “The Gazetteer of Scotland” to “Ordnance Gazetteer of Scotland.”*
+
+
+### 📄 Corresponding OCR/XML Structure
+
+<img src="./figures/Pag2-1884Image.png" alt="Page 2 of 1884 Gazetteer" width="500"/>
+
+*Figure: Seond Page of 1884 Edition.*
+
+<img src="./figures/Page2-1884XML.png" alt="Page 2 of 1884 Gazetteer OCR-XML structure" width="500"/>
+
+*Figure: XML representation of OCR output. Note that layout and semantic structure (e.g., headers, article breaks) are absent—just positional `CONTENT` strings.*
+
+
+### 🧠 Strategy and Impact
+
+To overcome these challenges, we use **GPT-4 with a sliding window strategy** to extract article-level records from noisy OCR streams. This LLM-driven approach is flexible, layout-aware, and portable across editions, offering a scalable alternative to fragile rule-based methods.
+
+Once extracted, these articles form the foundation for **cleaning, semantic enrichment, disambiguation, and knowledge graph construction**, enabling deep querying, comparative analysis, and integration with external sources like Wikidata and DBpedia.
+
+These structural issues—varying formats, inconsistent casing, embedded headers—differ across editions and are common in historical collections, but can also occur in born-digital corpora. Once article-level structure is recovered, MappingChange enables enrichment, querying, and diachronic analysis that would otherwise be impossible. This approach can be generalized to other gazetteers, encyclopaedias, and free-text reference works.
+
 ## 🧑 Target Users and Use Cases
 
 This resource is designed for:
