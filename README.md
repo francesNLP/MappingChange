@@ -93,22 +93,22 @@ This poses several key difficulties:
 
 ### 🖼️ OCR Page-Level Format
 
-<img src="./figures/1803-gazetteer-page.jpg" alt="First page of 1803 Gazetteer" width="400"/>
+<img src="./Notebooks/figures/1803-gazetteer-page.jpg" alt="First page of 1803 Gazetteer" width="400"/>
 
 *Figure: Fist page from the 1803 Gazetteer. Articles begin mid-page, vary in length, and contain embedded headers and footnotes.*
 
-<img src="./figures/1884-gazetteer-page.jpg" alt="First page of 1884 Gazetteer" width="400"/>
+<img src="./Notebooks/figures/1884-gazetteer-page.jpg" alt="First page of 1884 Gazetteer" width="400"/>
 
 *Figure: The 1884 edition shows a denser two-column layout, inconsistent casing, and smaller font shifts. Article boundaries are visually ambiguous. Note the change in title from “The Gazetteer of Scotland” to “Ordnance Gazetteer of Scotland.”*
 
 
 ### 📄 Corresponding OCR/XML Structure
 
-<img src="./figures/Pag2-1884Image.png" alt="Page 2 of 1884 Gazetteer" width="500"/>
+<img src="./Notebooks/figures/Pag2-1884Image.png" alt="Page 2 of 1884 Gazetteer" width="500"/>
 
 *Figure: Seond Page of 1884 Edition.*
 
-<img src="./figures/Page2-1884XML.png" alt="Page 2 of 1884 Gazetteer OCR-XML structure" width="500"/>
+<img src="./Notebooks/figures/Page2-1884XML.png" alt="Page 2 of 1884 Gazetteer OCR-XML structure" width="500"/>
 
 *Figure: XML representation of OCR output. Note that layout and semantic structure (e.g., headers, article breaks) are absent—just positional `CONTENT` strings.*
 
