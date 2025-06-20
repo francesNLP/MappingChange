@@ -314,4 +314,13 @@ This work contributes to the [MappingChange initiative](https://rse.org.uk/scotl
 - Link and cluster places across editions and sources using NLP and semantic matching
 - The extracted articles are integrated into [Frances](http://www.frances-ai.com).
 
+## ⚠️ Limitations and Disclaimer
+
+This resource is based on OCR-derived historical text and automated extraction pipelines. While the MappingChange system uses robust techniques (including GPT-4, embedding-based enrichment, and georesolution), it is not immune to errors. Specifically:
+
+- Article segmentation may contain occasional boundary or formatting mistakes.
+- Disambiguation of identically named places is context-dependent and may misfire in edge cases.
+- OCR quality, inconsistent layout, and orthographic variation across editions can introduce noise.
+
+We welcome feedback, corrections, and contributions from the community to help refine and extend the resource over time.
 
