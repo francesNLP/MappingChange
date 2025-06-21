@@ -42,6 +42,8 @@ This pipeline uniquely leverages GPT-4 for structured article segmentation acros
 - **Interactive Notebooks**: [📁 `Notebooks/`](./Notebooks) — Colab/Jupyter notebooks for KG and DataFrame analysis  
 - **Reusability & Extensibility**: All components are modular and documented. See [pipeline scripts](./src), [usage guide](./KG_ES_USAGE.md), and [execution walkthrough](./PIPELINE_EXECUTION.md) for adaptation and reuse.
 
+> ⚠️ **Note**: The SPARQL endpoint at `http://query.frances-ai.com/hto_gazetteers` **does not provide a public web-based user interface**. However, it is fully accessible for programmatic querying — for example, using libraries like [`SPARQLWrapper`](https://rdflib.github.io/sparqlwrapper/), as shown in the code snippet bellow:
+
 
 ```python 
   from SPARQLWrapper import SPARQLWrapper, JSON
@@ -69,40 +71,44 @@ This pipeline uniquely leverages GPT-4 for structured article segmentation acros
 | 📊 Notebooks            | Exploratory and comparative analysis of KGs and DataFrames               | [`/Notebooks`](./Notebooks)                                                                         | Jupyter (.ipynb)              |
 | 🔎 Search Indexes       | Full-text + semantic search via Elasticsearch (SPARQL + REST access)      | [Frances Platform](http://www.frances-ai.com), [Usage Guide](./KG_ES_USAGE.md)                      | Elasticsearch / JSON / SPARQL |
 
-
 ## 🔍 From Unstructured Text to Structured Knowledge
 
-MappingChange tackles a fundamental challenge in historical NLP and Semantic Web research: **transforming noisy, unstructured OCR data into coherent, article-level structured content**. 
+**MappingChange** addresses a core challenge in historical NLP and Semantic Web research:  
+**transforming noisy, unstructured OCR data into coherent, article-level structured content.**
 
-The Gazetteers of Scotland were digitized as **page-level XMLs**, lacking article layout markers or semantic annotations—a common scenario in many historical corpora (depending on their OCR-ed scanned techniques). But this problem is not limited to historical sources: **modern born-digital corpora containing unstructured free text can exhibit similar challenges** when structure is implicit or inconsistently applied.
+The *Gazetteers of Scotland* were digitized as **page-level XML files** (as free-text at the page level), lacking article layout markers, section boundaries, or semantic annotations—a common situation in historical corpora, especially those processed via OCR from scanned documents. However, this challenge also applies to **modern born-digital corpora**, where structure is often implicit or inconsistently applied.
 
-This poses several key difficulties:
+This task presents several key challenges:
 
-- 🧩 **Article segmentation is not trivial**: Articles can range from two lines to twenty pages, start mid-column or mid-page, and lack consistent visual separators. Entries often blend with headers, footers, or adjacent entries.
+- 🧩 **Article segmentation is non-trivial**: Articles vary widely in length—from just a few words to multi-page narratives. They often begin mid-column or mid-page and are not clearly separated from surrounding text.
 
-- ⚡️ **No clear boundary between content and metadata**: Page numbers, running titles, and section headers appear in the same OCR layer as article content, making it hard to isolate meaningful segments with rules alone.
+- ⚡️ **No clear boundary between content and metadata**: Page numbers, running titles, and section headers appear in the same OCR layer as article content, making it difficult to isolate meaningful segments with rule-based methods.
 
-- 🔭 **Place name ambiguity**: Many locations share names (e.g., "Springfield"), requiring context (e.g., county, neighboring places) to distinguish them correctly across entries and editions.
+- 🔭 **Place name ambiguity**: Many locations (e.g., “Springfield”) appear multiple times across Scotland. Disambiguating them requires contextual information such as county names or neighboring places.
 
-- 🔍 **Layout inconsistency and OCR errors**: Variations in scan quality, column structure, and print formatting affect OCR accuracy, compounding the difficulty of clean segmentation.
+- 🔍 **Layout inconsistency and OCR noise**: Scan quality, column structure, typography, and OCR performance vary significantly across editions, complicating reliable text segmentation.
 
-- ❌ **Limits of unstructured corpora**: Without article-level structure, historical corpora are often reduced to keyword counts or regex-style searches — hindering semantic enrichment, alignment, and temporal comparison.
+- ❌ **Structural limitations of unsegmented corpora**: Without article-level structure, historical collections are often reduced to keyword searches or regex-based filtering, limiting any meaningful semantic modeling or temporal analysis.
 
 > These issues make large-scale semantic modeling infeasible without first extracting coherent, self-contained articles.
+
 
 ### 🖼️ OCR Page-Level Format
 
 <img src="./Notebooks/figures/1803-gazetteer-page.jpg" alt="First page of 1803 Gazetteer" width="400"/>
 
-*Figure: First page from the 1803 Gazetteer. Articles begin mid-page, vary in length, and contain embedded headers and footnotes.*
+*Figure: First page from the 1803 Gazetteer. Articles begin mid-page, vary in length, and include embedded headers and footnotes. Article names are in uppercase, followed by punctuation (e.g., "." or ";"). Long articles may span multiple pages; short entries may be only a few words. Alternative names appear in parentheses. Headers are two sets of three uppercase words (e.g., “ABB ABBE”).*
 
 <img src="./Notebooks/figures/1884-gazetteer-page.jpg" alt="First page of 1884 Gazetteer" width="400"/>
 
-*Figure: The 1884 edition shows a denser two-column layout, inconsistent casing, and smaller font shifts. Article boundaries are visually ambiguous. Note the change in title from “The Gazetteer of Scotland” to “Ordnance Gazetteer of Scotland.”*
+*Figure: First page from the 1884 Gazetteer. This edition uses a denser two-column layout and the first page begins without headers. The title has changed to “Ordnance Gazetteer of Scotland.” Articles can still vary greatly in length. Article names are capitalized, followed by commas, with alternative names sometimes introduced by "or" or included in parentheses. Subsequent pages include headers showing the first and last articles names in uppercase on the page.*
 
----
+
+> ⚠️ **Note**: These two examples illustrate typical OCR layouts, but every gazetteer edition differs in format, conventions, and typography. As a result, **a separate information extraction strategy was developed per edition** to ensure accurate article segmentation and interpretation.
 
 ### 📄 Corresponding OCR/XML Structure
+
+Note that article extraction is not performed from the image itself, but from the XML-encoded OCR text. In these XMLs, there is **no distinction** between headers, article content, and footnotes. All text is flattened into a continuous stream of `CONTENT` strings with no structural annotations or layout information.
 
 <img src="./Notebooks/figures/Pag2-1884Image.jpg" alt="Page 2 of 1884 Gazetteer" width="500"/>
 
@@ -110,17 +116,30 @@ This poses several key difficulties:
 
 <img src="./Notebooks/figures/Page2-1884XML.png" alt="Page 2 of 1884 Gazetteer OCR-XML structure" width="500"/>
 
-*Figure: XML representation of OCR output. Note that layout and semantic structure (e.g., headers, article breaks) are absent—just positional `CONTENT` strings.*
-
+*Figure: XML representation of OCR output. Note the absence of layout or semantic structure—only positional text content is preserved.*
 
 
 ### 🧠 Strategy and Impact
 
-To overcome these challenges, we use **GPT-4 with a sliding window strategy** to extract article-level records from noisy OCR streams. This LLM-driven approach is flexible, layout-aware, and portable across editions, offering a scalable alternative to fragile rule-based methods.
+To overcome these challenges, we use **GPT-4 with a sliding window strategy** to extract article-level entries from noisy OCR streams. This LLM-based method is:
 
-Once extracted, these articles form the foundation for **cleaning, semantic enrichment, disambiguation, and knowledge graph construction**, enabling deep querying, comparative analysis, and integration with external sources like Wikidata and DBpedia.
+- **Flexible** to formatting variation
+- **Layout-aware** due to GPT’s long-context handling
+- **Scalable and portable** across editions, unlike brittle rule-based approaches
 
-These structural issues—varying formats, inconsistent casing, embedded headers—differ across editions and are common in historical collections, but can also occur in born-digital corpora. Once article-level structure is recovered, MappingChange enables enrichment, querying, and diachronic analysis that would otherwise be impossible. This approach can be generalized to other gazetteers, encyclopaedias, and free-text reference works.
+Once extracted, these articles form the basis for:
+
+- 🧹 Cleaning and normalization  
+- 🧠 Semantic enrichment and concept clustering  
+- 🔍 Disambiguation of place names  
+- 🌐 Knowledge graph construction  
+
+This enables powerful querying, comparative analysis, and integration with external sources like **Wikidata** and **DBpedia**.
+
+Although many of these structural challenges are specific to historical collections, similar issues arise in modern free-text corpora. Once article-level structure is restored, **MappingChange** enables semantic enrichment, SPARQL querying, and diachronic analysis that would otherwise be infeasible.
+
+This approach can be generalized to other gazetteers, encyclopaedias, or born-digital reference works.
+
 
 ## 🧑 Target Users and Use Cases
 
