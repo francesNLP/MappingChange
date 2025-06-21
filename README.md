@@ -112,7 +112,7 @@ This task presents several key challenges:
 
 ### 📄 Corresponding OCR/XML Structure
 
-Note that article extraction is not performed from the image itself, but from the XML-encoded OCR text. In these XMLs, there is **no distinction** between headers, article content, and footnotes. All text is flattened into a continuous stream of `CONTENT` strings with no structural annotations or layout information.
+Note that article extraction is not performed from the image itself, but from the extracted text from XML-encoded OCR files. In these XMLs, there is **no distinction** between headers, article content, and footnotes. All text is flattened into a continuous stream of `CONTENT` strings with no structural annotations or layout information.
 
 <img src="./Notebooks/figures/Pag2-1884Image.jpg" alt="Page 2 of 1884 Gazetteer" width="500"/>
 
@@ -122,6 +122,8 @@ Note that article extraction is not performed from the image itself, but from th
 
 *Figure: XML representation of OCR output. Note the absence of layout or semantic structure—only positional text content is preserved.*
 
+In our previous work, we published a semantic RDF knowledge graph, [Gazetteer_HTO (Zenodo, 2024)](https://zenodo.org/records/14051678), which included detailed metadata and full OCR text at the **page level**. For the present project, we export this RDF into a lightweight [gazetteers dataframe](https://drive.google.com/file/d/1J6TxdKImw2rNgmdUBN19h202gl-iYupn/view?usp=share_link), which serves as the **entry point** to article-level extraction, and has one row **per volume, per edition, and per page**, with all OCR text per page flattened into a single field (free text per page). 
+
 
 ### 🧠 Strategy and Impact
 
@@ -130,7 +132,7 @@ To overcome these challenges, we use **GPT-4 with a sliding window strategy** to
 - **Flexible** to formatting variation
 - **Layout-aware** due to GPT’s long-context handling
 - **Scalable and portable** across editions, unlike brittle rule-based approaches
-
+:
 Once extracted, these articles form the basis for:
 
 - 🧹 Cleaning and normalization  
