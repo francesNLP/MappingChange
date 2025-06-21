@@ -122,7 +122,7 @@ Note that article extraction is not performed from the image itself, but from th
 
 *Figure: XML representation of OCR output. Note the absence of layout or semantic structure—only positional text content is preserved.*
 
-In our previous work, we published a semantic RDF knowledge graph, [Gazetteer_HTO (Zenodo, 2024)](https://zenodo.org/records/14051678), which included detailed metadata and full OCR text at the **page level**. For the present project, we export this RDF into a lightweight [gazetteers dataframe](https://drive.google.com/file/d/1J6TxdKImw2rNgmdUBN19h202gl-iYupn/view?usp=share_link), which serves as the **entry point** to article-level extraction, and has one row **per volume, per edition, and per page**, with all OCR text per page flattened into a single field (free text per page). 
+In our previous work, we published a KG-RDF, [Gazetteer_HTO (Zenodo, 2024)](https://zenodo.org/records/14051678), which included detailed metadata and full OCR text at the **page level**. For the present project, we export this RDF into a lightweight [gazetteers dataframe](https://drive.google.com/file/d/1J6TxdKImw2rNgmdUBN19h202gl-iYupn/view?usp=share_link), which serves as the **entry point** for our pipe-line to article-level extraction, and has one row **per volume, per edition, and per page**, with all OCR text per page flattened into a single field (free text per page). 
 
 
 ### 🧠 Strategy and Impact
