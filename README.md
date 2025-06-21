@@ -86,7 +86,7 @@ This task presents several key challenges:
 
 - 🔭 **Place name ambiguity**: Many locations (e.g., “Abbey” - see figures [Pages 1 and 2 of 1884 edition bellow](https://github.com/francesNLP/MappingChange?tab=readme-ov-file#%EF%B8%8F-ocr-page-level-format)) appear multiple times across Scotland. Disambiguating them requires contextual information such as county names or neighboring places.
 
- 📉 **Changing coverage across editions**: Not all places appear in every edition. Some entries are added in later editions (e.g., due to industrial development or administrative changes), while others are shortened, renamed, or removed altogether. This drift in coverage complicates direct alignment and requires flexible matching strategies. Such challenges are common in evolving reference works—e.g., encyclopaedias, dictionaries, geographical catalogues, and bibliographic indexes—where entries are frequently revised between editions.
+- 📉 **Changing coverage across editions**: Not all places appear in every edition. Some entries are added in later editions (e.g., due to industrial development or administrative changes), while others are shortened, renamed, or removed altogether. This drift in coverage complicates direct alignment and requires flexible matching strategies. Such challenges are common in evolving reference works—e.g., encyclopaedias, dictionaries, geographical catalogues, and bibliographic indexes—where entries are frequently revised between editions.
 
 
 - 🔍 **Layout inconsistency and OCR noise**: Scan quality, column structure, typography, and OCR performance vary significantly across editions, complicating reliable text segmentation.
