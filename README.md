@@ -86,6 +86,9 @@ This task presents several key challenges:
 
 - 🔭 **Place name ambiguity**: Many locations (e.g., “Abbey” - see figures [Pages 1 and 2 of 1884 edition bellow](https://github.com/francesNLP/MappingChange?tab=readme-ov-file#%EF%B8%8F-ocr-page-level-format)) appear multiple times across Scotland. Disambiguating them requires contextual information such as county names or neighboring places.
 
+ 📉 **Changing coverage across editions**: Not all places appear in every edition. Some entries are added in later editions (e.g., due to industrial development or administrative changes), while others are shortened, renamed, or removed altogether. This drift in coverage complicates direct alignment and requires flexible matching strategies. Such challenges are common in evolving reference works—e.g., encyclopaedias, dictionaries, geographical catalogues, and bibliographic indexes—where entries are frequently revised between editions.
+
+
 - 🔍 **Layout inconsistency and OCR noise**: Scan quality, column structure, typography, and OCR performance vary significantly across editions, complicating reliable text segmentation.
 
 - ❌ **Structural limitations of unsegmented corpora**: Without article-level structure, historical collections are often reduced to keyword searches or regex-based filtering, limiting any meaningful semantic modeling or temporal analysis.
@@ -97,7 +100,7 @@ This task presents several key challenges:
 
 <img src="./Notebooks/figures/1803-gazetteer-page.jpg" alt="First page of 1803 Gazetteer" width="400"/>
 
-*Figure: First page from the 1803 Gazetteer. Articles begin mid-page, vary in length, and include embedded headers and footnotes. Article names are in uppercase, followed by punctuation (e.g., "." or ";"). Long articles may span multiple pages; short entries may be only a few words. Alternative names appear in parentheses. Headers are two sets of three uppercase words (e.g., “ABB ABBE”).*
+*Figure: First page from the 1803 Gazetteer. Articles begin mid-page, vary in length, and include embedded headers and footnotes. Article names are in uppercase, followed by punctuation (e.g., "." or ";"). Long articles may span multiple pages; short entries may be only a few words. Additional name's place can appear in parentheses. Headers are two sets of three uppercase words (e.g., “ABB ABBE”).*
 
 <img src="./Notebooks/figures/1884-gazetteer-page.jpg" alt="First page of 1884 Gazetteer" width="400"/>
 
