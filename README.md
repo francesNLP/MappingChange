@@ -1,11 +1,12 @@
 # 🗺️ MappingChange
 
 ## Tracking the Evolution of Place Descriptions in the Gazetteers of Scotland (1803–1901)
+
 This repository supports a research project to transform [The Gazetteers of Scotland (1803–1901)](https://data.nls.uk/data/digitised-collections/gazetteers-of-scotland/), digitized by the National Library of Scotland (NLS), into structured article-level data. These gazetteers provide detailed historical accounts of Scottish places—towns, glens, castles, and parishes—captured across 19 volumes (10 editions):
   
 <img src="./Notebooks/figures/gazetteers_vols.png" alt="Number of vol per edition" width="500"/>
 
-The goal is to extract these entries from OCR-based page-level text and convert them into cleaned, deduplicated article records to populate a temporal and semantic knowledge graphs. This work (and its new resource) has been integrated in the [Frances platform](http://www.frances-ai.com), our AI-driven platform for historical text analysis, enabling rich visualizations and advanced NLP-driven analysis of Scotland’s historical landscape.
+The goal is to extract these entries from OCR-based **page-level free text** and convert them into cleaned, deduplicated article records to populate a temporal and semantic knowledge graphs. This work (and its new resource) has been integrated in the [Frances platform](http://www.frances-ai.com), our AI-driven platform for historical text analysis, enabling rich visualizations and advanced NLP-driven analysis of Scotland’s historical landscape.
 
 
 ## 📖 Cite This Resource
@@ -71,29 +72,37 @@ This pipeline uniquely leverages GPT-4 for structured article segmentation acros
 | 📊 Notebooks            | Exploratory, validation and comparative analysis of KGs and DataFrames               | [`/Notebooks`](./Notebooks)                                                                         | Jupyter (.ipynb)              |
 | 🔎 Search Indexes       | Full-text + semantic search via Elasticsearch (SPARQL + REST access)      | [Frances Platform](http://www.frances-ai.com), [Usage Guide](./KG_ES_USAGE.md)                      | Elasticsearch / JSON / SPARQL |
 
+
 ## 🔍 From Unstructured Text to Structured Knowledge
 
 **MappingChange** addresses a core challenge in historical NLP and Semantic Web research:  
 **transforming noisy, unstructured OCR data into coherent, article-level structured content.**
 
-The *Gazetteers of Scotland* were digitized as **page-level XML files** (as free-text at the page level), lacking article layout markers, section boundaries, or semantic annotations—a common situation in historical corpora, especially those processed via OCR from scanned documents. However, this challenge also applies to **modern born-digital corpora**, where structure is often implicit or inconsistently applied.
+The *Gazetteers of Scotland* were digitized as **page-level XML files**, containing only flat free-text per page—without article layout markers, section boundaries, or semantic annotations. This is typical of OCR-derived historical corpora.
 
-This task presents several key challenges:
+However, this challenge extends beyond historical sources. Many born-digital corpora also exhibit **implicit or inconsistently applied structure**. In both cases, the absence of explicit structure becomes the primary barrier to:
 
-- 🧩 **Article segmentation is non-trivial**: Articles vary widely in length—from just a few words to multi-page narratives. They often begin mid-column or mid-page and are not clearly separated from surrounding text.
+- Navigating or querying the content meaningfully  
+- Comparing related entities across time or editions  
+- Linking to external datasets (e.g., Wikidata, geospatial KGs, or archival records)
 
-- ⚡️ **No clear boundary between content and metadata**: Page numbers, running titles, and section headers appear in the same OCR layer as article content, making it difficult to isolate meaningful segments with rule-based methods.
+For this particular dataset, the Scottish Gazetteers, the task of article-level segmentation presents several key challenges:
 
-- 🔭 **Place name ambiguity**: Some locations share the same name (e.g., “Abbey” — see [Pages 1 and 2 of the 1884 edition](https://github.com/francesNLP/MappingChange?tab=readme-ov-file#%EF%B8%8F-ocr-page-level-format)) but refer to different places, even within the same edition. In some cases, headers may include full place names, making it difficult to distinguish between article titles, section headings, or continuations. Determining whether a place name marks the start of a new article, a header, or a continuation from a previous page—and whether two same-named entries describe the *same* or *different* places—requires contextual understanding of layout, content flow, and semantic cues.
+- 🧩 **Article segmentation is non-trivial**: Articles vary in length—from a few words to multi-page narratives. They often begin mid-column or mid-page and are not clearly separated from surrounding text.
 
-- 📉 **Changing coverage across editions**: Not all places appear in every edition. Some entries are added in later editions (e.g., due to industrial development or administrative changes), while others are shortened, renamed, or removed altogether. This drift in coverage complicates direct alignment and requires flexible matching strategies. Such challenges are common in evolving reference works—e.g., encyclopaedias, dictionaries, geographical catalogues, and bibliographic indexes—where entries are frequently revised between editions.
+- ⚡️ **No clear boundary between content and metadata**: Page numbers, running titles, and section headers are embedded within the same OCR layer as article content, making it difficult to isolate meaningful segments using rule-based methods.
 
+- 🔭 **Place name ambiguity**: Many locations share the same name (e.g., “Abbey” — see [Pages 1 and 2 of the 1884 edition](https://github.com/francesNLP/MappingChange?tab=readme-ov-file#%EF%B8%8F-ocr-page-level-format)) but refer to different places, even within the same edition. In some cases, headers may contain full place names, making it hard to distinguish between section headings and actual article entries.  
+  Determining whether a place name marks the start of a new article, a header, or a continuation—and whether same-named entries refer to the *same* or *different* places—requires contextual understanding of layout, content flow, and semantic cues.
 
-- 🔍 **Layout inconsistency and OCR noise**: Scan quality, column structure, typography, and OCR performance vary significantly across editions, complicating reliable text segmentation.
+- 📉 **Changing coverage across editions**: Not all places appear in every edition. New entries are introduced in later editions (e.g., due to industrialization or administrative change), while others may be shortened, renamed, or omitted.  
+  This drift in coverage complicates direct alignment. Such revision patterns are common in evolving reference works—e.g., encyclopedias, dictionaries, gazetteers, and bibliographic indexes.
 
-- ❌ **Structural limitations of unsegmented corpora**: Without article-level structure, historical collections are often reduced to keyword searches or regex-based filtering, limiting any meaningful semantic modeling or temporal analysis.
+- 🔍 **Layout inconsistency and OCR noise**: Scan quality, column structures, typography, and OCR accuracy vary significantly across editions, complicating reliable segmentation.
 
-> These issues make large-scale semantic modeling infeasible without first extracting coherent, self-contained articles.
+- ❌ **Structural limitations of unsegmented corpora**: Without article-level structure, historical collections are often reduced to keyword search or regex filtering—limiting any meaningful semantic modeling or longitudinal analysis.
+
+> These challenges make large-scale semantic modeling infeasible without first extracting coherent, self-contained articles.
 
 
 ### 🖼️ OCR Page-Level Format
@@ -122,7 +131,7 @@ Note that article extraction is not performed from the image itself, but from th
 
 *Figure: XML representation of OCR output. Note the absence of layout or semantic structure—only positional text content is preserved.*
 
-In our previous work, we published a KG-RDF, [Gazetteer_HTO (Zenodo, 2024)](https://zenodo.org/records/14051678), which included detailed metadata and full OCR text at the **page level**. For the present project, we export this RDF into a lightweight [gazetteers dataframe](https://drive.google.com/file/d/1J6TxdKImw2rNgmdUBN19h202gl-iYupn/view?usp=share_link), which serves as the **entry point** for our pipe-line to article-level extraction, and has one row **per volume, per edition, and per page**, with all OCR text per page flattened into a single field (free text per page). 
+> In our previous work, we published a KG-RDF, [Gazetteer_HTO (Zenodo, 2024)](https://zenodo.org/records/14051678), which included detailed metadata and full OCR text at the **page level**. For the present project, we export this RDF into a lightweight [gazetteers dataframe](https://drive.google.com/file/d/1J6TxdKImw2rNgmdUBN19h202gl-iYupn/view?usp=share_link), which serves as the **entry point** for our pipe-line to article-level extraction, and has one row **per volume, per edition, and per page**, with all OCR text per page flattened into a single field (free text per page). 
 
 
 ### 🧠 Strategy and Impact
