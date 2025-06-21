@@ -84,7 +84,7 @@ This task presents several key challenges:
 
 - ⚡️ **No clear boundary between content and metadata**: Page numbers, running titles, and section headers appear in the same OCR layer as article content, making it difficult to isolate meaningful segments with rule-based methods.
 
-- 🔭 **Place name ambiguity**: Many locations (e.g., “Springfield”) appear multiple times across Scotland. Disambiguating them requires contextual information such as county names or neighboring places.
+- 🔭 **Place name ambiguity**: Many locations (e.g., “Abbey” - see figures [Pages 1 and 2 of 1884 edition bewllow](https://github.com/francesNLP/MappingChange?tab=readme-ov-file#%EF%B8%8F-ocr-page-level-format)) appear multiple times across Scotland. Disambiguating them requires contextual information such as county names or neighboring places.
 
 - 🔍 **Layout inconsistency and OCR noise**: Scan quality, column structure, typography, and OCR performance vary significantly across editions, complicating reliable text segmentation.
 
