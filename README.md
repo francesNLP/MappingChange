@@ -39,7 +39,7 @@ This pipeline uniquely leverages GPT-4 for structured article segmentation acros
 - **SPARQL Endpoint**:  http://query.frances-ai.com/hto_gazetteers - You can use it programmatically, see our [Notebooks](./Notebooks) (and the python code bellow). 
 - **Execution Instructions**: [📄 `PIPELINE_EXECUTION.md`](./PIPELINE_EXECUTION.md) — step-by-step guide for running the full pipeline  
 - **Query & Usage Examples**: [📄 `KG_ES_USAGE.md`](./KG_ES_USAGE.md) — how to query the KG and use Elasticsearch indices  
-- **Interactive Notebooks**: [📁 `Notebooks/`](./Notebooks) — Colab/Jupyter notebooks for KG and DataFrame analysis  
+- **Interactive Notebooks**: [📁 `Notebooks/`](./Notebooks) — Colab/Jupyter notebooks for KG exploration and validation ; and DataFrame analysis  
 - **Reusability & Extensibility**: All components are modular and documented. See [pipeline scripts](./src), [usage guide](./KG_ES_USAGE.md), and [execution walkthrough](./PIPELINE_EXECUTION.md) for adaptation and reuse.
 
 > ⚠️ **Note**: The SPARQL endpoint at `http://query.frances-ai.com/hto_gazetteers` **does not provide a public web-based user interface**. However, it is fully accessible for programmatic querying — for example, using libraries like [`SPARQLWrapper`](https://rdflib.github.io/sparqlwrapper/), as shown in the code snippet bellow:
@@ -68,7 +68,7 @@ This pipeline uniquely leverages GPT-4 for structured article segmentation acros
 | 📘 Ontology             | Heritage Textual Ontology (HTO) for semantic modeling                    | [w3id.org/hto](https://w3id.org/hto), [GitHub](https://github.com/frances-ai/HeritageTextOntology) | RDF / Turtle                     |
 | 🧠 Article DataFrames   | Cleaned per-edition and aggregated article-level data                    | [Zenodo](https://doi.org/10.5281/zenodo.15393936), [See full list](#dataframes-with-extracted-articles) | Pandas / JSON                 |
 | 🌐 Knowledge Graph      | RDF triples + enrichments (Wikidata, DBpedia, Geo)                        | [Zenodo](https://doi.org/10.5281/zenodo.15393936), [See full list](#kgs-with-extracted-articles)        | RDF/Turtle, SPARQL (Fuseki)  |
-| 📊 Notebooks            | Exploratory and comparative analysis of KGs and DataFrames               | [`/Notebooks`](./Notebooks)                                                                         | Jupyter (.ipynb)              |
+| 📊 Notebooks            | Exploratory, validation and comparative analysis of KGs and DataFrames               | [`/Notebooks`](./Notebooks)                                                                         | Jupyter (.ipynb)              |
 | 🔎 Search Indexes       | Full-text + semantic search via Elasticsearch (SPARQL + REST access)      | [Frances Platform](http://www.frances-ai.com), [Usage Guide](./KG_ES_USAGE.md)                      | Elasticsearch / JSON / SPARQL |
 
 ## 🔍 From Unstructured Text to Structured Knowledge
@@ -273,7 +273,9 @@ These Jupyter notebooks offer different entry points for exploring the Gazetteer
 
 - [`Exploring_AggregatedDF.ipynb`](./Notebooks/Exploring_AggregatedDF.ipynb): Main exploratory notebook working with the unified DataFrame (`gaz_kg_concepts_df`). Includes 22 analyses covering article counts, sentiment, keyword trends, embeddings, and semantic change across editions.
 
-- [`Knowledge_Exploration_SPARQL.ipynb`](./Notebooks/Knowledge_Exploration_SPARQL.ipynb):Queries the Gazetteers Knowledge Graph using SPARQL. Enables structured exploration of linked data, references, and ontology-backed relations.
+- [`Knowledge_Exploration_SPARQL.ipynb`](./Notebooks/Knowledge_Exploration_SPARQL.ipynb):  
+  Interacts with the Gazetteers Knowledge Graph via SPARQL to support structured exploration of linked data, references, and ontology-driven relations. *Includes two curated sets of SPARQL queries: one for validating internal consistency (e.g., redirects, references), and another for examining external linkages to sources like Wikidata.*
+
 
 Each notebook serves a different aspect of the project: data quality, temporal-linguistic analysis, and semantic web querying.
 
