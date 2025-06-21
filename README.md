@@ -107,7 +107,8 @@ This task presents several key challenges:
 *Figure: First page from the 1884 Gazetteer. This edition uses a denser two-column layout and the first page begins without headers. The title has changed to “Ordnance Gazetteer of Scotland.” Articles can still vary greatly in length. Article names are capitalized, followed by commas, with alternative names sometimes introduced by "or" or included in parentheses. Subsequent pages include headers showing the first and last articles names in uppercase on the page.*
 
 
-> ⚠️ **Note**: These two examples illustrate typical OCR layouts, but every gazetteer edition differs in format, conventions, and typography. As a result, **a separate information extraction strategy was developed per edition** to ensure accurate article segmentation and interpretation.
+> ⚠️ **Note**: These two examples illustrate typical OCR layouts, but every gazetteer edition differs in format, conventions, and typography. Traditionally, such variation would require crafting edition-specific rule-based parsers—often brittle and hard to generalize. In contrast, **our GPT-4-based approach enables a unified extraction strategy**, where the same logic can be reused across editions with minimal changes (only requiring prompt adjustments). This makes adaptation across formats far easier, more robust, and scalable than rule-based methods.
+
 
 ### 📄 Corresponding OCR/XML Structure
 
