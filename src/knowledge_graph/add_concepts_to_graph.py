@@ -1,5 +1,5 @@
 import pandas as pd
-from rdflib import URIRef, RDF, Literal, XSD
+from rdflib import URIRef, RDF, Literal, XSD, SKOS
 from tqdm import tqdm
 
 # load the graph
@@ -17,10 +17,10 @@ def record_links(kg_df_with_concept_uris):
         if concept_uri:
             concept_records_df = kg_df_with_concept_uris[kg_df_with_concept_uris["concept_uri"] == concept_uri]
             concept_uriref = URIRef(concept_uri)
-            graph.add((concept_uriref, RDF.type, hto.Concept))
+            graph.add((concept_uriref, RDF.type, SKOS.Concept))
             for index, row in concept_records_df.iterrows():
                 record_uri_ref = URIRef(row["record_uri"])
-                graph.add((concept_uriref, hto.hadConceptRecord, record_uri_ref))
+                graph.add((concept_uriref, hto.hasConceptRecord, record_uri_ref))
 
         else:
             print("None")
@@ -33,9 +33,8 @@ def external_link(concept_item_df, type_uri):
         concept_uriref = URIRef(concept_uri)
         item_uriref = URIRef(item_uri)
         graph.add((item_uriref, RDF.type, hto.ExternalRecord))
-        graph.add((item_uriref, RDF.type, hto.InformationResource))
-        graph.add((item_uriref, hto.hasResourceType, type_uri))
-        graph.add((concept_uriref, hto.hadConceptRecord, item_uriref))
+        graph.add((item_uriref, hto.hasAuthorityType, type_uri))
+        graph.add((concept_uriref, hto.hasConceptRecord, item_uriref))
 
 
 if __name__ == "__main__":
@@ -50,14 +49,14 @@ if __name__ == "__main__":
     print("Loading the wikidata items dataframe .....")
     concept_wiki_df = pd.read_json("results/gaz_concept_wikidata_df", orient="index")
     print("Adding links from wikidata items to concepts .....")
-    external_link(concept_wiki_df, hto.Wikidata_Item)
+    external_link(concept_wiki_df, hto.WikidataItem)
     #graph.serialize(format="turtle", destination="gaz_extra_concepts_wikidata_link.ttl")
 
     # add dbpedia links
     print("Loading the dbpedia items dataframe .....")
     concept_dbpedia_df = pd.read_json("results/gaz_concept_dbpedia_df", orient="index")
     print("Adding links from dbpedia items to concepts .....")
-    external_link(concept_dbpedia_df, hto.DBpedia_Item)
+    external_link(concept_dbpedia_df, hto.DBpediaItem)
 
     result_graph_filepath = "results/gaz_extra_concepts_links.ttl"
     print(f"Saving the result graph to {result_graph_filepath} .....")

@@ -1,6 +1,6 @@
 import json
 
-from rdflib import Graph, Namespace, RDF, URIRef, Literal, XSD
+from rdflib import Graph, Namespace, RDF, URIRef, Literal, XSD, DCTERMS, SDO
 
 hto = Namespace("https://w3id.org/hto#")
 
@@ -10,14 +10,14 @@ def get_volume_mmsid(graph):
     q = prepareQuery('''
         SELECT ?volume_id ?mmsid WHERE {
             ?volume a hto:Volume;
-                hto:volumeId ?volume_id.
+                dct:identifier ?volume_id.
             ?edition_or_series a ?document_type;
-                hto:hadMember ?volume;
+                schema:hasPart ?volume;
                 hto:mmsid ?mmsid.
             FILTER (?document_type = hto:Edition || ?document_type = hto:Series)
     }
       ''',
-                     initNs={"hto": hto}
+                     initNs={"hto": hto, "dct": DCTERMS, "schema": SDO}
                      )
 
     for r in graph.query(q):

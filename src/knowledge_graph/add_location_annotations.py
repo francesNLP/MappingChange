@@ -2,14 +2,32 @@ import pandas as pd
 from rdflib.namespace import GEO, SDO
 
 from utils import load_name_map, save_name_map, name_to_uri_name, normalize_entity_name
-from rdflib import Graph, Namespace, URIRef, RDF, Literal, RDFS, XSD
+from rdflib import Graph, Namespace, URIRef, RDF, Literal, RDFS, XSD, PROV
 from tqdm import tqdm
 
 
 # define namespaces
 hto = Namespace("https://w3id.org/hto#")
 crm = Namespace("http://www.cidoc-crm.org/cidoc-crm/")
+crmgeo = Namespace("http://www.ics.forth.gr/isl/CRMgeo/")
 oa = Namespace("http://www.w3.org/ns/oa#")
+
+print("Load base hto ontology...")
+graph = Graph()
+graph_filepath = "hto.ttl"
+graph.parse(graph_filepath, format="turtle")
+
+# create agents
+mapping_change = URIRef("https://github.com/francesNLP/MappingChange")
+
+stanza = URIRef("https://github.com/stanfordnlp/stanza")
+graph.add((stanza, RDF.type, PROV.SoftwareAgent))
+graph.add((stanza, RDFS.label, Literal("Stanza", datatype=XSD.string)))
+
+edinburgh_geoparser = URIRef("https://www.ltg.ed.ac.uk/software/geoparser/")
+graph.add((stanza, RDF.type, PROV.SoftwareAgent))
+graph.add((stanza, RDFS.label, Literal("Edinburgh Geoparser", datatype=XSD.string)))
+
 
 # convert all coordinates in locations to float type
 def convert_coordinates_type(geo_df):
@@ -83,7 +101,8 @@ def get_all_unique_locations(geo_df):
 
 def add_centroid(location, location_id, target_graph):
     centroid_uri = URIRef("https://w3id.org/hto/SP6_Declarative_Place/" + location_id)
-    target_graph.add((centroid_uri, RDF.type, crm.SP6_Declarative_Place))
+    target_graph.add((centroid_uri, RDF.type, GEO.Geometry))
+    target_graph.add((centroid_uri, RDF.type, crmgeo.SP6_Declarative_Place))
     geojson = Literal(
         '''{"type": "Point", "coordinates": [%s, %s]}''' % (location["longitude"], location["latitude"]),
         datatype=GEO.geoJSONLiteral)
@@ -113,8 +132,9 @@ def add_phenomenal_place(location, added_locations_uris, target_graph):
     location_uri = URIRef("https://w3id.org/hto/SP2_Phenomenal_Place/" + location_id)
     location["uri"] = location_uri
     added_locations_uris[location_id] = location["uri"]
-
-    target_graph.add((location_uri, RDF.type, crm.SP2_Phenomenal_Place))
+    target_graph.add((location_uri, RDF.type, GEO.Feature))
+    target_graph.add((location_uri, RDF.type, crm.E53_Place))
+    target_graph.add((location_uri, RDF.type, crmgeo.SP2_Phenomenal_Place))
     target_graph.add((location_uri, RDFS.label, Literal(normalized_name, datatype=XSD.string)))
 
     # link location type
@@ -123,10 +143,10 @@ def add_phenomenal_place(location, added_locations_uris, target_graph):
         location_type_map = {
             "country": hto.Country,
             "continent": hto.Continent,
-            "region": hto.Region
+            "rgn": hto.Region
         }
         if location_type in ["country", "continent", "region"]:
-            target_graph.add((location_uri, hto.hasLocationType, location_type_map[location_type]))
+            target_graph.add((location_uri, hto.hasFeatureType, location_type_map[location_type]))
         if location_type not in ["country", "continent"] and "in_country" in location and location["in_country"] != "":
             # link the location to its country
             #print(f"linked to country {location['in_country']}")
@@ -172,8 +192,8 @@ def add_location_annotation(location, term_uri_str, desc_uri_str, added_location
     desc_uri = URIRef(desc_uri_str)
     desc_id = desc_uri_str.split("https://w3id.org/hto/OriginalDescription/")[1]
     specific_words_id = desc_id + str(start_index) + "_" + str(end_index)
-    specific_words_uri = URIRef(f"https://w3id.org/hto/SpecificResource/{specific_words_id}")
-    target_graph.add((specific_words_uri, RDF.type, oa.SpecificResource))
+    specific_words_uri = URIRef(f"https://w3id.org/hto/TextSegment/{specific_words_id}")
+    target_graph.add((specific_words_uri, RDF.type, hto.TextSegment))
     target_graph.add((specific_words_uri, oa.hasSource, desc_uri))
     target_graph.add((specific_words_uri, oa.hasSelector, text_position_selector_uri))
 
@@ -185,12 +205,14 @@ def add_location_annotation(location, term_uri_str, desc_uri_str, added_location
     location_annotation_uri = URIRef(f"https://w3id.org/hto/Annotation/{specific_words_id}")
     target_graph.add((location_annotation_uri, RDF.type, oa.Annotation))
     target_graph.add((desc_uri, hto.hasAnnotation, location_annotation_uri))
+    target_graph.add((specific_words_uri, hto.hasAnnotation, location_annotation_uri))
     target_graph.add((location_annotation_uri, oa.hasTarget, specific_words_uri))
     target_graph.add((location_annotation_uri, oa.hasBody, location_uri))
 
-    # link location to article term
-    term_uri = URIRef(term_uri_str)
-    target_graph.add((term_uri, SDO.mentions, location_uri))
+    # software used to generate the annotation
+    target_graph.add((location_annotation_uri, PROV.wasAttributedTo, stanza))
+    target_graph.add((location_annotation_uri, PROV.wasAttributedTo, edinburgh_geoparser))
+    target_graph.add((location_annotation_uri, PROV.wasAttributedTo, mapping_change))
 
     return location_annotation_uri
 
@@ -208,7 +230,7 @@ def annotate(geo_df, target_graph):
         c_location_id = get_location_id(c_location)
         c_location_uri = added_locations_uris[c_location_id]
         #graph.add((record_uri, RDF.type, hto.LocationRecord))
-        target_graph.add((record_uri, hto.refersTo, c_location_uri))
+        target_graph.add((record_uri, hto.refersToModernPlace, c_location_uri))
 
         desc_uri_str = row["description_uri"]
         locations = row["locations"]
@@ -229,10 +251,6 @@ if __name__ == "__main__":
     from utils import name_map
     print(f"loaded {len(name_map)} pairs")
 
-    print("Load base hto ontology...")
-    graph = Graph()
-    graph_filepath = "hto.ttl"
-    graph.parse(graph_filepath, format="turtle")
 
     convert_coordinates_type(articles_with_geo)
     print("Get unique locations....")
@@ -261,7 +279,7 @@ if __name__ == "__main__":
         "label": current_time_label,
         "uri": URIRef("https://w3id.org/hto/E52_Time-Span/" + current_time_label)
     }
-    graph.add((time_span_current["uri"], RDF.type, URIRef("https://w3id.org/hto/E52_Time-Span")))
+    graph.add((time_span_current["uri"], RDF.type, URIRef("http://www.cidoc-crm.org/cidoc-crm/E52_Time-Span")))
     graph.add((time_span_current["uri"], RDFS.label, Literal(current_time_label, datatype=XSD.string)))
 
     # add current time locations
