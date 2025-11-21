@@ -1,11 +1,12 @@
 # 🗺️ MappingChange
 
 ## Tracking the Evolution of Place Descriptions in the Gazetteers of Scotland (1803–1901)
+
 This repository supports a research project to transform [The Gazetteers of Scotland (1803–1901)](https://data.nls.uk/data/digitised-collections/gazetteers-of-scotland/), digitized by the National Library of Scotland (NLS), into structured article-level data. These gazetteers provide detailed historical accounts of Scottish places—towns, glens, castles, and parishes—captured across 19 volumes (10 editions):
   
 <img src="./Notebooks/figures/gazetteers_vols.png" alt="Number of vol per edition" width="500"/>
 
-The goal is to extract these entries from OCR-based page-level text and convert them into cleaned, deduplicated article records to populate a temporal and semantic knowledge graphs. This work (and its new resource) has been integrated in the [Frances platform](http://www.frances-ai.com), our AI-driven platform for historical text analysis, enabling rich visualizations and advanced NLP-driven analysis of Scotland’s historical landscape.
+The goal is to extract these entries from OCR-based **page-level free text** and convert them into cleaned, deduplicated article records to populate a temporal and semantic knowledge graphs. This work (and its new resource) has been integrated in the [Frances platform](http://www.frances-ai.com), our AI-driven platform for historical text analysis, enabling rich visualizations and advanced NLP-driven analysis of Scotland’s historical landscape.
 
 
 ## 📖 Cite This Resource
@@ -36,11 +37,20 @@ This pipeline uniquely leverages GPT-4 for structured article segmentation acros
 - **Ontology**: [Heritage Textual Ontology (HTO)](http://query.frances-ai.com/hto_gazetteers) ([code](https://github.com/frances-ai/HeritageTextOntology?tab=readme-ov-file)) — semantic model used throughout the KsG  
 - **Main Input Dataset**: [`gazetteers_dataframe`](https://drive.google.com/file/d/1J6TxdKImw2rNgmdUBN19h202gl-iYupn/view?usp=share_link) — page-level OCR + metadata structured dataframe derived from [Zenodo](https://zenodo.org/records/14051678)  
 - **Derived Data Outputs**: Cleaned article-level DataFrames, RDF triples, enriched KG — see [Extracted DataFrames](#dataframes-with-extracted-articles) and [KGs with Extracted Articles](#kgs-with-extracted-articles)  
-- **SPARQL Endpoint**: Local deployment via Apache Jena Fuseki — [Live Example](http://query.frances-ai.com/hto_gazetteers)  
+- **SPARQL Endpoint**:  http://query.frances-ai.com/hto_gazetteers - You can use it programmatically, see our [Notebooks](./Notebooks) (and the python code bellow). 
 - **Execution Instructions**: [📄 `PIPELINE_EXECUTION.md`](./PIPELINE_EXECUTION.md) — step-by-step guide for running the full pipeline  
 - **Query & Usage Examples**: [📄 `KG_ES_USAGE.md`](./KG_ES_USAGE.md) — how to query the KG and use Elasticsearch indices  
-- **Interactive Notebooks**: [📁 `Notebooks/`](./Notebooks) — Colab/Jupyter notebooks for KG and DataFrame analysis  
+- **Interactive Notebooks**: [📁 `Notebooks/`](./Notebooks) — Colab/Jupyter notebooks for KG exploration and validation ; and DataFrame analysis  
 - **Reusability & Extensibility**: All components are modular and documented. See [pipeline scripts](./src), [usage guide](./KG_ES_USAGE.md), and [execution walkthrough](./PIPELINE_EXECUTION.md) for adaptation and reuse.
+
+> ⚠️ **Note**: The SPARQL endpoint at `http://query.frances-ai.com/hto_gazetteers` **does not provide a public web-based user interface**. However, it is fully accessible for programmatic querying — for example, using libraries like [`SPARQLWrapper`](https://rdflib.github.io/sparqlwrapper/), as shown in the code snippet bellow:
+
+
+```python 
+  from SPARQLWrapper import SPARQLWrapper, JSON
+  sparql = SPARQLWrapper("http://query.frances-ai.com/hto_gazetteers")
+  sparql.setReturnFormat(JSON)
+```
 
 
 ## ✅ FAIR Principles Compliance
@@ -59,8 +69,91 @@ This pipeline uniquely leverages GPT-4 for structured article segmentation acros
 | 📘 Ontology             | Heritage Textual Ontology (HTO) for semantic modeling                    | [w3id.org/hto](https://w3id.org/hto), [GitHub](https://github.com/frances-ai/HeritageTextOntology) | RDF / Turtle                     |
 | 🧠 Article DataFrames   | Cleaned per-edition and aggregated article-level data                    | [Zenodo](https://doi.org/10.5281/zenodo.15393936), [See full list](#dataframes-with-extracted-articles) | Pandas / JSON                 |
 | 🌐 Knowledge Graph      | RDF triples + enrichments (Wikidata, DBpedia, Geo)                        | [Zenodo](https://doi.org/10.5281/zenodo.15393936), [See full list](#kgs-with-extracted-articles)        | RDF/Turtle, SPARQL (Fuseki)  |
-| 📊 Notebooks            | Exploratory and comparative analysis of KGs and DataFrames               | [`/Notebooks`](./Notebooks)                                                                         | Jupyter (.ipynb)              |
+| 📊 Notebooks            | Exploratory, validation and comparative analysis of KGs and DataFrames               | [`/Notebooks`](./Notebooks)                                                                         | Jupyter (.ipynb)              |
 | 🔎 Search Indexes       | Full-text + semantic search via Elasticsearch (SPARQL + REST access)      | [Frances Platform](http://www.frances-ai.com), [Usage Guide](./KG_ES_USAGE.md)                      | Elasticsearch / JSON / SPARQL |
+
+
+## 🔍 From Unstructured Text to Structured Knowledge
+
+**MappingChange** addresses a core challenge in historical NLP and Semantic Web research:  
+**transforming noisy, unstructured OCR data into coherent, article-level structured content.**
+
+The *Gazetteers of Scotland* were digitized as **page-level XML files**, containing only flat free-text per page—without article layout markers, section boundaries, or semantic annotations. This is typical of OCR-derived historical corpora.
+
+However, this challenge extends beyond historical sources. Many born-digital corpora also exhibit **implicit or inconsistently applied structure**. In both cases, the absence of explicit structure becomes the primary barrier to:
+
+- Navigating or querying the content meaningfully  
+- Comparing related entities across time or editions  
+- Linking to external datasets (e.g., Wikidata, geospatial KGs, or archival records)
+
+For this particular dataset, the Scottish Gazetteers, the task of article-level segmentation presents several key challenges:
+
+- 🧩 **Article segmentation is non-trivial**: Articles vary in length—from a few words to multi-page narratives. They often begin mid-column or mid-page and are not clearly separated from surrounding text.
+
+- ⚡️ **No clear boundary between content and metadata**: Page numbers, running titles, and section headers are embedded within the same OCR layer as article content, making it difficult to isolate meaningful segments using rule-based methods.
+
+- 🔭 **Place name ambiguity**: Many locations share the same name (e.g., “Abbey” — see [Pages 1 and 2 of the 1884 edition](https://github.com/francesNLP/MappingChange?tab=readme-ov-file#%EF%B8%8F-ocr-page-level-format)) but refer to different places, even within the same edition. In some cases, headers may contain full place names, making it hard to distinguish between section headings and actual article entries.  
+  Determining whether a place name marks the start of a new article, a header, or a continuation—and whether same-named entries refer to the *same* or *different* places—requires contextual understanding of layout, content flow, and semantic cues.
+
+- 📉 **Changing coverage across editions**: Not all places appear in every edition. New entries are introduced in later editions (e.g., due to industrialization or administrative change), while others may be shortened, renamed, or omitted.  
+  This drift in coverage complicates direct alignment. Such revision patterns are common in evolving reference works—e.g., encyclopedias, dictionaries, gazetteers, and bibliographic indexes.
+
+- 🔍 **Layout inconsistency and OCR noise**: Scan quality, column structures, typography, and OCR accuracy vary significantly across editions, complicating reliable segmentation.
+
+- ❌ **Structural limitations of unsegmented corpora**: Without article-level structure, historical collections are often reduced to keyword search or regex filtering—limiting any meaningful semantic modeling or longitudinal analysis.
+
+> These challenges make large-scale semantic modeling infeasible without first extracting coherent, self-contained articles.
+
+
+### 🖼️ OCR Page-Level Format
+
+<img src="./Notebooks/figures/1803-gazetteer-page.jpg" alt="First page of 1803 Gazetteer" width="400"/>
+
+*Figure: First page from the 1803 Gazetteer. Articles begin mid-page, vary in length, and include embedded headers and footnotes. Article names are in uppercase, followed by punctuation (e.g., "." or ";"). Long articles may span multiple pages; short entries may be only a few words. Additional name's place information can appear in parentheses. Headers are two sets of three uppercase words (e.g., “ABB ABBE”).*
+
+<img src="./Notebooks/figures/1884-gazetteer-page.jpg" alt="First page of 1884 Gazetteer" width="400"/>
+
+*Figure: First page from the 1884 Gazetteer. This edition uses a denser two-column layout and the first page begins without headers. The title has changed to “Ordnance Gazetteer of Scotland.” Articles can still vary greatly in length. Article names are capitalized, followed by commas or dots, with alternative names sometimes introduced by "or" and variants (Gaelic, Scots, or older English) in parentheses. Subsequent pages include headers showing the first and last articles names in uppercase on the page.*
+
+
+> ⚠️ **Note**: These two examples illustrate typical OCR layouts, but every gazetteer edition differs in format, conventions, and typography. Traditionally, such variation would require crafting edition-specific rule-based parsers—often brittle and hard to generalize. In contrast, **our GPT-4-based approach enables a unified extraction strategy**, where the same logic can be reused across editions with minimal changes (only requiring prompt adjustments). This makes adaptation across formats far easier and adaptative than rule-based methods.
+
+
+### 📄 Corresponding OCR/XML Structure
+
+Note that article extraction is not performed from the image itself, but from the extracted text from XML-encoded OCR files. In these XMLs, there is **no distinction** between headers, article content, and footnotes. All text is flattened into a continuous stream of `CONTENT` strings with no structural annotations or layout information.
+
+<img src="./Notebooks/figures/Pag2-1884Image.jpg" alt="Page 2 of 1884 Gazetteer" width="500"/>
+
+*Figure: Page 2 of the 1884 edition.*
+
+<img src="./Notebooks/figures/Page2-1884XML.png" alt="Page 2 of 1884 Gazetteer OCR-XML structure" width="500"/>
+
+*Figure: XML representation of OCR output. Note the absence of layout or semantic structure—only positional text content is preserved.*
+
+> In our previous work, we published a KG-RDF, [Gazetteer_HTO (Zenodo, 2024)](https://zenodo.org/records/14051678), which included detailed metadata and full OCR text at the **page level**. For the present project, we export this RDF into a lightweight [gazetteers dataframe](https://drive.google.com/file/d/1J6TxdKImw2rNgmdUBN19h202gl-iYupn/view?usp=share_link), which serves as the **entry point** for our pipe-line to article-level extraction, and has one row **per volume, per edition, and per page**, with all OCR text per page flattened into a single field (free text per page). 
+
+
+### 🧠 Strategy and Impact
+
+To overcome these challenges, we use **GPT-4 with a sliding window strategy** to extract article-level entries from noisy OCR streams. This LLM-based method is:
+
+- **Flexible** to formatting variation
+- **Layout-aware** due to GPT’s long-context handling
+- **Scalable and portable** across editions, unlike brittle rule-based approaches
+:
+Once extracted, these articles form the basis for:
+
+- 🧹 Cleaning and normalization  
+- 🧠 Semantic enrichment and concept clustering  
+- 🔍 Disambiguation of place names  
+- 🌐 Knowledge graph construction  
+
+This enables powerful querying, comparative analysis, and integration with external sources like **Wikidata** and **DBpedia**.
+
+Although many of these structural challenges are specific to historical collections, similar issues arise in modern free-text corpora. Once article-level structure is restored, **MappingChange** enables semantic enrichment, SPARQL querying, and diachronic analysis that would otherwise be infeasible.
+
+This approach can be generalized to other gazetteers, encyclopaedias, or born-digital reference works.
 
 
 ## 🧑 Target Users and Use Cases
@@ -195,7 +288,9 @@ These Jupyter notebooks offer different entry points for exploring the Gazetteer
 
 - [`Exploring_AggregatedDF.ipynb`](./Notebooks/Exploring_AggregatedDF.ipynb): Main exploratory notebook working with the unified DataFrame (`gaz_kg_concepts_df`). Includes 22 analyses covering article counts, sentiment, keyword trends, embeddings, and semantic change across editions.
 
-- [`Knowledge_Exploration_SPARQL.ipynb`](./Notebooks/Knowledge_Exploration_SPARQL.ipynb):Queries the Gazetteers Knowledge Graph using SPARQL. Enables structured exploration of linked data, references, and ontology-backed relations.
+- [`Knowledge_Exploration_SPARQL.ipynb`](./Notebooks/Knowledge_Exploration_SPARQL.ipynb):  
+  Interacts with the Gazetteers Knowledge Graph via SPARQL to support structured exploration of linked data, references, and ontology-driven relations. *Includes two curated sets of SPARQL queries: one for validating internal consistency (e.g., redirects, references), and another for examining external linkages to sources like Wikidata.*
+
 
 Each notebook serves a different aspect of the project: data quality, temporal-linguistic analysis, and semantic web querying.
 
@@ -255,4 +350,13 @@ This work contributes to the [MappingChange initiative](https://rse.org.uk/scotl
 - Link and cluster places across editions and sources using NLP and semantic matching
 - The extracted articles are integrated into [Frances](http://www.frances-ai.com).
 
+## ⚠️ Limitations and Disclaimer
+
+This resource is based on OCR-derived historical text and automated extraction pipelines. While the MappingChange system uses robust techniques (including GPT-4, embedding-based enrichment, and georesolution), it is not immune to errors. Specifically:
+
+- Article segmentation may contain occasional boundary or formatting mistakes.
+- Disambiguation of identically named places is context-dependent and may misfire in edge cases.
+- OCR quality, inconsistent layout, and orthographic variation across editions can introduce noise.
+
+We welcome feedback, corrections, and contributions from the community to help refine and extend the resource over time.
 
