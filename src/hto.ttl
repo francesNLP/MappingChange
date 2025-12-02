@@ -1,0 +1,923 @@
+@prefix : <https://w3id.org/hto#> .
+@prefix oa: <http://www.w3.org/ns/oa#> .
+@prefix crm: <http://www.cidoc-crm.org/cidoc-crm/> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix geo: <http://www.opengis.net/ont/geosparql#> .
+@prefix hto: <https://w3id.org/hto#> .
+@prefix org: <http://www.w3.org/ns/org#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix vann: <http://purl.org/vocab/vann/> .
+@prefix schema: <https://schema.org/> .
+@base <https://w3id.org/hto#> .
+
+<https://w3id.org/hto#> rdf:type owl:Ontology ;
+                         owl:versionIRI <https://w3id.org/hto/2.0.0> ;
+                         owl:imports vann: ,
+                                     <http://www.cidoc-crm.org/cidoc-crm/owl/7.1.3/> ,
+                                     <http://www.opengis.net/ont/geosparql/1.1> ,
+                                     <http://www.w3.org/ns/prov-o-20130430> ,
+                                     oa: ,
+                                     org: ,
+                                     schema: ;
+                         dct:abstract "The Heritage Textual Ontology (HTO) is designed to formally represent knowledge in textual heritage. It defines a set of classes, properties, and restrictions for describing the content, metadata, and provenance of digitised historical textual collections. The ontology addresses challenges posed by the heterogeneity and scale of digital archives, enabling these resources to become more Findable, Accessible, Interoperable, and Reusable (FAIR) for both humans and machines. HTO reuses and extends established vocabularies such as CIDOC-CRM for cultural heritage representation, PROV-O for provenance modelling, SKOS for concept description, and GeoSPARQL for spatial information. It supports linking textual content (e.g. articles, abstracts, recognised entities) with associated metadata (e.g. titles, editors, publishers) and provenance records (e.g. digitisation activities, software tools), providing a consistent semantic framework for computational analysis and knowledge graph generation. Note that HTO focuses on the semantic and literal meaning of texts rather than their palaeographic or typographic features; for modelling handwritten or material aspects, refer to CRMtex."@en ;
+                         dct:contributor <https://www.salatino.org> ,
+                                         <https://orcid.org/0000-0002-5715-3046> ;
+                         dct:creator <https://orcid.org/0009-0008-1729-083X> ;
+                         dct:description "The Heritage Textual Ontology (HTO) provides a semantic framework for representing and linking digitised historical texts across diverse sources and time periods. It captures the provenance of documents and their textual transformations, such as OCR and post-OCR correction. HTO also models outputs from modern NLP tasks like named-entity recognition and concept linking in a structured, interoperable way."@en ;
+                         dct:license <https://opensource.org/licenses/MIT> ;
+                         dct:title "Heritage Text Ontology"@en ;
+                         vann:preferredNamespacePrefix "hto" ;
+                         vann:preferredNamespaceUri <https://w3id.org/hto> ;
+                         rdfs:label "HTO"@en ;
+                         owl:incompatibleWith <https://w3id.org/hto/1.0.0> ;
+                         owl:priorVersion <https://w3id.org/hto/1.0.0> ;
+                         owl:versionInfo "2.0.0" .
+
+#################################################################
+#    Annotation properties
+#################################################################
+
+###  http://purl.org/dc/terms/abstract
+dct:abstract rdf:type owl:AnnotationProperty .
+
+
+###  http://purl.org/dc/terms/contributor
+dct:contributor rdf:type owl:AnnotationProperty .
+
+
+###  http://purl.org/dc/terms/creator
+dct:creator rdf:type owl:AnnotationProperty .
+
+
+###  http://purl.org/dc/terms/description
+dct:description rdf:type owl:AnnotationProperty .
+
+
+###  http://purl.org/dc/terms/license
+dct:license rdf:type owl:AnnotationProperty .
+
+
+###  http://purl.org/vocab/vann/example
+vann:example rdf:type owl:AnnotationProperty .
+
+
+###  http://purl.org/vocab/vann/preferredNamespacePrefix
+vann:preferredNamespacePrefix rdf:type owl:AnnotationProperty .
+
+
+###  http://purl.org/vocab/vann/preferredNamespaceUri
+vann:preferredNamespaceUri rdf:type owl:AnnotationProperty .
+
+
+###  http://xmlns.com/foaf/0.1/homepage
+foaf:homepage rdf:type owl:AnnotationProperty .
+
+
+###  http://xmlns.com/foaf/0.1/name
+foaf:name rdf:type owl:AnnotationProperty .
+
+
+#################################################################
+#    Object Properties
+#################################################################
+
+###  http://www.cidoc-crm.org/cidoc-crm/P2_has_type
+crm:P2_has_type rdf:type owl:ObjectProperty .
+
+
+###  http://www.cidoc-crm.org/cidoc-crm/P70_documents
+crm:P70_documents rdf:type owl:ObjectProperty .
+
+
+###  http://www.w3.org/ns/org#memberOf
+org:memberOf rdf:type owl:ObjectProperty .
+
+
+###  http://www.w3.org/ns/prov#atLocation
+prov:atLocation rdf:type owl:ObjectProperty .
+
+
+###  http://www.w3.org/ns/prov#wasDerivedFrom
+prov:wasDerivedFrom rdf:type owl:ObjectProperty .
+
+
+###  https://w3id.org/hto#atShelfLocator
+hto:atShelfLocator rdf:type owl:ObjectProperty ;
+                   rdfs:subPropertyOf prov:atLocation ;
+                   rdfs:domain hto:Work ;
+                   rdfs:range prov:Location ;
+                   rdfs:comment "Links a work to the physical shelf locator where the work was placed"@en ;
+                   rdfs:label "atShelfLocator"@en .
+
+
+###  https://w3id.org/hto#describesPlace
+hto:describesPlace rdf:type owl:ObjectProperty ;
+                   rdfs:subPropertyOf crm:P70_documents ;
+                   rdfs:domain hto:LocationRecord ;
+                   rdfs:range crm:E53_Place ;
+                   rdfs:comment "Links a LocationRecord to the specific historical place that it documents as described at the time of the original source. This historical place reflects the geographical reality of that period and may differ from its modern counterpart—for example, it may no longer exist, or its boundaries, administrative affiliations, or spatial extent may have changed over time."@en ;
+                   rdfs:label "describesPlace"@en .
+
+
+###  https://w3id.org/hto#endsAtPage
+hto:endsAtPage rdf:type owl:ObjectProperty ;
+               rdfs:domain hto:InternalRecord ;
+               rdfs:range hto:Page ;
+               rdfs:comment "Links an InternalRecord to the Page on which that record ends in a given volume. Together with startsAtPage, it allows the page span of a internal record to be explicitly recorded."@en ;
+               rdfs:label "endsAtPage"@en .
+
+
+###  https://w3id.org/hto#hadSupplement
+hto:hadSupplement rdf:type owl:ObjectProperty ;
+                  owl:inverseOf hto:wasSupplementOf ;
+                  rdfs:domain hto:Work ;
+                  rdfs:range hto:Work ;
+                  rdfs:label "hadSupplement"@en .
+
+
+###  https://w3id.org/hto#hasAnnotation
+hto:hasAnnotation rdf:type owl:ObjectProperty ;
+                  rdfs:domain [ rdf:type owl:Class ;
+                                owl:unionOf ( hto:OriginalDescription
+                                              hto:TextSegment
+                                            )
+                              ] ;
+                  rdfs:range oa:Annotation ;
+                  vann:example """hto:Segment_Scotland_001 a hto:TextSegment;
+  oa:hasSource hto:OriginalDescription_Perth_1823;
+  hto:hasAnnotation hto:Annotation_Scotland_001.
+
+hto:Annotation_Scotland_001 a oa:Annotation;
+  oa:hasTarget hto:Segment_Scotland_001;
+  oa:hasBody hto:Location_Scotland.
+
+ hto:Location_Scotland a crm:E53_Place.""" ;
+                  rdfs:comment "hasAnnotation links a textual resource, such as an hto:OriginalDescription or hto:TextSegment, to an oa:Annotation that applies to it. For an hto:OriginalDescription, hasAnnotation can also link it to an annotation which is appied to a segement of the hto:OriginalDescription."@en ;
+                  rdfs:label "hasAnnotation"@en .
+
+
+###  https://w3id.org/hto#hasAuthorityType
+hto:hasAuthorityType rdf:type owl:ObjectProperty ;
+                     rdfs:subPropertyOf crm:P2_has_type ;
+                     rdfs:domain hto:ConceptRecord ;
+                     rdfs:range hto:AuthorityType ;
+                     rdfs:comment "Links a ConceptRecord to an AuthorityType indicating the kind of authority or knowledge base used to identify or describe it (for example, “Wikidata item” or “DBpedia resource”). This property specialises crm:P2_has_type for classifying authority links."@en ;
+                     rdfs:label "hasAuthorityType"@en .
+
+
+###  https://w3id.org/hto#hasConceptRecord
+hto:hasConceptRecord rdf:type owl:ObjectProperty ;
+                     rdfs:domain skos:Concept ;
+                     rdfs:range hto:ConceptRecord ;
+                     rdfs:comment "Links a skos:Concept to a ConceptRecord that documents how that concept is described in a particular source or system."@en ;
+                     rdfs:label "hasConceptRecord"@en .
+
+
+###  https://w3id.org/hto#hasDescription
+hto:hasDescription rdf:type owl:ObjectProperty ;
+                   rdfs:domain hto:Work ;
+                   rdfs:range hto:Description ;
+                   rdfs:comment "Links a Work to a Description that provides textual content or a textual representation of that work. This includes original texts, summaries, or other derived descriptions associated with a historical work."@en ;
+                   rdfs:label "hasDescription"@en .
+
+
+###  https://w3id.org/hto#hasFeatureType
+hto:hasFeatureType rdf:type owl:ObjectProperty ;
+                   rdfs:subPropertyOf crm:P2_has_type ;
+                   rdfs:domain geo:Feature ;
+                   rdfs:range hto:FeatureType ;
+                   rdfs:comment "hasFeatureType links a spatial feature to a hto:FeatureType instance indicating its category, such as city, county, or street."@en ;
+                   rdfs:label "hasFeatureType"@en .
+
+
+###  https://w3id.org/hto#hasOriginalDescription
+hto:hasOriginalDescription rdf:type owl:ObjectProperty ;
+                           rdfs:subPropertyOf hto:hasDescription ;
+                           rdfs:domain hto:Work ;
+                           rdfs:range hto:OriginalDescription ;
+                           rdfs:comment "Links a Work specifically to its OriginalDescription, representing the primary or source textual content of that work as found in a digitised collection."@en ;
+                           rdfs:label "hasOriginalDescription"@en .
+
+
+###  https://w3id.org/hto#hasSummary
+hto:hasSummary rdf:type owl:ObjectProperty ;
+               rdfs:subPropertyOf hto:hasDescription ;
+               rdfs:domain [ rdf:type owl:Class ;
+                             owl:unionOf ( hto:Description
+                                           hto:Work
+                                         )
+                           ] ;
+               rdfs:range hto:Summary ;
+               rdfs:comment "Links either a Work or a Description to a Summary that provides a condensed representation of its content. This property is used to associate manual or automatically generated summaries with the texts they describe."@en ;
+               rdfs:label "hasSummary"@en .
+
+
+###  https://w3id.org/hto#hasTextQuality
+hto:hasTextQuality rdf:type owl:ObjectProperty ;
+                   rdfs:subPropertyOf crm:P2_has_type ;
+                   rdfs:domain hto:Description ;
+                   rdfs:range hto:TextQuality ;
+                   rdfs:comment "Links a Description to a TextQuality that characterises the quality of the text content."@en ;
+                   rdfs:label "hasTextQuality"@en .
+
+
+###  https://w3id.org/hto#isTextQualityHigherThan
+hto:isTextQualityHigherThan rdf:type owl:ObjectProperty ;
+                            owl:inverseOf hto:isTextQualityLowerThan ;
+                            rdf:type owl:TransitiveProperty ;
+                            rdfs:label "isTextQualityHigherThan"@en .
+
+
+###  https://w3id.org/hto#isTextQualityLowerThan
+hto:isTextQualityLowerThan rdf:type owl:ObjectProperty ,
+                                    owl:TransitiveProperty ;
+                           rdfs:domain hto:TextQuality ;
+                           rdfs:range hto:TextQuality ;
+                           rdfs:label "isTextQualityLoweerThan"@en .
+
+
+###  https://w3id.org/hto#permanentURL
+hto:permanentURL rdf:type owl:ObjectProperty ;
+                 rdfs:subPropertyOf prov:atLocation ;
+                 rdfs:domain prov:Entity ;
+                 rdfs:range prov:Location ;
+                 rdfs:comment "Links an prov:entity to its permanent URL."@en ;
+                 rdfs:label "permanentURL"@en .
+
+
+###  https://w3id.org/hto#printedAt
+hto:printedAt rdf:type owl:ObjectProperty ;
+              rdfs:subPropertyOf prov:atLocation ;
+              rdfs:domain hto:Work ;
+              rdfs:range prov:Location ;
+              rdfs:comment "Links a work to the physical location where the work was printed"@en ;
+              rdfs:label "printedAt"@en .
+
+
+###  https://w3id.org/hto#refersToModernPlace
+hto:refersToModernPlace rdf:type owl:ObjectProperty ;
+                        rdfs:domain hto:LocationRecord ;
+                        rdfs:range crm:E53_Place ;
+                        rdfs:comment "Links a LocationRecord to the corresponding modern place that represents the present-day geographic entity associated with the term described in the historical source. This modern place reflects the contemporary boundaries, administrative units, and spatial identity of the location, which may differ significantly from its historical form."@en ;
+                        rdfs:label "refersToModernPlace"@en .
+
+
+###  https://w3id.org/hto#startsAtPage
+hto:startsAtPage rdf:type owl:ObjectProperty ;
+                 rdfs:domain hto:InternalRecord ;
+                 rdfs:range hto:Page ;
+                 rdfs:comment "Links an InternalRecord to the Page on which that record ends in a given volume. Together with startsAtPage, it allows the page span of an internal record  to be explicitly recorded."@en ;
+                 rdfs:label "startsAtPage"@en .
+
+
+###  https://w3id.org/hto#wasExtractedFrom
+hto:wasExtractedFrom rdf:type owl:ObjectProperty ;
+                     rdfs:subPropertyOf prov:wasDerivedFrom ;
+                     rdfs:domain prov:Entity ;
+                     rdfs:range prov:Entity ;
+                     rdfs:comment "Links one prov:Entity to another Entity from which it was extracted, such as an article description extracted from a ALTO-XML file."@en ;
+                     rdfs:label "wasExtractedFrom"@en .
+
+
+###  https://w3id.org/hto#wasSupplementOf
+hto:wasSupplementOf rdf:type owl:ObjectProperty ;
+                    rdfs:domain hto:Work ;
+                    rdfs:range hto:Work ;
+                    rdfs:label "wasSupplementOf"@en .
+
+
+#################################################################
+#    Data properties
+#################################################################
+
+###  http://purl.org/dc/terms/identifier
+dct:identifier rdf:type owl:DatatypeProperty .
+
+
+###  http://purl.org/dc/terms/title
+dct:title rdf:type owl:DatatypeProperty .
+
+
+###  https://w3id.org/hto#birthYear
+hto:birthYear rdf:type owl:DatatypeProperty ;
+              rdfs:domain schema:Person ;
+              rdfs:range xsd:integer .
+
+
+###  https://w3id.org/hto#deathYear
+hto:deathYear rdf:type owl:DatatypeProperty ;
+              rdfs:domain schema:Person ;
+              rdfs:range xsd:integer .
+
+
+###  https://w3id.org/hto#genre
+hto:genre rdf:type owl:DatatypeProperty ;
+          rdfs:domain hto:Work ;
+          rdfs:range xsd:string ;
+          rdfs:label "genre"@en .
+
+
+###  https://w3id.org/hto#language
+hto:language rdf:type owl:DatatypeProperty ;
+             rdfs:domain hto:Work ;
+             rdfs:range xsd:string ;
+             rdfs:comment "the language used to write the work."@en ;
+             rdfs:label "language"@en .
+
+
+###  https://w3id.org/hto#mmsid
+hto:mmsid rdf:type owl:DatatypeProperty ;
+          rdfs:subPropertyOf dct:identifier ;
+          rdfs:domain hto:Work ;
+          rdfs:range xsd:string ;
+          rdfs:comment "is the Metadata Management System identifier of a work"@en ;
+          rdfs:label "mmsid"@en .
+
+
+###  https://w3id.org/hto#note
+hto:note rdf:type owl:DatatypeProperty ;
+         rdfs:domain hto:TermRecord ;
+         rdfs:range xsd:string ;
+         rdfs:comment "is additional description of a term record"@en ;
+         rdfs:label "note"@en .
+
+
+###  https://w3id.org/hto#number
+hto:number rdf:type owl:DatatypeProperty ;
+           rdfs:subPropertyOf dct:identifier ;
+           rdfs:domain hto:Work ;
+           rdfs:range xsd:integer ;
+           rdfs:comment "is the number of an work"@en ;
+           rdfs:label "number"@en .
+
+
+###  https://w3id.org/hto#numberOfPages
+hto:numberOfPages rdf:type owl:DatatypeProperty ;
+                  rdfs:domain hto:Work ;
+                  rdfs:range xsd:nonNegativeInteger ;
+                  rdfs:label "numberOfPages"@en .
+
+
+###  https://w3id.org/hto#part
+hto:part rdf:type owl:DatatypeProperty ;
+         rdfs:subPropertyOf dct:identifier ;
+         rdfs:domain hto:Work ;
+         rdfs:range xsd:positiveInteger ;
+         rdfs:comment "defines which part a work is of another multipart work."@en ;
+         rdfs:label "part"@en .
+
+
+###  https://w3id.org/hto#phyicalDescription
+hto:phyicalDescription rdf:type owl:DatatypeProperty ;
+                       rdfs:domain hto:Work ;
+                       rdfs:range xsd:string ;
+                       rdfs:comment "the physical description of a work."@en ;
+                       rdfs:label "physicalDescription"@en .
+
+
+###  https://w3id.org/hto#subtitle
+hto:subtitle rdf:type owl:DatatypeProperty ;
+             rdfs:subPropertyOf dct:title ;
+             rdfs:domain hto:Work ;
+             rdfs:range xsd:string ;
+             rdfs:comment "is the secondary title for a work"@en ;
+             rdfs:label "subtitle"@en .
+
+
+###  https://w3id.org/hto#termsOfAddress
+hto:termsOfAddress rdf:type owl:DatatypeProperty ;
+                   rdfs:domain schema:Person ;
+                   rdfs:range xsd:string ;
+                   rdfs:comment "records one or more terms of address associated with a person, such as titles or honorifics (“Dr”, “Prof.”, “Sir”, etc.)."@en ;
+                   rdfs:label "termsOfAddress"@en .
+
+
+###  https://w3id.org/hto#text
+hto:text rdf:type owl:DatatypeProperty ;
+         rdfs:domain hto:Description ;
+         rdfs:range xsd:string ;
+         rdfs:comment "is the literal text content of a Description as a string. This property holds the actual characters of original texts, summaries, or other descriptive content associated with a Description instance."@en ;
+         rdfs:label "text"@en .
+
+
+###  https://w3id.org/hto#title
+hto:title rdf:type owl:DatatypeProperty ;
+          rdfs:subPropertyOf dct:title ;
+          rdfs:domain hto:Work ;
+          rdfs:range xsd:string ;
+          rdfs:comment "is the title of a work."@en ;
+          rdfs:label "title"@en .
+
+
+###  https://w3id.org/hto#yearPublished
+hto:yearPublished rdf:type owl:DatatypeProperty ;
+                  rdfs:domain hto:Work ;
+                  rdfs:range xsd:integer .
+
+
+#################################################################
+#    Classes
+#################################################################
+
+###  http://purl.org/dc/terms/Agent
+dct:Agent rdf:type owl:Class .
+
+
+###  http://www.cidoc-crm.org/cidoc-crm/E53_Place
+crm:E53_Place rdf:type owl:Class .
+
+
+###  http://www.cidoc-crm.org/cidoc-crm/E55_Type
+crm:E55_Type rdf:type owl:Class .
+
+
+###  http://www.opengis.net/ont/geosparql#Feature
+geo:Feature rdf:type owl:Class .
+
+
+###  http://www.w3.org/2004/02/skos/core#Concept
+skos:Concept rdf:type owl:Class .
+
+
+###  http://www.w3.org/ns/oa#Annotation
+oa:Annotation rdf:type owl:Class .
+
+
+###  http://www.w3.org/ns/oa#SpecificResource
+oa:SpecificResource rdf:type owl:Class .
+
+
+###  http://www.w3.org/ns/org#OrganizationalUnit
+org:OrganizationalUnit rdf:type owl:Class .
+
+
+###  http://www.w3.org/ns/prov#Entity
+prov:Entity rdf:type owl:Class .
+
+
+###  http://www.w3.org/ns/prov#Location
+prov:Location rdf:type owl:Class .
+
+
+###  http://xmlns.com/foaf/0.1/Organization
+foaf:Organization rdf:type owl:Class .
+
+
+###  http://xmlns.com/foaf/0.1/Person
+foaf:Person rdf:type owl:Class .
+
+
+###  https://schema.org/Person
+schema:Person rdf:type owl:Class .
+
+
+###  https://w3id.org/hto#Agent
+hto:Agent rdf:type owl:Class ;
+          vann:example """hto:dugald a hto:Agent, schema:Person;
+  foaf:name \"Dugald Stewart\"^^xsd:string;
+  hto:birthYear \"1753\"^^xsd:integer;
+  hto:deathYear \"1828\"^^xsd:integer;
+  hto:termsOfAddress \"Prof.\"^^xsd:string.
+
+hto:edition3 a hto:Edition, schema:CreativeWork;
+  hto:title \"Encyclopaedia Britannica\";
+  hto:number \"3\"^^xsd:integer;
+  schema:editor hto:dugald."""@en ;
+          rdfs:comment "An Agent represents a historical individual or collective entity that plays an active or attributable role in relation to historical documents. Agents may be persons, organisations, institutions, or communities involved in the creation, production, dissemination, curation, or use of historical texts. They can also appear within texts as referenced or represented actors, such as authors, editors, correspondents, or subjects."@en ;
+          rdfs:label "Agent"@en .
+
+
+###  https://w3id.org/hto#AuthorityType
+hto:AuthorityType rdf:type owl:Class ;
+                  rdfs:subClassOf crm:E55_Type ;
+                  vann:example """<https://www.wikidata.org/wiki/Q203000> a hto:ExternalRecord;
+  hto:hasAuthorityType hto:WikidataItem.
+
+hto:perth_scotland a skos:Concept, hto:Location;
+  rdfs:label \"Perth\"^^xsd:integer;
+  hto:hasConceptRecord <https://www.wikidata.org/wiki/Q203000>.""" ;
+                  rdfs:comment "AuthorityType represents a controlled set of types used to classify resources according to the authority or knowledge base they are associated with. Instances of this class indicate whether a resource corresponds to, for example, a Wikidata item, DBpedia resource, GeoNames feature, or other authority record. hto:AuthorityType is intended to be used with hto:hasAuthorityType on entities linked to external identifiers, without introducing separate classes for each authority source."@en ;
+                  rdfs:label "AuthorityType"@en .
+
+
+###  https://w3id.org/hto#Broadside
+hto:Broadside rdf:type owl:Class ;
+              rdfs:subClassOf hto:Work ;
+              rdfs:comment "A broadside is a single-sheet printed publication used historically to disseminate proclamations, ballads, crime reports, advertisements, and other public communications."@en ;
+              rdfs:label "Broadside"@en .
+
+
+###  https://w3id.org/hto#ConceptRecord
+hto:ConceptRecord rdf:type owl:Class ;
+                  rdfs:subClassOf prov:Entity ;
+                  owl:disjointWith hto:Description ,
+                                   hto:OriginalDescription ,
+                                   hto:Summary ;
+                  vann:example """<https://www.wikidata.org/wiki/Q203000> a hto:ExternalRecord, hto:ConceptRecord;
+  hto:hasAuthorityType hto:WikidataItem.
+
+hto:perth_scotland_eb2 a hto:LocationRecord, hto:ConceptRecord;
+  hto:startsAtPage hto:eb2_vol8_page485;
+  hto:endsAtPage hto:eb2_vol8_page485.
+
+hto:perth_scotland_eb3 a hto:LocationRecord, hto:ConceptRecord;
+  hto:startsAtPage hto:eb3_vol8_page22;
+  hto:endsAtPage hto:eb3_vol8_page22.
+
+hto:perth_scotland_concept a skos:Concept;
+  hto:hasConceptRecord <https://www.wikidata.org/wiki/Q203000;
+  hto:hasConceptRecord hto:perth_scotland_eb2;
+hto:hasConceptRecord hto:perth_scotland_eb3.""" ;
+                  rdfs:comment "A Concept Record is a specific record in a historical document or a modern work that descirbe a skos:concept. One concept might have multiple concept records. It is used to link records about the same concept across time and sources."@en ;
+                  rdfs:label "ConceptRecord"@en .
+
+
+###  https://w3id.org/hto#Description
+hto:Description rdf:type owl:Class ;
+                rdfs:subClassOf prov:Entity ;
+                owl:disjointWith hto:ExternalRecord ,
+                                 hto:InternalRecord ,
+                                 hto:LocationRecord ,
+                                 hto:TermRecord ;
+                rdfs:comment "A Description represents a textual or textual-like representation of content associated with a historical work. Instances of this class include original texts, summaries, and other derived descriptions that can be linked to provenance, quality."@en ;
+                rdfs:label "Description"@en .
+
+
+###  https://w3id.org/hto#Edition
+hto:Edition rdf:type owl:Class ;
+            rdfs:subClassOf hto:Work ;
+            vann:example """hto:eb7 a hto:Work hto:Edition, schema:CreativeWork;
+   hto:mmsid \"9910796273804340\"^^xsd:string;
+   hto:title \"Encyclopaedia Britannica\"^^xsd:string;
+   hto:number \"7\"^^xsd:integer;
+   hto:yearPublished \"1842\"^^xsd:integer;
+   schema:hasPart hto:eb7_vol1.
+
+hto:eb7_vol1 a hto:Work hto:Volume, schema:CreativeWork;
+  hto:number \"1\"^^xsd:integer;
+  hto:title \"Seventh edition, Volume 1, Preliminary dissertations\"^^xsd:string;
+  dct:identifier \"192984258\"^^xsd:string;
+  hto:numberOfPage \"942\"^^xsd:integer.""" ;
+            rdfs:comment "An edition is a particular version or iteration of a specific work. For example, the encyclopaedia collection has serveral editions, each representing a revised or updated version of the original work."@en ;
+            rdfs:label "Edition"@en .
+
+
+###  https://w3id.org/hto#ExternalRecord
+hto:ExternalRecord rdf:type owl:Class ;
+                   rdfs:subClassOf hto:ConceptRecord ;
+                   owl:disjointWith hto:OriginalDescription ,
+                                    hto:Summary ;
+                   vann:example """<https://www.wikidata.org/wiki/Q203000> a hto:ExternalRecord, hto:ConceptRecord;
+  hto:hasAuthorityType hto:WikidataItem.
+
+hto:perth_scotland_eb2 a hto:LocationRecord, hto:ConceptRecord;
+  hto:startsAtPage hto:eb2_vol8_page485;
+  hto:endsAtPage hto:eb2_vol8_page485.
+
+hto:perth_scotland_concept a skos:Concept;
+  hto:hasConceptRecord <https://www.wikidata.org/wiki/Q203000;
+  hto:hasConceptRecord hto:perth_scotland_eb2.""" ;
+                   rdfs:comment "An ExternalRecord represents a concept record that originates from an external authority or knowledge base, such as Wikidata, DBpedia, or GeoNames. It is used to link concepts and internal records to corresponding external sources."@en ;
+                   rdfs:label "ExternalRecord"@en .
+
+
+###  https://w3id.org/hto#FeatureType
+hto:FeatureType rdf:type owl:Class ;
+                rdfs:subClassOf crm:E55_Type ;
+                vann:example """hto:perth_scotland a hto:Location, geo:Feature, crm:Place;
+  rdfs:label \"Perth\"^^xsd:integer;
+  hto:hasFeatureType hto:City;
+  crm:P89_falls_within hto:scotland.
+
+hto:scotland a hto:Location, geo:Feature, crm:Place;
+  rdfs:label \"Scotland\"^^xsd:integer;
+  hto:hasFeatureType hto:Country.""" ;
+                rdfs:comment "FeatureType represents a controlled set of types used to categorise geographic or spatial features, such as city, county, village, river, or street."@en ;
+                rdfs:label "FeatureType"@en .
+
+
+###  https://w3id.org/hto#InternalRecord
+hto:InternalRecord rdf:type owl:Class ;
+                   rdfs:subClassOf hto:ConceptRecord ;
+                   owl:disjointWith hto:OriginalDescription ,
+                                    hto:Summary ;
+                   rdfs:comment "An InternalRecord represents a concept record derived from within a textual heritage collection, such as an encyclopaedia article, dictionary entry, or gazetteer entry. It captures how a concept is described in a particular historical source and can be related to pages, descriptions, and external records."@en ;
+                   rdfs:label "InternalRecord"@en .
+
+
+###  https://w3id.org/hto#LocationRecord
+hto:LocationRecord rdf:type owl:Class ;
+                   rdfs:subClassOf hto:InternalRecord ;
+                   owl:disjointWith hto:OriginalDescription ,
+                                    hto:Summary ;
+                   vann:example """hto:perth_scotland_eb2 a hto:LocationRecord, hto:TermRecord;
+  hto:startsAtPage hto:eb2_vol8_page485;
+  hto:endsAtPage hto:eb2_vol8_page485;
+  hto:hasOriginalDescription hto:perth_scotland_eb2_desc;
+  hto:describesPlace hto:perth_scotland_1778;
+  hto:refersToModernPace hto:perth_scotland_2025.
+
+hto:perth_scotland_eb2_desc a hto:OriginalDescription;
+  hto:text \"a county of Scotland, ...\"^^xsd:string;
+  hto:hasTextQuality hto:Low.
+
+hto:perth_scotland_1778 a geo:Feature, crm:Place;
+  rdfs:label \"Perth\"^^xsd:integer;
+  hto:hasFeatureType hto:County;
+
+hto:perth_scotland_2025 a geo:Feature, crm:Place;
+  rdfs:label \"Perth\"^^xsd:integer;
+  hto:hasFeatureType hto:City;""" ;
+                   rdfs:comment "A LocationRecord represents that any internal record that provides a description, definition, or explanation of a specific location."@en ;
+                   rdfs:label "LocationRecord"@en .
+
+
+###  https://w3id.org/hto#OriginalDescription
+hto:OriginalDescription rdf:type owl:Class ;
+                        rdfs:subClassOf hto:Description ;
+                        owl:disjointWith hto:TermRecord ;
+                        vann:example """hto:perth_scotland_eb2 a hto:LocationRecord, hto:TermRecord;
+  hto:hasOriginalDescription hto:perth_scotland_eb2_desc;
+
+hto:perth_scotland_eb2_desc a hto:OriginalDescription;
+  hto:text \"a county of Scotland, ...\"^^xsd:string;
+  hto:hasTextQuality hto:Low.""" ;
+                        rdfs:comment "An OriginalDescription represents the original textual content of a historical document or work as it appears in a given source or digitisation workflow (e.g. OCR output or manually transcribed text). It serves as the primary reference text from which other descriptions, summaries, or annotations may be derived."@en ;
+                        rdfs:label "OriginalDescription"@en .
+
+
+###  https://w3id.org/hto#Page
+hto:Page rdf:type owl:Class ;
+         rdfs:subClassOf hto:Work ;
+         rdfs:comment "A Page represents a single page that forms part of a hto:Work."@en ;
+         rdfs:label "Page"@en .
+
+
+###  https://w3id.org/hto#Series
+hto:Series rdf:type owl:Class ;
+           rdfs:subClassOf hto:Work ;
+           vann:example """hto:gaz1825 a hto:Work hto:Series, schema:CreativeWork;
+   hto:mmsid \"9931344583804340\"^^xsd:string;
+   hto:title \"Gazetteer of Scotland\"^^xsd:string;
+   hto:number \"7\"^^xsd:integer;
+   hto:yearPublished \"1825\"^^xsd:integer;
+   schema:hasPart hto:gaz1825_vol1.
+
+hto:gaz1825_vol1 a hto:Work hto:Volume, schema:CreativeWork;
+  hto:number \"1\"^^xsd:integer;
+  hto:title \"Gazetteer of Scotland; arranged under the various descriptions of counties, parishes, islands 1825\"^^xsd:string;
+  dct:identifier \"97421702\"^^xsd:string;
+  hto:numberOfPage \"222\"^^xsd:integer.""" ;
+           rdfs:comment "A series is a group of related works, typically but not necessarily of the same kind. Series are usually organized into some order, often chronological."@en ;
+           rdfs:label "Series"@en .
+
+
+###  https://w3id.org/hto#Summary
+hto:Summary rdf:type owl:Class ;
+            rdfs:subClassOf hto:Description ;
+            owl:disjointWith hto:TermRecord ;
+            rdfs:comment "A Summary represents a derived, condensed description of a work or original description, typically produced by manual or automated summarisation."@en ;
+            rdfs:label "Summary"@en .
+
+
+###  https://w3id.org/hto#TermRecord
+hto:TermRecord rdf:type owl:Class ;
+               rdfs:subClassOf hto:InternalRecord ;
+               rdfs:comment "A TermRecord represents an article or entry in a dictionary-like textual work that provides a description, definition, or explanation of a specific term. It applies to structured reference works such as encyclopaedias, dictionaries, lexicons, or descriptive gazetteers, where each entry corresponds to a named concept—e.g., a place, person, event, or general topic. A hto:TermRecord captures the conceptual focus of the entry (the term), its associated textual content, and any metadata or provenance relating to its creation, publication, or digitisation."@en ;
+               rdfs:label "TermRecord"@en .
+
+
+###  https://w3id.org/hto#TextQuality
+hto:TextQuality rdf:type owl:Class ;
+                rdfs:subClassOf crm:E55_Type ;
+                rdfs:comment "TextQuality represents a type or category used to characterise the quality of a textual description"@en ;
+                rdfs:label "TextQuality"@en .
+
+
+###  https://w3id.org/hto#TextSegment
+hto:TextSegment rdf:type owl:Class ;
+                rdfs:subClassOf oa:SpecificResource ;
+                vann:example """hto:OriginalDescription_Perth_1823 a hto:OriginalDescription ;
+  hto:title \"Perth\" ;
+  hto:text \"Perth, a county in Scotland ...\"^^xsd:string; .
+
+hto:Segment_Scotland_001 a hto:TextSegment ;
+  oa:hasSource hto:OriginalDescription_Perth_1842 ;
+  oa:hasSelector [
+    a oa:TextPositionSelector ;
+    oa:start 19 ;
+    oa:end   27
+  ] .
+
+hto:Annotation_Scotland_001 a oa:Annotation ;
+  oa:hasTarget hto:Segment_Scotland_001 ;
+  oa:hasBody hto:Location_Scotland.
+
+hto:Location_Scotland a crm:E53_Place.""" ;
+                rdfs:comment "A TextSegment represents a specific segment of text within an hto:OriginalDescription. It is used to identify and describe spans such as persons, locations, events, dates, or other textual fragments produced by NER or other NLP tasks. As a subclass of oa:SpecificResource, a hto:TextSegment points to its source text and is refined by a selector (e.g. character offsets, quoted text). Annotations can then attach identified entities or NLP results as bodies (e.g. persons, places)."@en ;
+                rdfs:label "TextSegment"@en .
+
+
+###  https://w3id.org/hto#Volume
+hto:Volume rdf:type owl:Class ;
+           rdfs:subClassOf hto:Work ;
+           vann:example """hto:eb7_vol1 a hto:Work, hto:Volume,  schema:CreativeWork;
+  hto:number \"1\"^^xsd:integer;
+  hto:title \"Seventh edition, Volume 1, Preliminary dissertations\"^^xsd:string;
+  dct:identifier \"192984258\"^^xsd:string;
+  hto:numberOfPage \"942\"^^xsd:integer.
+  schema:hasPart hto:eb7_vol1_page1.
+
+hto:eb7_vol1_page1 a hto:Work, hto:Page, schema:CreativeWork;
+  hto:number  \"1\"^^xsd:integer;
+  schema:image <http://example.com/eb/page001.jpg>.""" ;
+           rdfs:comment "A volume is a part of a successively published historical publication such as a periodical or multi-volume work, often numbered. It may represent a time span, such as a year."@en ;
+           rdfs:label "Volume"@en .
+
+
+###  https://w3id.org/hto#Work
+hto:Work rdf:type owl:Class ;
+         rdfs:subClassOf prov:Entity ;
+         vann:example """hto:eb7 a hto:Work hto:Edition;
+   hto:mmsid \"9910796273804340\"^^xsd:string;
+   hto:title \"Encyclopaedia Britannica\"^^xsd:string;
+   hto:number \"7\"^^xsd:integer;
+   hto:yearPublished \"1842\"^^xsd:integer;
+   schema:hasPart hto:eb7_vol1.
+
+hto:eb7_vol1 a hto:Work hto:Volume;
+  hto:number \"1\"^^xsd:integer;
+  hto:title \"Seventh edition, Volume 1, Preliminary dissertations\"^^xsd:string;
+  dct:identifier \"192984258\"^^xsd:string;
+  hto:numberOfPage \"942\"^^xsd:integer.""" ;
+         rdfs:comment "A work represents a historical textual work. It can be a book, newspapers, encyclopeadia, or collections of works."@en ;
+         rdfs:label "Work"@en .
+
+
+###  https://w3id.org/hto#WorkCollection
+hto:WorkCollection rdf:type owl:Class ;
+                   rdfs:subClassOf hto:Work ;
+                   vann:example """hto:eb a hto:Work hto:WorkCollection;
+   rdfs:label \"Encyclopaedia Britannica Collection\"^^xsd:string;
+   schema:hasPart hto:eb7.
+
+hto:eb7 a hto:Work hto:Edition;
+   hto:mmsid \"9910796273804340\"^^xsd:string;
+   hto:title \"Encyclopaedia Britannica\"^^xsd:string;
+   hto:number \"7\"^^xsd:integer;
+   hto:yearPublished \"1842\"^^xsd:integer.""" ;
+                   rdfs:comment "A WorkCollection is a collection of multiple hto:Work"@en ;
+                   rdfs:label "Work Collection"@en .
+
+
+#################################################################
+#    Individuals
+#################################################################
+
+###  https://www.ed.ac.uk
+<https://www.ed.ac.uk> rdf:type owl:NamedIndividual ,
+                                foaf:Organization ;
+                       foaf:homepage "https://www.ed.ac.uk" ;
+                       foaf:name "The University of Edinburgh"@en .
+
+
+###  https://www.epcc.ed.ac.uk
+<https://www.epcc.ed.ac.uk> rdf:type owl:NamedIndividual ,
+                                     org:OrganizationalUnit ;
+                            foaf:homepage "https://www.epcc.ed.ac.uk" ;
+                            foaf:name "EPCC"@en .
+
+
+###  https://www.salatino.org
+<https://www.salatino.org> rdf:type owl:NamedIndividual ,
+                                    dct:Agent ,
+                                    foaf:Person ;
+                           rdfs:label "Angelo A. Salatino"@en ;
+                           foaf:name "Angelo A. Salatino"@en .
+
+
+###  https://orcid.org/0000-0002-5715-3046
+<https://orcid.org/0000-0002-5715-3046> rdf:type owl:NamedIndividual ,
+                                                 dct:Agent ,
+                                                 foaf:Person ;
+                                        org:memberOf <https://www.epcc.ed.ac.uk> ;
+                                        rdfs:label "Rosa Filgueira"@en ;
+                                        foaf:name "Rosa Filgueira"@en .
+
+
+###  https://orcid.org/0009-0008-1729-083X
+<https://orcid.org/0009-0008-1729-083X> rdf:type owl:NamedIndividual ,
+                                                 dct:Agent ,
+                                                 foaf:Person ;
+                                        org:memberOf <https://www.epcc.ed.ac.uk> ;
+                                        rdfs:label "Lilin Yu"@en ,
+                                                   "余李林"@zh-cn ;
+                                        foaf:name "Lilin Yu"@en .
+
+
+###  https://w3id.org/hto#
+<https://w3id.org/hto#> rdf:type owl:NamedIndividual .
+
+
+###  https://w3id.org/hto#City
+hto:City rdf:type owl:NamedIndividual ,
+                  crm:E55_Type ,
+                  hto:FeatureType ;
+         rdfs:comment "A large human settlement with a high population density and extensive systems for housing, transportation, sanitation, land use, and communication."@en ;
+         rdfs:label "City"@en .
+
+
+###  https://w3id.org/hto#Continent
+hto:Continent rdf:type owl:NamedIndividual ,
+                       crm:E55_Type ,
+                       hto:FeatureType ;
+              rdfs:comment "A continuous expanse of land of very large size, identified by convention rather than strict criteria, usually regarded as a collective region containing multiple countries."@en ;
+              rdfs:label "Continent"@en .
+
+
+###  https://w3id.org/hto#Country
+hto:Country rdf:type owl:NamedIndividual ,
+                     crm:E55_Type ,
+                     hto:FeatureType ;
+            rdfs:comment "A distinct territorial body or political entity. In this context, it usually refers to a Sovereign State (a nation with its own government, not dependent on, or subject to, any other power)."@en ;
+            rdfs:label "Contry"@en .
+
+
+###  https://w3id.org/hto#County
+hto:County rdf:type owl:NamedIndividual ,
+                    crm:E55_Type ,
+                    hto:FeatureType ;
+           rdfs:comment "A territorial division of some countries, forming the chief unit of local administration. It is typically a level below the State/Province but a level above the specific municipality (City/Town)."@en ;
+           rdfs:label "County"@en .
+
+
+###  https://w3id.org/hto#DBpediaItem
+hto:DBpediaItem rdf:type owl:NamedIndividual ,
+                         crm:E55_Type ,
+                         hto:AuthorityType ;
+                rdfs:comment "DBpediaItem represents the authority type assigned to resources whose external reference or identifier originates from DBpedia."@en ;
+                rdfs:label "DBpediaItem"@en .
+
+
+###  https://w3id.org/hto#HighQuality
+hto:HighQuality rdf:type owl:NamedIndividual ,
+                         crm:E55_Type ,
+                         hto:TextQuality ;
+                hto:isTextQualityHigherThan hto:LowQuality ,
+                                            hto:ModerateQuality ;
+                rdfs:comment "High quality text with very few remaining errors"@en ;
+                rdfs:label "HighQuality"@en .
+
+
+###  https://w3id.org/hto#LowQuality
+hto:LowQuality rdf:type owl:NamedIndividual ,
+                        crm:E55_Type ,
+                        hto:TextQuality ;
+               hto:isTextQualityLowerThan hto:HighQuality ,
+                                          hto:ModerateQuality ;
+               rdfs:comment "Low quality text wit raw or minimally cleaned OCR, mainly for exploratory use."@en ;
+               rdfs:label "LowQuality"@en .
+
+
+###  https://w3id.org/hto#ModerateQuality
+hto:ModerateQuality rdf:type owl:NamedIndividual ,
+                             crm:E55_Type ,
+                             hto:TextQuality ;
+                    hto:isTextQualityHigherThan hto:LowQuality ;
+                    hto:isTextQualityLowerThan hto:HighQuality ;
+                    rdfs:comment "Moderate quality text, suitable for many analyses but with noticeable noise."@en ;
+                    rdfs:label "ModerateQuality"@en .
+
+
+###  https://w3id.org/hto#State
+hto:State rdf:type owl:NamedIndividual ,
+                   crm:E55_Type ,
+                   hto:FeatureType ;
+          rdfs:comment "A federated political entity or a first-level administrative division that forms part of a sovereign country."@en ;
+          rdfs:label "State"@en .
+
+
+###  https://w3id.org/hto#Town
+hto:Town rdf:type owl:NamedIndividual ,
+                  crm:E55_Type ,
+                  hto:FeatureType ;
+         rdfs:comment "A human settlement larger than a village but smaller than a city."@en ;
+         rdfs:label "Town"@en .
+
+
+###  https://w3id.org/hto#WikidataItem
+hto:WikidataItem rdf:type owl:NamedIndividual ,
+                          crm:E55_Type ,
+                          hto:AuthorityType ;
+                 rdfs:comment "WikidataItem represents the authority type assigned to resources whose external reference or identifier originates from Wikidata."@en ;
+                 rdfs:label "WikidataItem"@en .
+
+
+###  Generated by the OWL API (version 4.5.29.2024-05-13T12:11:03Z) https://github.com/owlcs/owlapi
