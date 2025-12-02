@@ -51,19 +51,20 @@ def get_dbpedia_item_by_name(item_name):
     for item_valid_name in item_valid_names:
         wd_term_search_query = """
             SELECT * WHERE {
-                ?item rdfs:label "%s"@en.
-                ?item dbo:abstract ?abstract.
-                FILTER (lang(?abstract) = "en")
+                ?item a dbo:Place;
+                    rdfs:label "%s"@en;
+                    dbo:description ?description.
+                FILTER (lang(?description) = "en") 
             }
         """ % item_valid_name
         dbpedia_sparql.setQuery(wd_term_search_query)
         dbpedia_sparql.setReturnFormat(JSON)
         dbpedia_term_search_results = dbpedia_sparql.query().convert()
         for result in dbpedia_term_search_results["results"]["bindings"]:
-            if "abstract" in result:
+            if "description" in result:
                 items.append({
                     "uri": result['item']['value'],
-                    "description": result['abstract']['value']
+                    "description": result['description']['value']
                 })
     return items
 
@@ -112,23 +113,14 @@ def link_dbpedia_with_concept(df):
             #print(most_similar_wiki_item["description"])
             item_uri = most_similar_dbpedia_item["uri"]
             if score > 0.4:
-                # check if dbpedia item has been added
+                # check if wikidata item has been added
                 if item_uri in concept_dbpedia_items:
-                    existing_dbpedia_item_record = concept_dbpedia_items[item_uri]
-                    if existing_dbpedia_item_record["max_score"] < score:
-                        concept_dbpedia_items[item_uri] = {
-                            "concept_uri": concept_uri,
-                            "item_uri": item_uri,
-                            "item_description": most_similar_dbpedia_item["description"],
-                            "max_score": score,
-                            "embedding": most_similar_dbpedia_item["embedding"]
-                        }
+                    concept_dbpedia_items[item_uri]["concept_uri"].append(concept_uri)
                 else:
                     concept_dbpedia_items[item_uri] = {
-                        "concept_uri": concept_uri,
+                        "concept_uri": [concept_uri],
                         "item_uri": item_uri,
                         "item_description": most_similar_dbpedia_item["description"],
-                        "max_score": score,
                         "embedding": most_similar_dbpedia_item["embedding"]
                     }
 

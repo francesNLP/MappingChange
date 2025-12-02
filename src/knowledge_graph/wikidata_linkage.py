@@ -50,7 +50,7 @@ def get_wikidata_item_by_name(item_name):
         item_valid_names.append(inverted_name.lower())
     for item_valid_name in item_valid_names:
         wd_term_search_query = """
-        SELECT distinct ?item ?itemDescription ?article WHERE{
+        SELECT distinct ?item ?itemDescription WHERE{
           ?item ?label "%s"@en.
           FILTER (?label = rdfs:label || ?label = skos:altLabel)
           SERVICE wikibase:label { bd:serviceParam wikibase:language "en". }
@@ -117,21 +117,12 @@ def link_wikidata_with_concept(df):
             if score > 0.4:
                 # check if wikidata item has been added
                 if item_uri in concept_wiki_items:
-                    existing_wiki_item_record = concept_wiki_items[item_uri]
-                    if existing_wiki_item_record["max_score"] < score:
-                        concept_wiki_items[item_uri] = {
-                            "concept_uri": concept_uri,
-                            "item_uri": item_uri,
-                            "item_description": most_similar_wiki_item["description"],
-                            "max_score": score,
-                            "embedding": most_similar_wiki_item["embedding"]
-                        }
+                    concept_wiki_items[item_uri]["concept_uri"].append(concept_uri)
                 else:
                     concept_wiki_items[item_uri] = {
-                        "concept_uri": concept_uri,
+                        "concept_uri": [concept_uri],
                         "item_uri": item_uri,
                         "item_description": most_similar_wiki_item["description"],
-                        "max_score": score,
                         "embedding": most_similar_wiki_item["embedding"]
                     }
 
