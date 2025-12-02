@@ -43,6 +43,7 @@ def series2rdf(series_info, collection):
 
     # migrate to schema:hasPart
     graph.add((collection, SDO.hasPart, series))
+    graph.add((series, SDO.isPartOf, collection))
 
     graph.add((series, hto.number, Literal(int(series_info["serieNum"]), datatype=XSD.integer)))
     graph.add((series, hto.title, Literal(series_title, datatype=XSD.string)))
@@ -82,6 +83,7 @@ def series2rdf(series_info, collection):
             editor = URIRef("https://w3id.org/hto/Person/" + str(editor_uri_name))
             graph.add((editor, RDF.type, hto.Agent))
             graph.add((editor, RDF.type, SDO.Person))
+            graph.add((editor, RDF.type, FOAF.Person))
             graph.add((editor, FOAF.name, Literal(editor_name, datatype=XSD.string)))
 
             if series_info["editor_date"] != 0:
@@ -114,7 +116,8 @@ def series2rdf(series_info, collection):
             if iri_publisher_name != "":
                 publisher = URIRef("https://w3id.org/hto/Person/" + iri_publisher_name)
                 graph.add((publisher, RDF.type, hto.Agent))
-                graph.add((publisher, RDF.type, PROV.Person))
+                graph.add((publisher, RDF.type, SDO.Person))
+                graph.add((publisher, RDF.type, FOAF.Person))
                 graph.add((publisher, FOAF.name, Literal(publisher_name, datatype=XSD.string)))
                 graph.add((series, SDO.publisher, publisher))
         else:
@@ -127,7 +130,8 @@ def series2rdf(series_info, collection):
                     break
             publisher = URIRef("https://w3id.org/hto/Organization/" + iri_publisher_name)
             graph.add((publisher, RDF.type, hto.Agent))
-            graph.add((publisher, RDF.type, PROV.Organization))
+            graph.add((publisher, RDF.type, SDO.Organization))
+            graph.add((publisher, RDF.type, FOAF.Organization))
             graph.add((publisher, FOAF.name, Literal(publisher_name, datatype=XSD.string)))
             graph.add((series, SDO.publisher, publisher))
 
@@ -148,6 +152,7 @@ def volume2rdf(volume_info, series):
     volume_id = str(volume_info["volumeId"])
     volume = URIRef("https://w3id.org/hto/Volume/" + str(volume_info["MMSID"]) + "_" + str(volume_id))
     graph.add((volume, RDF.type, hto.Volume))
+    graph.add((volume, RDF.type, SDO.CreativeWork))
     graph.add((volume, hto.number, Literal(volume_info["volumeNum"], datatype=XSD.integer)))
     graph.add((volume, DCTERMS.identifier, Literal(volume_id, datatype=XSD.string)))
     graph.add((volume, hto.title, Literal(volume_info["volumeTitle"], datatype=XSD.string)))
@@ -161,17 +166,18 @@ def volume2rdf(volume_info, series):
     graph.add((volume, hto.numberOfPages, Literal(volume_info["numberOfPages"], datatype=XSD.nonNegativeInteger)))
 
     graph.add((series, SDO.hasPart, volume))
+    graph.add((volume, SDO.isPartOf, series))
 
     return volume
 
 
-def create_dataset(collection_id_name, agent_uri, agent_short_name):
-    dataset = URIRef("https://w3id.org/hto/Dataset" + agent_short_name + "_" + collection_id_name + "_dataset")
+def create_dataset(agent_uri, agent_short_name):
+    dataset = URIRef("https://data.nls.uk/data/digitised-collections/gazetteers-of-scotland/")
     if (dataset, RDF.type, SDO.Dataset) in graph:
         return dataset
     graph.add((dataset, RDF.type, SDO.Dataset))
     graph.add((dataset, RDF.type, PROV.Entity))
-    graph.add((dataset, SDO.provider, agent_uri))
+    graph.add((dataset, SDO.publisher, agent_uri))
 
     # we only use freely used collections.
     graph.add((dataset, SDO.isAccessibleForFree, Literal(True, datatype=XSD.boolean)))
@@ -221,7 +227,10 @@ def dataframe_to_rdf(collection, dataframe, gazetteer_dataset):
                     entry_id = str(mmsid) + "_" + str(df_entry["volumeId"]) + "_" + entry_uri_name + "_" + str(t_count)
                     entry_ref = URIRef("https://w3id.org/hto/LocationRecord/" + entry_id)
                     graph.add((entry_ref, RDF.type, hto.LocationRecord))
+                    graph.add((entry_ref, RDF.type, hto.InternalRecord))
+                    graph.add((entry_ref, RDF.type, hto.ConceptRecord))
                     graph.add((entry_ref, RDF.type, hto.TermRecord))
+                    graph.add((entry_ref, RDF.type, SDO.CreativeWork))
                     graph.add((entry_ref, RDFS.label, Literal(entry_name, datatype=XSD.string)))
 
                     if "alter_names" in df_entry:
@@ -238,7 +247,8 @@ def dataframe_to_rdf(collection, dataframe, gazetteer_dataset):
                         "https://w3id.org/hto/OriginalDescription/" + str(df_entry["MMSID"]) + "_" + str(
                             df_entry["volumeId"]) + "_" + entry_uri_name + "_" + str(t_count) + "NLS")
                     graph.add((entry_original_description, RDF.type, hto.OriginalDescription))
-                    text_quality = hto.Low
+                    graph.add((entry_original_description, RDF.type, PROV.Entity))
+                    text_quality = hto.LowQuality
                     graph.add((entry_original_description, hto.hasTextQuality, text_quality))
                     graph.add(
                         (entry_original_description, hto.text, Literal(description, datatype=XSD.string)))
@@ -262,6 +272,7 @@ def dataframe_to_rdf(collection, dataframe, gazetteer_dataset):
                     graph.add((source_ref, RDF.type, SDO.DigitalDocument))
                     graph.add((source_ref, RDFS.label, Literal(file_path, datatype=XSD.string)))
                     graph.add((gazetteer_dataset, SDO.hasPart, source_ref))
+                    graph.add((source_ref, SDO.isPartOf, gazetteer_dataset))
                     graph.add((source_ref, PROV.wasAttributedTo, nls))
 
                     # related agent and activity
@@ -276,25 +287,33 @@ def dataframe_to_rdf(collection, dataframe, gazetteer_dataset):
                     graph.add((entry_original_description, hto.wasExtractedFrom, source_ref))
 
                     ## startsAt
-                    page_startsAt = URIRef("https://w3id.org/hto/Page/" + str(df_entry["MMSID"]) + "_" + str(
+                    staringPage = URIRef("https://w3id.org/hto/Page/" + str(df_entry["MMSID"]) + "_" + str(
                         df_entry["volumeId"]) + "_" + str(df_entry["starts_at_page"]))
-                    graph.add((page_startsAt, RDF.type, hto.Page))
-                    graph.add((page_startsAt, hto.number, Literal(df_entry["starts_at_page"], datatype=XSD.integer)))
+                    graph.add((staringPage, RDF.type, hto.Page))
+                    graph.add((staringPage, RDF.type, SDO.CreativeWork))
+                    graph.add((staringPage, hto.number, Literal(df_entry["starts_at_page"], datatype=XSD.integer)))
 
-                    graph.add((volume_ref, SDO.hasPart, page_startsAt))
+                    graph.add((volume_ref, SDO.hasPart, staringPage))
+                    graph.add((staringPage, SDO.isPartOf, volume_ref))
                     graph.add((volume_ref, SDO.hasPart, entry_ref))
+                    graph.add((entry_ref, SDO.isPartOf, volume_ref))
+                    graph.add((series_ref, SDO.hasPart, entry_ref))
+                    graph.add((entry_ref, SDO.isPartOf, series_ref))
 
-                    graph.add((entry_ref, hto.startsAtPage, page_startsAt))
-                    graph.add((page_startsAt, SDO.hasPart, entry_ref))
+                    graph.add((entry_ref, hto.startsAtPage, staringPage))
+                    graph.add((staringPage, SDO.hasPart, entry_ref))
+                    graph.add((entry_ref, SDO.isPartOf, staringPage))
 
                     ## endsAt
-                    page_endsAt = URIRef("https://w3id.org/hto/Page/" + str(df_entry["MMSID"]) + "_" + str(
+                    endingPage = URIRef("https://w3id.org/hto/Page/" + str(df_entry["MMSID"]) + "_" + str(
                         df_entry["volumeId"]) + "_" + str(df_entry["ends_at_page"]))
-                    graph.add((page_endsAt, RDF.type, hto.Page))
-                    graph.add((page_endsAt, hto.number, Literal(df_entry["ends_at_page"], datatype=XSD.integer)))
-                    graph.add((volume_ref, SDO.hasPart, page_endsAt))
-                    graph.add((entry_ref, hto.endsAtPage, page_endsAt))
-                    graph.add((page_endsAt, SDO.hasPart, entry_ref))
+                    graph.add((endingPage, RDF.type, hto.Page))
+                    graph.add((endingPage, hto.number, Literal(df_entry["ends_at_page"], datatype=XSD.integer)))
+                    graph.add((volume_ref, SDO.hasPart, endingPage))
+                    graph.add((endingPage, SDO.isPartOf, volume_ref))
+                    graph.add((entry_ref, hto.endsAtPage, endingPage))
+                    graph.add((endingPage, SDO.hasPart, entry_ref))
+                    graph.add((entry_ref, SDO.isPartOf, endingPage))
     return dataframe
 
 
@@ -366,7 +385,7 @@ if __name__ == "__main__":
     collection_id_name = "GazetteersofScotland"
     gaz_collection = create_collection(collection_name, collection_id_name)
     # create dataset entity
-    gazetteer_dataset = create_dataset(collection_id_name, nls, "NLS")
+    gazetteer_dataset = create_dataset(nls, "NLS")
 
     # load dataframe
     dataframe_files = ["sources/gaz_dataframe_1803",
