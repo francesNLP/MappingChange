@@ -54,7 +54,7 @@ def is_record_name_match(reference_name, record):
         record_name = re.sub("[\s\-\.\(\)]", "", record_name)
         record_name = record_name.upper()
         record_names[index] = record_name
-    reference_name = re.sub("[\s\s\-\.\(\)]", "", reference_name)
+    reference_name = re.sub("[\s\-\.\(\)]", "", reference_name)
     reference_name = reference_name.upper()
     if reference_name in record_names:
         return True
