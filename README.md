@@ -13,18 +13,17 @@ The goal is to extract these entries from OCR-based **page-level free text** and
 
 If you use this dataset, pipeline, or knowledge graph in your work, please cite:
 
-Yu, L., & Filgueira, R. (2025). MappingChange: A Temporal and Semantic Knowledge Base of the Scottish Gazetteers (1803–1901). Zenodo. https://doi.org/10.5281/zenodo.15397756
+Yu, L., & Filgueira, R. (2025). MappingChange: A Temporal and Semantic Knowledge Base of the Scottish Gazetteers (1803–1901). Zenodo. https://doi.org/10.5281/zenodo.15397756, **to be modified!!!**
 
 
 ## 🎯 Contribution Summary
 
 This resource contributes:
-- Article-level dataframes ( individual and aggregated) extracted from 19th-century Scottish Gazetteers
+- Article-level and intermediate dataframes ( individual and aggregated) extracted from 19th-century Scottish Gazetteers
 - A reproducible pipeline for semantic enrichment and temporal modeling of historical place descriptions
-- Three interlinked Knowledge graphs aligned with [HTO
+- A knowledge graph aligned with [HTO
 ontology](https://w3id.org/hto) linking Gazetteer entries to external sources (Wikidata, DBpedia)
-- Notebooks an usage examples of this resource powered by SPARQL and Dataframes 
-- Search indexes powered by ElasticSearch 
+- Notebooks a usage examples of this resource powered by SPARQL and Dataframes
 
 This pipeline uniquely leverages GPT-4 for structured article segmentation across noisy OCR editions, overcoming variability in historical formatting. This is the first semantically enriched and temporally aligned resource of its kind over this corpus.
 
@@ -35,22 +34,14 @@ This pipeline uniquely leverages GPT-4 for structured article segmentation acros
 - **Archived Release**: [Zenodo DOI](https://doi.org/10.5281/zenodo.15393936)  
 - **License**: [MIT](./LICENSE) 
 - **Ontology**: [Heritage Textual Ontology (HTO)](http://query.frances-ai.com/hto_gazetteers) ([code](https://github.com/frances-ai/HeritageTextOntology?tab=readme-ov-file)) — semantic model used throughout the KsG  
-- **Main Input Dataset**: [`gazetteers_dataframe`](https://drive.google.com/file/d/1J6TxdKImw2rNgmdUBN19h202gl-iYupn/view?usp=share_link) — page-level OCR + metadata structured dataframe derived from [Zenodo](https://zenodo.org/records/14051678)  
+- **Main Input Dataset**: [`gazetteers_dataframe`](https://drive.google.com/file/d/1J6TxdKImw2rNgmdUBN19h202gl-iYupn/view?usp=share_link) — page-level OCR + metadata structured dataframe derived from [Zenodo](https://zenodo.org/records/14051678) - previous work 
 - **Derived Data Outputs**: Cleaned article-level DataFrames, RDF triples, enriched KG — see [Extracted DataFrames](#dataframes-with-extracted-articles) and [KGs with Extracted Articles](#kgs-with-extracted-articles)  
-- **SPARQL Endpoint**:  http://query.frances-ai.com/hto_gazetteers - You can use it programmatically, see our [Notebooks](./Notebooks) (and the python code bellow). 
-- **Execution Instructions**: [📄 `PIPELINE_EXECUTION.md`](./PIPELINE_EXECUTION.md) — step-by-step guide for running the full pipeline  
-- **Query & Usage Examples**: [📄 `KG_ES_USAGE.md`](./KG_ES_USAGE.md) — how to query the KG and use Elasticsearch indices  
-- **Interactive Notebooks**: [📁 `Notebooks/`](./Notebooks) — Colab/Jupyter notebooks for KG exploration and validation ; and DataFrame analysis  
+- **SPARQL Query Exploration Web UI**: http://yasgui.org/short/0M7HXSruJg
+- **SPARQL Endpoint**:  http://query.frances-ai.com/hto_gaz/sparql - You can use it programmatically, see our [Notebooks](./Notebooks) (and the python code bellow).
+- **Execution Instructions**: [📄 `PIPELINE_EXECUTION.md`](./PIPELINE_EXECUTION.md) — step-by-step guide for running the full pipeline 
+- **Query & Usage Examples**: [📄 `KG_ES_USAGE.md`](./KG_ES_USAGE.md) — how to query the KG and use Elasticsearch indices 
+- **Interactive Notebooks**: [📁 `Notebooks/`](./Notebooks) — Colab/Jupyter notebooks for KG exploration and validation (include Competency Questions) ; and DataFrame analysis
 - **Reusability & Extensibility**: All components are modular and documented. See [pipeline scripts](./src), [usage guide](./KG_ES_USAGE.md), and [execution walkthrough](./PIPELINE_EXECUTION.md) for adaptation and reuse.
-
-> ⚠️ **Note**: The SPARQL endpoint at `http://query.frances-ai.com/hto_gazetteers` **does not provide a public web-based user interface**. However, it is fully accessible for programmatic querying — for example, using libraries like [`SPARQLWrapper`](https://rdflib.github.io/sparqlwrapper/), as shown in the code snippet bellow:
-
-
-```python 
-  from SPARQLWrapper import SPARQLWrapper, JSON
-  sparql = SPARQLWrapper("http://query.frances-ai.com/hto_gazetteers")
-  sparql.setReturnFormat(JSON)
-```
 
 
 ## ✅ FAIR Principles Compliance
@@ -224,12 +215,11 @@ The resulting entries are cleaned, deduplicated, semantically modeled using the 
 
 ### 🔄 Pipeline Components
 
-1. **Article Extraction**: Uses GPT-4 to segment OCR pages into structured entries (per edition).
-2. **Cleaning & Deduplication**: Merges outputs, resolves duplicates, and integrates original metadata.
-3. **Knowledge Graph Construction**: Converts cleaned entries into RDF using HTO, with redirects and references linked.
-4. **Semantic Enrichment**: Adds embeddings, temporal concepts, and links to Wikidata and DBpedia.
-5. **Geospatial Annotation**: Uses NER (Stanza) and georesolution (Edinburgh Geoparser) to tag locations.
-6. **Indexing**: Publishes data to Elasticsearch for semantic and full-text search in the [Frances platform](http://www.frances-ai.com).
+1. **Article Extraction**: Uses GPT-4 to segment OCR pages into structured entries (per edition), merges outputs, resolves duplicates, and integrates original metadata.
+2. **Base (name may be changed) Graph Construction**: Converts cleaned entries into RDF using HTO, with redirects and references linked.
+3.  **Concept Linkage Enrichment**: Adds embeddings, temporal concepts, and links to Wikidata and DBpedia.
+4.  **Location Annotation Enrichment**: Uses NER (Stanza) and georesolution (Edinburgh Geoparser) to tag locations.
+5.  **Search Engine Indexing (Optional)**: Publishes data to Elasticsearch for semantic and full-text search in the [Frances platform](http://www.frances-ai.com).
 
 Each step is implemented as a script in the `src/` directory, with well-defined inputs, outputs, and configurations.
 
@@ -254,7 +244,7 @@ This includes:
 
 ## Dataframes with Extracted Articles
 
-These cleaned, deduplicated DataFrames (as a result of running[dataframe_articles.py](./src/dataframe_articles.py) wich each dataset) are ready for semantic enrichment and visual analysis:
+These cleaned, deduplicated DataFrames (as a result of running [dataframe_articles.py](./src/dataframe_articles.py) wich each dataset) are ready for semantic enrichment and visual analysis:
 
 * [dataframe_gaz_1803](https://drive.google.com/file/d/1a4BtLrwyfHb4I6cmAVbaaw-IafWf1dnR/view?usp=share_link)
 * [dataframe_gaz_1806](https://drive.google.com/file/d/1ZGt8hKzQ2rvk_-dlVHpn6UwoSkiZyNDO/view?usp=share_link)

@@ -19,7 +19,7 @@ cd files
 # place the dataframe in files folder
 ```
 
-## Extraction Scripts
+## LLM-based Multi-page Batched Article Extraction
 
 **Script**: [extract_gaz_1803.py](./src/extract_gaz_1803.py), [extract_gaz_1806.py](./src/extract_gaz_1806.py) ....
 
@@ -44,11 +44,11 @@ python extract_gaz_1803.py
 * A list of `src/files/1803/cleaned_articles_*_*.json` (json format): cleaned article segmentation result for various page ranges.
 
 
-## Merging Cleaning Data
+## Merging Articles Per Edition
 
 **Script**: [merge_cleaned_articles.py](./src/merge_cleaned_articles.py)
 
-**Input**: A list of `src/files/1803/cleaned_articles_*_*.json` (json format): cleaned article segmentation result for various page ranges (from [Extraction Scripts](#extraction-scripts)).
+**Input**: A list of `src/files/1803/cleaned_articles_*_*.json` (json format): cleaned article segmentation result for various page ranges (from [Extraction Scripts](#llm-based-multi-page-batched-article-extraction)).
 
 **Configuration**: 
 ```python
@@ -69,7 +69,7 @@ python merge_cleaned_articles.py
 * `src/files/1803/gazetteer_articles_merged_1803.json` (json format): merged results of all cleaned articles in the given input folder.
 
 
-## Dataframe Generation
+## Adding Metadata
 
 **Script**: [dataframe_articles.py](./src/dataframe_articles.py)
 
@@ -94,8 +94,8 @@ python dataframe_articles.py
 # and rerun this script
 ```
 
-**Output**: `src/files/1825/gaz_dataframe_1825` (json format): dataframe of further cleaned articles. 
-You can access these dataframes that we have produced from [this section](#dataframes-with-extracted-articles). 
+**Output**: `src/files/1825/gaz_dataframe_1825` (json format): dataframe of further cleaned articles with associated metadata from page-level dataframe. 
+You can access these dataframes that we have produced from [this section](README.md). 
 Note that these dataframes are used for the knowledge graph generation scripts below.
 
 
@@ -131,12 +131,12 @@ python combine_vol_dataframes.py
 You can access these dataframes that we have produced from [this section](#dataframes-with-extracted-articles). 
 Note that these dataframes are used for the knowledge graph generation scripts below.
 
-## Knowledge Graph Generation
+## Base Graph Generation
 
 **Script**: [df_to_kg.py](./src/knowledge_graph/df_to_kg.py)
 
 **Input**: 
-* A list of `src/knowledge_graph/sources/gaz_dataframe_*` (json format): dataframe generated from section [Dataframe Generation](#dataframe-generation)
+* A list of `src/knowledge_graph/sources/gaz_dataframe_*` (json format): dataframe generated from section [Adding Metadata](#adding-metadata)
 * `src/knowledge_graph/hto.ttl` (turtle format): the HTO ontology file.
 * `src/knowledge_graph/name_map.pickle` (pickle format): key-value pairs to map a string value to its ID, this ID is used to construct URI. 
 This design ensures URIs generated are valid, also makes the graph generation idempotent.
@@ -161,7 +161,7 @@ dataframe_files = ["sources/gaz_dataframe_1803",
 cd src/knowledge_graph
 python df_to_kg.py
 ```
-**Output**: `src/knowledge_graph/results/gaz.ttl` (turtle format): generated basic knowledge graph in turtle format.
+**Output**: `src/knowledge_graph/results/gaz.ttl` (turtle format): generated base knowledge graph in turtle format.
 
 ### Adding Page Permanent URLs
 
@@ -169,7 +169,7 @@ python df_to_kg.py
 
 **Input**: 
 * `src/knowledge_graph/volume_page_urls.json` (json format): json file with page permanent urls.
-* `src/knowledge_graph/gaz.ttl` (turtle format): generated basic knowledge graph from [Knowledge Graph Generation](#knowledge-graph-generation)
+* `src/knowledge_graph/gaz.ttl` (turtle format): generated base knowledge graph from [Base Graph Generation](#base-graph-generation)
 
 **Execution**:
 ```shell
@@ -197,13 +197,14 @@ To upload data in the fuseki server, in home page, click `datasets` tab -> click
 Click `query` button at the dataset we uploaded to, and run the following query:
 ```sparql
 PREFIX hto: <https://w3id.org/hto#>
+PREFIX schema: <https://schema.org/>
 SELECT * WHERE {
     <https://w3id.org/hto/WorkCollection/GazetteersofScotland>  a hto:WorkCollection;
-        hto:hadMember ?series.
+        schema:hasPart ?series.
     ?series a hto:Series;
         hto:mmsid ?mmsid;
         hto:title ?series_title;
-        hto:hadMember ?volume.
+        schema:hasPart ?volume.
     OPTIONAL {
         ?series hto:subtitle ?series_subtitle;
     }
@@ -255,7 +256,7 @@ python generate_embeddings.py
 **Output**: `src/knowledge_graph/results/gaz_kg_df_with_embeddings` (json format): the graph dataframe with embeddings.
 
 
-## Articles Linkage
+## Linking Articles Across Edition
 
 **Script**: [record_linkage.py](./src/knowledge_graph/record_linkage.py)
 
@@ -269,11 +270,11 @@ python record_linkage.py
 
 **Output**: `src/knowledge_graph/results/gaz_kg_concepts_df` (json format): the graph dataframe with embeddings and concept uris.
 
-## Wikidata Linkage
+## Linking Wikidata Items
 
 **Script**: [wikidata_linkage.py](./src/knowledge_graph/wikidata_linkage.py)
 **Input**: 
-* `src/knowledge_graph/results/gaz_kg_concepts_df` (json format): the graph dataframe with embeddings and concept uris from [article linkage](#articles-linkage).
+* `src/knowledge_graph/results/gaz_kg_concepts_df` (json format): the graph dataframe with embeddings and concept uris from [article linkage](#linking-articles-across-edition).
 
 **Execution**
 ```shell
@@ -284,7 +285,7 @@ python wikidata_linkage.py
 **Output**: 
 * `src/knowledge_graph/results/gaz_concept_wikidata_df` (json format): dataframe for linked wikidata items with their names, descriptions, embeddings and concept uris.
 
-## Dbpedia Linkage
+## Linking Dbpedia Items
 
 **Script**: [dbpedia_linkage.py](./src/knowledge_graph/dbpedia_linkage.py)
 
@@ -301,12 +302,12 @@ python dbpedia_linkage.py
 * `src/knowledge_graph/results/gaz_concept_dbpedia_df` (json format): dataframe for newly linked dbpedia items with their names, descriptions, embeddings and concept uris.
 
 
-## Concept Linkage Enriched Graph Generation
+## Concept Linkage Enrichment Graph Creation
 
 **Script**: [add_concepts_to_graph.py](./src/knowledge_graph/add_concepts_to_graph.py)
 
 **Input**:
-* `src/knowledge_graph/results/gaz_kg_concepts_df` (json format): the updated input graph dataframe from [articles linkage](#articles-linkage).
+* `src/knowledge_graph/results/gaz_kg_concepts_df` (json format): the updated input graph dataframe from [articles linkage](#linking-articles-across-edition).
 * `src/knowledge_graph/results/gaz_concept_dbpedia_df` (json format): dataframe for linked dbpedia items.
 * `src/knowledge_graph/results/gaz_concept_wikidata_df` (json format): dataframe for linked wikidata items.
 
@@ -324,8 +325,9 @@ python add_concepts_to_graph.py
 **Validate**: run the following SPARQL query to validate uploaded graph:
 ```sparql
 PREFIX hto: <https://w3id.org/hto#>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
 SELECT * WHERE {
-  ?concept a hto:Concept;
+  ?concept a skos:Concept;
   	hto:hadConceptRecord ?record.
 } LIMIT 20
 ```
@@ -479,12 +481,10 @@ You can either download the knowledge graphs produced by this pipeline or access
 
 ### 🔗 Online SPARQL Endpoint
 
-All three knowledge graphs are deployed and queryable at:
+The final enriched knowledge graph is deployed and queryable at this web UI http://yasgui.org/short/0M7HXSruJg, the SPARQL endpoint is 
+http://query.frances-ai.com/hto_gaz/sparql
 
-▶️ [http://query.frances-ai.com/hto_gazetteers](http://query.frances-ai.com/hto_gazetteers)
-
-This endpoint supports SPARQL queries via both browser interface and programmatic access.
-
+🧪 See our usage notebook for worked examples:
 🧪 See our usage notebook for worked examples:
 👉 [`Knowledge_Exploration_SPARQL.ipynb`](https://github.com/francesNLP/MappingChange/blob/main/Notebooks/Knowledge_Exploration_SPARQL.ipynb) — uses this endpoint to query Gazetteer entries, places, references, and enriched metadata.
 
