@@ -1,9 +1,8 @@
 import pandas as pd
-from rdflib import URIRef, RDF, Literal, XSD, SKOS
+from rdflib import Graph, Namespace, RDF, URIRef, SKOS, RDFS, Literal, XSD
 from tqdm import tqdm
-
-# load the graph
-from rdflib import Graph, Namespace, RDF
+import re
+import string
 
 # Load the existing graph
 graph = Graph()
@@ -18,23 +17,32 @@ def record_links(kg_df_with_concept_uris):
             concept_records_df = kg_df_with_concept_uris[kg_df_with_concept_uris["concept_uri"] == concept_uri]
             concept_uriref = URIRef(concept_uri)
             graph.add((concept_uriref, RDF.type, SKOS.Concept))
+            concept_label = ""
             for index, row in concept_records_df.iterrows():
                 record_uri_ref = URIRef(row["record_uri"])
+                if concept_label == "":
+                    record_name = row["record_name"]
+                    # normalise name
+                    concept_label = re.sub("[\s\-\.\(\)]", "", record_name)
+                    concept_label = string.capwords(concept_label)
                 graph.add((concept_uriref, hto.hasConceptRecord, record_uri_ref))
-
+            if concept_label != "":
+                graph.add((concept_uriref, RDFS.label, Literal(concept_label, datatype=XSD.string)))
         else:
             print("None")
 
 def external_link(concept_item_df, type_uri):
     for index, row in concept_item_df.iterrows():
-        concept_uri = row["concept_uri"]
+        concept_uris = row["concept_uri"]
         item_uri = row["item_uri"]
-        #print(concept_uri, item_uri)
-        concept_uriref = URIRef(concept_uri)
-        item_uriref = URIRef(item_uri)
-        graph.add((item_uriref, RDF.type, hto.ExternalRecord))
-        graph.add((item_uriref, hto.hasAuthorityType, type_uri))
-        graph.add((concept_uriref, hto.hasConceptRecord, item_uriref))
+        for concept_uri in concept_uris:
+            #print(concept_uri, item_uri)
+            concept_uriref = URIRef(concept_uri)
+            item_uriref = URIRef(item_uri)
+            graph.add((item_uriref, RDF.type, hto.ExternalRecord))
+            graph.add((item_uriref, RDF.type, hto.ConceptRecord))
+            graph.add((item_uriref, hto.hasAuthorityType, type_uri))
+            graph.add((concept_uriref, hto.hasConceptRecord, item_uriref))
 
 
 if __name__ == "__main__":

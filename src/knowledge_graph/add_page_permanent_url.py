@@ -1,6 +1,6 @@
 import json
 
-from rdflib import Graph, Namespace, RDF, URIRef, Literal, XSD, DCTERMS, SDO
+from rdflib import Graph, Namespace, RDF, URIRef, Literal, XSD, DCTERMS, SDO, PROV
 
 hto = Namespace("https://w3id.org/hto#")
 
@@ -40,7 +40,7 @@ def add_page_permanent_url_to_graph(graph, volume_page_urls, volume_mmsid_list):
                     graph.add((page_uri_ref, RDF.type, hto.Page))
                     graph.add((page_uri_ref, hto.number, Literal(int(page_num), datatype=XSD.integer)))
                 permanentURL = URIRef(page_url)
-                graph.add((permanentURL, RDF.type, hto.Location))
+                graph.add((permanentURL, RDF.type, PROV.Location))
                 graph.add((page_uri_ref, hto.permanentURL, permanentURL))
 
 

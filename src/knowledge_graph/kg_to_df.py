@@ -5,7 +5,7 @@ from rdflib import Namespace
 hto = Namespace("https://w3id.org/hto#")
 
 sparql = SPARQLWrapper(
-    "http://query.frances-ai.com/hto_gazetteers"
+    "http://query.frances-ai.com/hto_gaz"
 )
 sparql.setReturnFormat(JSON)
 
@@ -15,9 +15,10 @@ def create_basic_dataframe(collection_name):
     sparql.setQuery("""
     PREFIX hto: <https://w3id.org/hto#>
     PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    PREFIX schema: <https://schema.org/>
     SELECT * WHERE {
         ?record_uri a hto:LocationRecord;
-            hto:name ?name;
+            rdfs:label ?name;
             hto:startsAtPage ?startPage;
             hto:endsAtPage ?endPage;
             hto:hasOriginalDescription ?desc.
@@ -26,19 +27,19 @@ def create_basic_dataframe(collection_name):
         ?startPage hto:number ?s_page_num.
         ?endPage hto:number ?e_page_num.
         ?vol a hto:Volume;
-            hto:hadMember ?startPage;
+            schema:hasPart ?startPage;
             hto:number ?vol_num;
             hto:title ?vol_title.
         ?series a hto:Series;
-            hto:hadMember ?vol;
+            schema:hasPart ?vol;
             hto:yearPublished ?year_published;
             hto:genre ?genre;
             hto:printedAt ?printedAt.
         ?printedAt rdfs:label ?print_location.
         OPTIONAL {?series hto:number ?series_num}
         ?collection a hto:WorkCollection;
-                hto:hadMember ?series;
-                hto:name "%s".
+                schema:hasPart ?series;
+                rdfs:label "%s".
         }
     """ % collection_name)
 
@@ -82,9 +83,9 @@ def create_references_dicts():
     PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
     SELECT * WHERE {
         ?record_uri a hto:LocationRecord;
-            hto:refersTo ?reference.
+            rdfs:seeAlso ?reference.
         ?reference a hto:LocationRecord;
-            hto:name ?name.
+            rdfs:label ?name.
     }
     """
                     )
@@ -108,11 +109,12 @@ def create_references_dicts():
 
 def create_alter_names_dicts():
     sparql.setQuery("""
+    PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
     PREFIX hto: <https://w3id.org/hto#>
     PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
     SELECT * WHERE {
         ?record_uri a hto:LocationRecord;
-            rdfs:label ?alter_name.
+  			skos:altLabel ?alter_name.
     }
     """
                     )

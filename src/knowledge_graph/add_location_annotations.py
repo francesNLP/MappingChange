@@ -108,7 +108,7 @@ def add_centroid(location, location_id, target_graph):
         datatype=GEO.geoJSONLiteral)
     target_graph.add((centroid_uri, GEO.asGeoJSON, geojson))
     wkt = Literal(
-        '''POINT(%s %s)''' % (location["latitude"], location["longitude"]),
+        '''POINT(%s %s)''' % (location["longitude"], location["latitude"]),
         datatype=GEO.wktLiteral)
     target_graph.add((centroid_uri, GEO.asWKT, wkt))
     return centroid_uri
@@ -185,6 +185,7 @@ def add_location_annotation(location, term_uri_str, desc_uri_str, added_location
         return
     text_position_selector_uri = URIRef(f"https://w3id.org/hto/TextPositionSelector/{start_index}_{end_index}")
     target_graph.add((text_position_selector_uri, RDF.type, oa.TextPositionSelector))
+    target_graph.add((text_position_selector_uri, RDF.type, oa.Selector))
     target_graph.add((text_position_selector_uri, oa.start, Literal(str(start_index), datatype=XSD.nonNegativeInteger)))
     target_graph.add((text_position_selector_uri, oa.end, Literal(str(end_index), datatype=XSD.nonNegativeInteger)))
 
