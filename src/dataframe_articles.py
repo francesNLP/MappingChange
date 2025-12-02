@@ -765,7 +765,7 @@ g_df_fix.drop(columns=["normalized_name"], inplace=True)
 g_df_fix['reference_terms'] = g_df_fix['text'].apply(extra_see_references)
 
 g_df_fix['alter_names'] = g_df_fix['name'].apply(lambda x: extract_names(x)[1])
-
+g_df_fix['name'] = g_df_fix['name'].apply(lambda x: extract_names(x)[0])
 
 
 
