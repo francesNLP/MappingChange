@@ -216,7 +216,7 @@ The resulting entries are cleaned, deduplicated, semantically modeled using the 
 ### 🔄 Pipeline Components
 
 1. **Article Extraction**: Uses GPT-4 to segment OCR pages into structured entries (per edition), merges outputs, resolves duplicates, and integrates original metadata.
-2. **Base (name may be changed) Graph Construction**: Converts cleaned entries into RDF using HTO, with redirects and references linked.
+2. **Core Graph Construction**: Converts cleaned entries into RDF using HTO, with redirects and references linked.
 3.  **Concept Linkage Enrichment**: Adds embeddings, temporal concepts, and links to Wikidata and DBpedia.
 4.  **Location Annotation Enrichment**: Uses NER (Stanza) and georesolution (Edinburgh Geoparser) to tag locations.
 5.  **Search Engine Indexing (Optional)**: Publishes data to Elasticsearch for semantic and full-text search in the [Frances platform](http://www.frances-ai.com).

@@ -131,7 +131,7 @@ python combine_vol_dataframes.py
 You can access these dataframes that we have produced from [this section](#dataframes-with-extracted-articles). 
 Note that these dataframes are used for the knowledge graph generation scripts below.
 
-## Base Graph Generation
+## Core Graph Construction
 
 **Script**: [df_to_kg.py](./src/knowledge_graph/df_to_kg.py)
 
@@ -169,7 +169,7 @@ python df_to_kg.py
 
 **Input**: 
 * `src/knowledge_graph/volume_page_urls.json` (json format): json file with page permanent urls.
-* `src/knowledge_graph/gaz.ttl` (turtle format): generated base knowledge graph from [Base Graph Generation](#base-graph-generation)
+* `src/knowledge_graph/gaz.ttl` (turtle format): generated base knowledge graph from [Core Graph Constrcution](#core-graph-construction)
 
 **Execution**:
 ```shell
