@@ -83,7 +83,7 @@ For this particular dataset, the Scottish Gazetteers, the task of article-level 
 
 - ⚡️ **No clear boundary between content and metadata**: Page numbers, running titles, and section headers are embedded within the same OCR layer as article content, making it difficult to isolate meaningful segments using rule-based methods.
 
-- 🔭 **Place name ambiguity**: Many locations share the same name (e.g., “Abbey” — see [Pages 1 and 2 of the 1884 edition](https://github.com/francesNLP/MappingChange?tab=readme-ov-file#%EF%B8%8F-ocr-page-level-format)) but refer to different places, even within the same edition. In some cases, headers may contain full place names, making it hard to distinguish between section headings and actual article entries.  
+- 🔭 **Place name ambiguity**: Many locations share the same name (e.g., “Abbey” — see [Pages 1 and 2 of the 1883 edition](https://github.com/francesNLP/MappingChange?tab=readme-ov-file#%EF%B8%8F-ocr-page-level-format)) but refer to different places, even within the same edition. In some cases, headers may contain full place names, making it hard to distinguish between section headings and actual article entries.  
   Determining whether a place name marks the start of a new article, a header, or a continuation—and whether same-named entries refer to the *same* or *different* places—requires contextual understanding of layout, content flow, and semantic cues.
 
 - 📉 **Changing coverage across editions**: Not all places appear in every edition. New entries are introduced in later editions (e.g., due to industrialization or administrative change), while others may be shortened, renamed, or omitted.  
@@ -102,9 +102,9 @@ For this particular dataset, the Scottish Gazetteers, the task of article-level 
 
 *Figure: First page from the 1803 Gazetteer. Articles begin mid-page, vary in length, and include embedded headers and footnotes. Article names are in uppercase, followed by punctuation (e.g., "." or ";"). Long articles may span multiple pages; short entries may be only a few words. Additional name's place information can appear in parentheses. Headers are two sets of three uppercase words (e.g., “ABB ABBE”).*
 
-<img src="./Notebooks/figures/1884-gazetteer-page.jpg" alt="First page of 1884 Gazetteer" width="400"/>
+<img src="Notebooks/figures/1883-gazetteer-page.jpg" alt="First page of 1883 Gazetteer" width="400"/>
 
-*Figure: First page from the 1884 Gazetteer. This edition uses a denser two-column layout and the first page begins without headers. The title has changed to “Ordnance Gazetteer of Scotland.” Articles can still vary greatly in length. Article names are capitalized, followed by commas or dots, with alternative names sometimes introduced by "or" and variants (Gaelic, Scots, or older English) in parentheses. Subsequent pages include headers showing the first and last articles names in uppercase on the page.*
+*Figure: First page from the 1883 Gazetteer. This edition uses a denser two-column layout and the first page begins without headers. The title has changed to “Ordnance Gazetteer of Scotland.” Articles can still vary greatly in length. Article names are capitalized, followed by commas or dots, with alternative names sometimes introduced by "or" and variants (Gaelic, Scots, or older English) in parentheses. Subsequent pages include headers showing the first and last articles names in uppercase on the page.*
 
 
 > ⚠️ **Note**: These two examples illustrate typical OCR layouts, but every gazetteer edition differs in format, conventions, and typography. Traditionally, such variation would require crafting edition-specific rule-based parsers—often brittle and hard to generalize. In contrast, **our GPT-4-based approach enables a unified extraction strategy**, where the same logic can be reused across editions with minimal changes (only requiring prompt adjustments). This makes adaptation across formats far easier and adaptative than rule-based methods.
@@ -114,11 +114,11 @@ For this particular dataset, the Scottish Gazetteers, the task of article-level 
 
 Note that article extraction is not performed from the image itself, but from the extracted text from XML-encoded OCR files. In these XMLs, there is **no distinction** between headers, article content, and footnotes. All text is flattened into a continuous stream of `CONTENT` strings with no structural annotations or layout information.
 
-<img src="./Notebooks/figures/Pag2-1884Image.jpg" alt="Page 2 of 1884 Gazetteer" width="500"/>
+<img src="Notebooks/figures/Pag2-1883Image.jpg" alt="Page 2 of 1883 Gazetteer" width="500"/>
 
-*Figure: Page 2 of the 1884 edition.*
+*Figure: Page 2 of the 1883 edition.*
 
-<img src="./Notebooks/figures/Page2-1884XML.png" alt="Page 2 of 1884 Gazetteer OCR-XML structure" width="500"/>
+<img src="Notebooks/figures/Page2-1883XML.png" alt="Page 2 of 1883 Gazetteer OCR-XML structure" width="500"/>
 
 *Figure: XML representation of OCR output. Note the absence of layout or semantic structure—only positional text content is preserved.*
 
@@ -254,7 +254,7 @@ These cleaned, deduplicated DataFrames (as a result of running [dataframe_articl
 * [dataframe_gaz_1846](https://drive.google.com/file/d/1JxGybA-op04Xvs6-MG-C6x1iuneLF5qQ/view?usp=share_link)
 * [dataframe_gaz_1868](https://drive.google.com/file/d/1thPWG2LXHvo7owEWOzu_K_B5XZ5znPMO/view?usp=share_link)
 * [dataframe_gaz_1882](https://drive.google.com/file/d/1r5DMWfOas_ajS71vrC0Cr4I3oxD6ZLjm/view?usp=share_link)
-* [dataframe_gaz_1884](https://drive.google.com/file/d/1EHrlwH5cnZb1QISt_98ZcEpIVP3wIHmt/view?usp=share_link)
+* [dataframe_gaz_1883](https://drive.google.com/file/d/1mKQlIlFD2xVlE3PfSLNIEfI4FKtiUQB-/view?usp=share_link)
 * [dataframe_gaz_1901](https://drive.google.com/file/d/1a3Qi0Oj8HzFql0BkPjutaUQx8fSzqy1C/view?usp=share_link)
 
 
