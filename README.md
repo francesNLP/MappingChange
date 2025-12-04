@@ -13,7 +13,7 @@ The goal is to extract these entries from OCR-based **page-level free text** and
 
 If you use this dataset, pipeline, or knowledge graph in your work, please cite:
 
-Yu, L., & Filgueira, R. (2025). MappingChange: A Temporal and Semantic Knowledge Base of the Scottish Gazetteers (1803–1901). Zenodo. https://doi.org/10.5281/zenodo.15397756, **to be modified!!!**
+Yu, L., & Filgueira, R. (2025). MappingChange: A Temporal and Semantic Knowledge Base of the Scottish Gazetteers (1803–1901). Zenodo. https://doi.org/10.5281/zenodo.17817062 
 
 
 ## 🎯 Contribution Summary
