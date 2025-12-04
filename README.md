@@ -13,7 +13,7 @@ The goal is to extract these entries from OCR-based **page-level free text** and
 
 If you use this dataset, pipeline, or knowledge graph in your work, please cite:
 
-Yu, L., & Filgueira, R. (2025). MappingChange: A Temporal and Semantic Knowledge Base of the Scottish Gazetteers (1803–1901). Zenodo. https://doi.org/10.5281/zenodo.17817062 
+Yu, L., & Filgueira, R. (2025). MappingChange: A Temporal and Semantic Knowledge Base of the Scottish Gazetteers (1803–1901). DOI: https://doi.org/10.5281/zenodo.15393935 
 
 
 ## 🎯 Contribution Summary
@@ -31,7 +31,7 @@ This pipeline uniquely leverages GPT-4 for structured article segmentation acros
 ## 📦 Resource Availability Statement
 
 - **Code Repository**: [GitHub – francesNLP/MappingChange](https://github.com/francesNLP/MappingChange)  
-- **Archived Release**: [Zenodo DOI](https://doi.org/10.5281/zenodo.15393936)  
+- **Archived Release**: [Zenodo DOI](https://doi.org/10.5281/zenodo.15393935)  
 - **License**: [MIT](./LICENSE) 
 - **Ontology**: [Heritage Textual Ontology (HTO)](http://query.frances-ai.com/hto_gazetteers) ([code](https://github.com/frances-ai/HeritageTextOntology?tab=readme-ov-file)) — semantic model used throughout the KsG  
 - **Main Input Dataset**: [`gazetteers_dataframe`](https://drive.google.com/file/d/1J6TxdKImw2rNgmdUBN19h202gl-iYupn/view?usp=share_link) — page-level OCR + metadata structured dataframe derived from [Zenodo](https://zenodo.org/records/14051678) - previous work 
@@ -58,8 +58,8 @@ This pipeline uniquely leverages GPT-4 for structured article segmentation acros
 | 🗃️ Input Dataset        | OCR-based Gazetteer pages with metadata (`gazetteers_dataframe`)          | [Zenodo](https://zenodo.org/records/14051678)                                                       | JSON (page-level)             |
 | 🛠️ Pipeline Scripts     | Article segmentation, merging, KG generation, enrichment                 | [`/src`](./src), [Pipeline Guide](./PIPELINE_EXECUTION.md)                                          | Python scripts                |
 | 📘 Ontology             | Heritage Textual Ontology (HTO) for semantic modeling                    | [w3id.org/hto](https://w3id.org/hto), [GitHub](https://github.com/frances-ai/HeritageTextOntology) | RDF / Turtle                     |
-| 🧠 Article DataFrames   | Cleaned per-edition and aggregated article-level data                    | [Zenodo](https://doi.org/10.5281/zenodo.15393936), [See full list](#dataframes-with-extracted-articles) | Pandas / JSON                 |
-| 🌐 Knowledge Graph      | RDF triples + enrichments (Wikidata, DBpedia, Geo)                        | [Zenodo](https://doi.org/10.5281/zenodo.15393936), [See full list](#kgs-with-extracted-articles)        | RDF/Turtle, SPARQL (Fuseki)  |
+| 🧠 Article DataFrames   | Cleaned per-edition and aggregated article-level data                    | [Zenodo](https://doi.org/10.5281/zenodo.15393935), [See full list](#dataframes-with-extracted-articles) | Pandas / JSON                 |
+| 🌐 Knowledge Graph      | RDF triples + enrichments (Wikidata, DBpedia, Geo)                        | [Zenodo](https://doi.org/10.5281/zenodo.15393935), [See full list](#kgs-with-extracted-articles)        | RDF/Turtle, SPARQL (Fuseki)  |
 | 📊 Notebooks            | Exploratory, validation and comparative analysis of KGs and DataFrames               | [`/Notebooks`](./Notebooks)                                                                         | Jupyter (.ipynb)              |
 | 🔎 Search Indexes       | Full-text + semantic search via Elasticsearch (SPARQL + REST access)      | [Frances Platform](http://www.frances-ai.com), [Usage Guide](./KG_ES_USAGE.md)                      | Elasticsearch / JSON / SPARQL |
 
