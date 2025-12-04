@@ -34,7 +34,7 @@ This pipeline uniquely leverages GPT-4 for structured article segmentation acros
 - **Archived Release**: [Zenodo DOI](https://doi.org/10.5281/zenodo.15393935)  
 - **License**: [MIT](./LICENSE) 
 - **Ontology**: [Heritage Textual Ontology (HTO)](http://query.frances-ai.com/hto_gazetteers) ([code](https://github.com/frances-ai/HeritageTextOntology?tab=readme-ov-file)) — semantic model used throughout the KsG  
-- **Main Input Dataset**: [`gazetteers_dataframe`](https://drive.google.com/file/d/1J6TxdKImw2rNgmdUBN19h202gl-iYupn/view?usp=share_link) — page-level OCR + metadata structured dataframe derived from [Zenodo](https://zenodo.org/records/14051678) - previous work 
+- **Main Input Dataset**: [`gazetteers_dataframe`](https://drive.google.com/file/d/1J6TxdKImw2rNgmdUBN19h202gl-iYupn/view?usp=share_link) — page-level OCR + metadata structured dataframe derived from [Zenodo](https://doi.org/10.5281/zenodo.14051677) - previous work 
 - **Derived Data Outputs**: Cleaned article-level DataFrames, RDF triples, enriched KG — see [Extracted DataFrames](#dataframes-with-extracted-articles) and [KGs with Extracted Articles](#kgs-with-extracted-articles)  
 - **SPARQL Query Exploration Web UI**: http://yasgui.org/short/0M7HXSruJg
 - **SPARQL Endpoint**:  http://query.frances-ai.com/hto_gaz/sparql - You can use it programmatically, see our [Notebooks](./Notebooks) (and the python code bellow).
@@ -55,7 +55,7 @@ This pipeline uniquely leverages GPT-4 for structured article segmentation acros
 
 | Component Type         | Description                                                              | Access / Link                                                                                      | Format / Type                  |
 |------------------------|--------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------|-------------------------------|
-| 🗃️ Input Dataset        | OCR-based Gazetteer pages with metadata (`gazetteers_dataframe`)          | [Zenodo](https://zenodo.org/records/14051678)                                                       | JSON (page-level)             |
+| 🗃️ Input Dataset        | OCR-based Gazetteer pages with metadata (`gazetteers_dataframe`)          | [Zenodo](https://doi.org/10.5281/zenodo.14051677)                                                       | JSON (page-level)             |
 | 🛠️ Pipeline Scripts     | Article segmentation, merging, KG generation, enrichment                 | [`/src`](./src), [Pipeline Guide](./PIPELINE_EXECUTION.md)                                          | Python scripts                |
 | 📘 Ontology             | Heritage Textual Ontology (HTO) for semantic modeling                    | [w3id.org/hto](https://w3id.org/hto), [GitHub](https://github.com/frances-ai/HeritageTextOntology) | RDF / Turtle                     |
 | 🧠 Article DataFrames   | Cleaned per-edition and aggregated article-level data                    | [Zenodo](https://doi.org/10.5281/zenodo.15393935), [See full list](#dataframes-with-extracted-articles) | Pandas / JSON                 |
@@ -122,7 +122,7 @@ Note that article extraction is not performed from the image itself, but from th
 
 *Figure: XML representation of OCR output. Note the absence of layout or semantic structure—only positional text content is preserved.*
 
-> In our previous work, we published a KG-RDF, [Gazetteer_HTO (Zenodo, 2024)](https://zenodo.org/records/14051678), which included detailed metadata and full OCR text at the **page level**. For the present project, we export this RDF into a lightweight [gazetteers dataframe](https://drive.google.com/file/d/1J6TxdKImw2rNgmdUBN19h202gl-iYupn/view?usp=share_link), which serves as the **entry point** for our pipe-line to article-level extraction, and has one row **per volume, per edition, and per page**, with all OCR text per page flattened into a single field (free text per page). 
+> In our previous work, we published a KG-RDF, [Gazetteer_HTO (Zenodo, 2024)](https://doi.org/10.5281/zenodo.14051677), which included detailed metadata and full OCR text at the **page level**. For the present project, we export this RDF into a lightweight [gazetteers dataframe](https://drive.google.com/file/d/1J6TxdKImw2rNgmdUBN19h202gl-iYupn/view?usp=share_link), which serves as the **entry point** for our pipe-line to article-level extraction, and has one row **per volume, per edition, and per page**, with all OCR text per page flattened into a single field (free text per page). 
 
 
 ### 🧠 Strategy and Impact
